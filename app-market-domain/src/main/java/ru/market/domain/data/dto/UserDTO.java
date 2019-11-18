@@ -1,5 +1,7 @@
 package ru.market.domain.data.dto;
 
+import ru.market.domain.data.enums.UserRole;
+
 import java.util.Objects;
 
 public class UserDTO {
@@ -8,6 +10,7 @@ public class UserDTO {
     private String lastName;
     private String middleName;
     private String login;
+    private UserRole userRole;
 
     public Long getId() {
         return id;
@@ -49,6 +52,14 @@ public class UserDTO {
         this.login = login;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,6 +85,7 @@ public class UserDTO {
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", login='" + login + '\'' +
+                ", userRole='" + userRole + '\'' +
                 '}';
     }
 }

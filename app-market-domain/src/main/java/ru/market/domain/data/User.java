@@ -1,7 +1,11 @@
 package ru.market.domain.data;
 
+import ru.market.domain.data.enums.UserRole;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,6 +34,10 @@ public class User {
 
     @Column(name = "login", nullable = false)
     private String login;
+
+    @Column(name = "user_role", nullable = false, length = 12)
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     public Long getId() {
         return id;
@@ -71,6 +79,14 @@ public class User {
         this.login = login;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,6 +112,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", login='" + login + '\'' +
+                ", userRole='" + userRole + '\'' +
                 '}';
     }
 }

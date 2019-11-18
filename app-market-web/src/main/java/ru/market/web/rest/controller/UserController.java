@@ -2,6 +2,7 @@ package ru.market.web.rest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +22,10 @@ public class UserController {
     @RequestMapping(path = "/get/{login}")
     public UserDTO getUserById(@PathVariable("login") String login){
         return userService.getByLogin(login);
+    }
+
+    @RequestMapping(path = "/create")
+    public UserDTO createUser(@RequestBody UserDTO userDTO){
+        return userService.create(userDTO);
     }
 }

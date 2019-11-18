@@ -58,7 +58,7 @@ public class UserServiceImpl implements IUserService {
     private void assertUniqueByLogin(User user){
         User founded = userRepository.findByLogin(user.getLogin());
         if(founded != null && !founded.getId().equals(user.getId())){
-            throw new NotUniqueException("User with login: " + founded.getId() + " already exist");
+            throw new NotUniqueException("User with login: " + founded.getLogin() + " already exist");
         }
     }
 

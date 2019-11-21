@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.market.domain.config.DomainSpringConfiguration;
 import ru.market.domain.data.dto.UserDTO;
+import ru.market.domain.data.dto.UserWithPasswordDTO;
 import ru.market.domain.data.enums.UserRole;
 import ru.market.domain.utils.DTOUtils;
 
@@ -21,16 +22,15 @@ public class UserServiceTest {
     private IUserService userService;
 
     @Test
-    public void updateTest(){
-        UserDTO dto = DTOUtils.createUserDTO("Eugene", "Connor", null, "MyLogin");
-        dto.setUserRole(UserRole.ADMIN_ROLE);
-        UserDTO updated = userService.update(dto);
+    public void createTest(){
+        UserWithPasswordDTO dto = DTOUtils.createUserWithPasswordDTO(
+                "Admin", "Admin", "Admin", "admin", "admin"
+        );
+
+        dto.setUserRole(UserRole.ROLE_ADMIN);
+        UserDTO updated = userService.create(dto);
         Assert.assertNotNull(updated);
         Assert.assertNotNull(updated.getId());
-        Assert.assertEquals("MyLogin", updated.getLogin());
-
-        updated.setLogin("UpdatedLogin");
-        updated = userService.update(updated);
-        Assert.assertEquals("UpdatedLogin", updated.getLogin());
+        Assert.assertEquals("admin", updated.getLogin());
     }
 }

@@ -10,7 +10,7 @@ public class UserDTO {
     private String lastName;
     private String middleName;
     private String login;
-    private UserRole userRole;
+    private UserRole userRole = UserRole.ROLE_USER;
 
     public Long getId() {
         return id;

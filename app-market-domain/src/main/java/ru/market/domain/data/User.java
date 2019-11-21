@@ -35,6 +35,9 @@ public class User {
     @Column(name = "login", nullable = false)
     private String login;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "user_role", nullable = false, length = 12)
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -79,6 +82,14 @@ public class User {
         this.login = login;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public UserRole getUserRole() {
         return userRole;
     }
@@ -96,12 +107,13 @@ public class User {
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(middleName, user.middleName) &&
-                Objects.equals(login, user.login);
+                Objects.equals(login, user.login) &&
+                Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, middleName, login);
+        return Objects.hash(id, firstName, lastName, middleName, login, password);
     }
 
     @Override

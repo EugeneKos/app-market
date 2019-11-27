@@ -19,7 +19,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "ru.market.domain.repository")
 @PropertySource("classpath:data-config.properties")
-public class DataConfiguration {
+public class DomainDataConfiguration {
     @Value("${database.driver.class}")
     private String driverClassName;
     @Value("${database.url}")

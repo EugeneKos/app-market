@@ -1,4 +1,4 @@
-package ru.market.domain.data.dto;
+package ru.market.dto.person;
 
 import java.util.Objects;
 

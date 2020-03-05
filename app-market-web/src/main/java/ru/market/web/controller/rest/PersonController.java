@@ -3,8 +3,8 @@ package ru.market.web.controller.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import ru.market.domain.data.dto.PersonDTO;
-import ru.market.domain.data.dto.PersonWithPasswordDTO;
+import ru.market.dto.person.PersonDTO;
+import ru.market.dto.person.PersonWithPasswordDTO;
 import ru.market.domain.service.IPersonService;
 
 @RestController

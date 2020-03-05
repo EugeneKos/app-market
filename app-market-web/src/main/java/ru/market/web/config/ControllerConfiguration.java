@@ -1,18 +1,17 @@
-package ru.market.web.controller;
+package ru.market.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import ru.market.domain.config.DomainServiceConfiguration;
-import ru.market.domain.service.IUserService;
+import ru.market.domain.service.IPersonService;
+import ru.market.web.controller.MainController;
+import ru.market.web.controller.rest.PersonController;
 
 @Configuration
 @EnableWebMvc
-@Import(DomainServiceConfiguration.class)
 public class ControllerConfiguration {
     @Bean
     public InternalResourceViewResolver viewResolver(){
@@ -29,7 +28,7 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public UserController userController(IUserService userService){
-        return new UserController(userService);
+    public PersonController personController(IPersonService personService){
+        return new PersonController(personService);
     }
 }

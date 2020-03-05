@@ -1,26 +1,23 @@
 package ru.market.domain.data;
 
-import ru.market.domain.data.enums.UserRole;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
 import java.util.Objects;
 
 @Entity
-@Table(name = "users",
-        uniqueConstraints = @UniqueConstraint(name = "login_uq", columnNames = "login"))
-public class User {
+@Table(name = "persons",
+        uniqueConstraints = @UniqueConstraint(name = "username_uq", columnNames = "username"))
+public class Person {
     @Id
-    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @SequenceGenerator(name = "person_id_seq", sequenceName = "person_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_id_seq")
     private Long id;
 
     @Column(name = "first_name", nullable = false)
@@ -32,15 +29,11 @@ public class User {
     @Column(name = "middle_name")
     private String middleName;
 
-    @Column(name = "login", nullable = false)
-    private String login;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "user_role", nullable = false, length = 12)
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
 
     public Long getId() {
         return id;
@@ -74,12 +67,12 @@ public class User {
         this.middleName = middleName;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -90,41 +83,32 @@ public class User {
         this.password = password;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(middleName, user.middleName) &&
-                Objects.equals(login, user.login) &&
-                Objects.equals(password, user.password);
+        Person person = (Person) o;
+        return Objects.equals(id, person.id) &&
+                Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName) &&
+                Objects.equals(middleName, person.middleName) &&
+                Objects.equals(username, person.username) &&
+                Objects.equals(password, person.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, middleName, login, password);
+        return Objects.hash(id, firstName, lastName, middleName, username, password);
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Person{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
-                ", login='" + login + '\'' +
-                ", userRole='" + userRole + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

@@ -1,14 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
-    <title>Application</title>
+    <title>Web Application</title>
 </head>
 <body>
-    Welcome to Application
-    <p><a href="login">Sing In</a></p>
-    <p><a href="registration">Sing Up</a></p>
-
-    <p><a href="user">User Page</a></p>
-    <p><a href="admin">Admin Page</a></p>
+    <h2>Web Application</h2>
 </body>
 </html>

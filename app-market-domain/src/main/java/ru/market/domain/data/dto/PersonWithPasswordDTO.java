@@ -2,7 +2,7 @@ package ru.market.domain.data.dto;
 
 import java.util.Objects;
 
-public class UserWithPasswordDTO extends UserDTO {
+public class PersonWithPasswordDTO extends PersonDTO {
     private String password;
 
     public String getPassword() {
@@ -18,7 +18,7 @@ public class UserWithPasswordDTO extends UserDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        UserWithPasswordDTO that = (UserWithPasswordDTO) o;
+        PersonWithPasswordDTO that = (PersonWithPasswordDTO) o;
         return Objects.equals(password, that.password);
     }
 

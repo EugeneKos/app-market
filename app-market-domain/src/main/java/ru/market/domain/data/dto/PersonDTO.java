@@ -1,16 +1,13 @@
 package ru.market.domain.data.dto;
 
-import ru.market.domain.data.enums.UserRole;
-
 import java.util.Objects;
 
-public class UserDTO {
+public class PersonDTO {
     private Long id;
     private String firstName;
     private String lastName;
     private String middleName;
-    private String login;
-    private UserRole userRole = UserRole.ROLE_USER;
+    private String username;
 
     public Long getId() {
         return id;
@@ -44,48 +41,39 @@ public class UserDTO {
         this.middleName = middleName;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(id, userDTO.id) &&
-                Objects.equals(firstName, userDTO.firstName) &&
-                Objects.equals(lastName, userDTO.lastName) &&
-                Objects.equals(middleName, userDTO.middleName) &&
-                Objects.equals(login, userDTO.login);
+        PersonDTO personDTO = (PersonDTO) o;
+        return Objects.equals(id, personDTO.id) &&
+                Objects.equals(firstName, personDTO.firstName) &&
+                Objects.equals(lastName, personDTO.lastName) &&
+                Objects.equals(middleName, personDTO.middleName) &&
+                Objects.equals(username, personDTO.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, middleName, login);
+        return Objects.hash(id, firstName, lastName, middleName, username);
     }
 
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "PersonDTO{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
-                ", login='" + login + '\'' +
-                ", userRole='" + userRole + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

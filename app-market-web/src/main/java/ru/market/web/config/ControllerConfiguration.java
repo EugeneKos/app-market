@@ -7,7 +7,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import ru.market.domain.service.IPersonService;
+import ru.market.web.auth.AuthenticateService;
 import ru.market.web.controller.MainController;
+import ru.market.web.controller.rest.AuthenticateController;
+import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.PersonController;
 
 @Configuration
@@ -30,5 +33,15 @@ public class ControllerConfiguration {
     @Bean
     public PersonController personController(IPersonService personService){
         return new PersonController(personService);
+    }
+
+    @Bean
+    public AuthenticateController authenticateController(AuthenticateService authenticateService){
+        return new AuthenticateController(authenticateService);
+    }
+
+    @Bean
+    public MyController myController(){
+        return new MyController();
     }
 }

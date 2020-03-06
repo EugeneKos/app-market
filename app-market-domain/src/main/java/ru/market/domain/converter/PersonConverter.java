@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import ru.market.domain.data.Person;
 import ru.market.dto.person.PersonDTO;
+import ru.market.dto.person.PersonWithPasswordDTO;
 
 @Service
 public class PersonConverter {
@@ -28,5 +29,12 @@ public class PersonConverter {
             return null;
         }
         return mapper.map(person, PersonDTO.class);
+    }
+
+    public PersonWithPasswordDTO convertToPersonWithPasswordDTO(Person person){
+        if(person == null){
+            return null;
+        }
+        return mapper.map(person, PersonWithPasswordDTO.class);
     }
 }

@@ -1,6 +1,6 @@
 package ru.market.domain.service;
 
-import ru.market.domain.data.dto.PersonDTO;
+import ru.market.dto.person.PersonDTO;
 
 public interface IPersonService {
     PersonDTO create(PersonDTO personDTO);

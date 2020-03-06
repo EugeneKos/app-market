@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
-import ru.market.domain.data.dto.PersonDTO;
+import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.exception.NotUniqueException;

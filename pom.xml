@@ -20,6 +20,7 @@
     <modules>
         <module>app-market-web</module>
         <module>app-market-domain</module>
+        <module>app-market-dto</module>
     </modules>
 
     <build>

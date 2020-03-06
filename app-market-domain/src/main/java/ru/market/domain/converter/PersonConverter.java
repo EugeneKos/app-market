@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.domain.data.Person;
-import ru.market.domain.data.dto.PersonDTO;
+import ru.market.dto.person.PersonDTO;
 
 @Service
 public class PersonConverter {

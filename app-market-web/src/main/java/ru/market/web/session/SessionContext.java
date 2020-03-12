@@ -16,4 +16,14 @@ public final class SessionContext {
         HttpSession currentSession = SessionContextHolder.getCurrentSession();
         return (PersonDTO) currentSession.getAttribute(SessionAttributeNames.PERSON.name());
     }
+
+    public static void removePerson(){
+        HttpSession currentSession = SessionContextHolder.getCurrentSession();
+        currentSession.removeAttribute(SessionAttributeNames.PERSON.name());
+    }
+
+    public static void invalidateSession(){
+        HttpSession currentSession = SessionContextHolder.getCurrentSession();
+        currentSession.invalidate();
+    }
 }

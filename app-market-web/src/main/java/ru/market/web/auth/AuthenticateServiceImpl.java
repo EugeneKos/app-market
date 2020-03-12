@@ -6,7 +6,6 @@ import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.person.PersonDTO;
 import ru.market.dto.person.PersonWithPasswordDTO;
 import ru.market.web.session.SessionContext;
-import ru.market.web.session.SessionContextHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
+    public boolean isAuthenticate() {
+        return SessionContext.getPerson() != null;
+    }
+
+    @Override
     public void invalidate() {
-        SessionContextHolder.removeCurrentSession();
+        SessionContext.removePerson();
+        SessionContext.invalidateSession();
     }
 }

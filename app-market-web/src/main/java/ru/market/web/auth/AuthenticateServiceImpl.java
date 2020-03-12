@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticateServiceImpl implements AuthenticateService {
+    private static final int INACTIVE_INTERVAL = 1200; // 20 min
+
     private IPersonService personService;
 
     @Autowired
@@ -33,6 +35,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private AuthAnswerDTO authenticateSuccess(PersonDTO person){
         SessionContext.setPerson(person);
+        SessionContext.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new AuthAnswerDTO("success", "authenticate success");
     }
 

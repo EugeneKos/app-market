@@ -26,4 +26,9 @@ public final class SessionContext {
         HttpSession currentSession = SessionContextHolder.getCurrentSession();
         currentSession.invalidate();
     }
+
+    public static void setMaxInactiveInterval(int interval){
+        HttpSession currentSession = SessionContextHolder.getCurrentSession();
+        currentSession.setMaxInactiveInterval(interval);
+    }
 }

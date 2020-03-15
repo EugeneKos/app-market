@@ -21,6 +21,8 @@
         <module>app-market-web</module>
         <module>app-market-domain</module>
         <module>app-market-dto</module>
+        <module>app-market-data-session</module>
+        <module>app-market-auth</module>
     </modules>
 
     <build>

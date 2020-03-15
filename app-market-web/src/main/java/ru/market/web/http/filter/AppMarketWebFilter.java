@@ -1,9 +1,9 @@
 package ru.market.web.http.filter;
 
-import ru.market.web.auth.AuthenticateService;
-
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import ru.market.auth.api.AuthFilterChain;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,31 +12,27 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/mi"})
-public class AuthenticateFilter extends HttpFilter {
-    private static final long serialVersionUID = -7476424079788176274L;
+@WebFilter(urlPatterns = "/*")
+public class AppMarketWebFilter extends HttpFilter {
+    private static final long serialVersionUID = 4422158001342317500L;
 
-    private AuthenticateService authenticateService;
+    private AuthFilterChain authFilterChain;
 
     @Override
     public void init(FilterConfig config) {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(config.getServletContext());
 
-        authenticateService = webApplicationContext.getBean(AuthenticateService.class);
+        authFilterChain = webApplicationContext.getBean(AuthFilterChain.class);
     }
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        if(authenticateService.isAuthenticate()){
-            chain.doFilter(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-        }
+        authFilterChain.initIterator();
+        authFilterChain.doFilter(request, response, chain);
     }
 }

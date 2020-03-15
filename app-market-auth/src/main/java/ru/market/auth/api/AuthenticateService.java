@@ -1,4 +1,4 @@
-package ru.market.web.auth;
+package ru.market.auth.api;
 
 import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;

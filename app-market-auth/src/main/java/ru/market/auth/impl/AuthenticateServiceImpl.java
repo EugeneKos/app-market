@@ -1,24 +1,32 @@
-package ru.market.web.auth;
+package ru.market.auth.impl;
+
+import ru.market.auth.api.AuthenticateService;
+
+import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.SessionManagement;
 
 import ru.market.domain.service.IPersonService;
+
 import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.person.PersonDTO;
 import ru.market.dto.person.PersonWithPasswordDTO;
-import ru.market.web.session.SessionContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-@Service
 public class AuthenticateServiceImpl implements AuthenticateService {
     private static final int INACTIVE_INTERVAL = 1200; // 20 min
 
     private IPersonService personService;
 
-    @Autowired
-    public AuthenticateServiceImpl(IPersonService personService) {
+    private SessionManagement sessionManagement;
+    private PersonDataManagement personDataManagement;
+
+    public AuthenticateServiceImpl(IPersonService personService,
+                                   SessionManagement sessionManagement,
+                                   PersonDataManagement personDataManagement) {
+
         this.personService = personService;
+        this.sessionManagement = sessionManagement;
+        this.personDataManagement = personDataManagement;
     }
 
     @Override
@@ -34,19 +42,19 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     private AuthAnswerDTO authenticateSuccess(PersonDTO person){
-        SessionContext.setPerson(person);
-        SessionContext.setMaxInactiveInterval(INACTIVE_INTERVAL);
+        personDataManagement.setPerson(person);
+        sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new AuthAnswerDTO("success", "authenticate success");
     }
 
     @Override
     public boolean isAuthenticate() {
-        return SessionContext.getPerson() != null;
+        return personDataManagement.getPerson() != null;
     }
 
     @Override
     public void invalidate() {
-        SessionContext.removePerson();
-        SessionContext.invalidateSession();
+        personDataManagement.removePerson();
+        sessionManagement.invalidateSession();
     }
 }

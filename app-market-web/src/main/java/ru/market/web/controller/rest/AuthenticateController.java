@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import ru.market.auth.api.AuthenticateService;
+
 import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;
-import ru.market.web.auth.AuthenticateService;
 
 @RestController
 public class AuthenticateController {

@@ -1,21 +1,21 @@
-package ru.market.web.session;
+package ru.market.data.session.impl;
 
 import javax.servlet.http.HttpSession;
 
-public final class SessionContextHolder {
+final class SessionContextHolder {
     private static ThreadLocal<HttpSession> threadLocalCurrentSession = new ThreadLocal<>();
 
     private SessionContextHolder(){}
 
-    public static void setCurrentSession(HttpSession session){
+    static void setCurrentSession(HttpSession session){
         threadLocalCurrentSession.set(session);
     }
 
-    public static HttpSession getCurrentSession(){
+    static HttpSession getCurrentSession(){
         return threadLocalCurrentSession.get();
     }
 
-    public static void removeCurrentSession(){
+    static void removeCurrentSession(){
         threadLocalCurrentSession.remove();
     }
 }

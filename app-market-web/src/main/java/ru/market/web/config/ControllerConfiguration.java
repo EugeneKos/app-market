@@ -6,8 +6,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import ru.market.auth.api.AuthenticateService;
+
 import ru.market.domain.service.IPersonService;
-import ru.market.web.auth.AuthenticateService;
+
 import ru.market.web.controller.MainController;
 import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.MyController;

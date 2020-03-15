@@ -42,21 +42,23 @@ public class PersonServiceImpl implements IPersonService {
         }
 
         Person person = personConverter.convertToPerson(personDTO);
+        if(!isMustId){
+            person.setId(null);
+        }
+        if(isMustId && person.getId() == null){
+            throw new MustIdException("Person id should be given");
+        }
 
-        assertExistById(person, isMustId);
+        assertExistById(person);
         assertUniqueByUsername(person);
 
         person = personRepository.saveAndFlush(person);
         return personConverter.convertToPersonDTO(person);
     }
 
-    private void assertExistById(Person person, boolean isMustId){
-        if(!isMustId){
-            person.setId(null);
-            return;
-        }
+    private void assertExistById(Person person){
         if(person.getId() == null){
-            throw new MustIdException("Person id should be given");
+            return;
         }
 
         personRepository.findById(person.getId()).orElseThrow(
@@ -67,7 +69,7 @@ public class PersonServiceImpl implements IPersonService {
     private void assertUniqueByUsername(Person person){
         Person founded = personRepository.findByUsername(person.getUsername());
         if(founded != null && !founded.getId().equals(person.getId())){
-            throw new NotUniqueException("Person with login: " + founded.getUsername() + " already exist");
+            throw new NotUniqueException("Person with username: " + founded.getUsername() + " already exist");
         }
     }
 

@@ -6,8 +6,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import ru.market.domain.service.ICardService;
+import ru.market.domain.service.ICashService;
 import ru.market.domain.service.IPersonService;
+
 import ru.market.web.controller.MainController;
+import ru.market.web.controller.rest.CardController;
+import ru.market.web.controller.rest.CashController;
 import ru.market.web.controller.rest.PersonController;
 
 @Configuration
@@ -30,5 +35,15 @@ public class ControllerConfiguration {
     @Bean
     public PersonController personController(IPersonService personService){
         return new PersonController(personService);
+    }
+
+    @Bean
+    public CardController cardController(ICardService cardService){
+        return new CardController(cardService);
+    }
+
+    @Bean
+    public CashController cashController(ICashService cashService){
+        return new CashController(cashService);
     }
 }

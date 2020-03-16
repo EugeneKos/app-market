@@ -33,8 +33,8 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public PersonController personController(IPersonService personService){
-        return new PersonController(personService);
+    public PersonController personController(IPersonService personService, AuthenticateService authenticateService){
+        return new PersonController(personService, authenticateService);
     }
 
     @Bean

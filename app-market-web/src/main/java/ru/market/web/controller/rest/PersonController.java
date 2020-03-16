@@ -3,6 +3,7 @@ package ru.market.web.controller.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import ru.market.auth.api.AuthenticateService;
 import ru.market.dto.person.PersonDTO;
 import ru.market.dto.person.PersonWithPasswordDTO;
 import ru.market.domain.service.IPersonService;
@@ -10,10 +11,12 @@ import ru.market.domain.service.IPersonService;
 @RestController
 public class PersonController {
     private IPersonService personService;
+    private AuthenticateService authenticateService;
 
     @Autowired
-    public PersonController(IPersonService personService) {
+    public PersonController(IPersonService personService, AuthenticateService authenticateService) {
         this.personService = personService;
+        this.authenticateService = authenticateService;
     }
 
     @RequestMapping(path = "/person", method = RequestMethod.PUT,
@@ -36,5 +39,6 @@ public class PersonController {
     @RequestMapping(path = "/person/{id}", method = RequestMethod.DELETE)
     public void deleteById(@PathVariable(name = "id") Long id){
         personService.deleteById(id);
+        authenticateService.invalidate();
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
 import ru.market.auth.filter.AuthenticateFilter;
 import ru.market.auth.filter.PersonRequestFilter;
@@ -48,14 +49,15 @@ public class AuthenticateConfiguration {
 
     @Bean
     @Scope("prototype")
-    public AuthFilterChainImpl authFilterChain(AuthFilterHandler authFilterHandler,
-                                               AuthenticateService authenticateService){
+    public AuthFilterChain authFilterChain(AuthFilterHandler authFilterHandler,
+                                           AuthenticateService authenticateService,
+                                           PersonDataManagement personDataManagement){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
         authFilterChain.registerFilters(Arrays.asList(
                 new AuthenticateFilter(authenticateService),
-                new PersonRequestFilter()
+                new PersonRequestFilter(personDataManagement)
         ));
 
         return authFilterChain;

@@ -1,6 +1,6 @@
 package ru.market.auth.filter;
 
-import ru.market.auth.impl.AuthFilterChainImpl;
+import ru.market.auth.api.AuthFilterChain;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,5 +10,5 @@ import java.io.IOException;
 
 public interface AuthFilter {
     void doFilter(HttpServletRequest request, HttpServletResponse response,
-                  AuthFilterChainImpl authChain, FilterChain filterChain) throws IOException, ServletException;
+                  AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException;
 }

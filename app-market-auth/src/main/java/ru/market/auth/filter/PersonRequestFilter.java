@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@UrlFilter(urlPatterns = "/person",
+@UrlFilter(urlPatterns = "/person*",
         excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.PUT)}
 )
 public class PersonRequestFilter implements AuthFilter {

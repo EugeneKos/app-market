@@ -28,12 +28,23 @@ public class AuthFilterHandlerImpl implements AuthFilterHandler {
         }
 
         for (String urlPattern : urlFilter.urlPatterns()){
-            // fixme: Необходимо регулярное выражение
-            if(request.getServletPath().equals(urlPattern)){
+            if(isServletPathMatch(request.getServletPath(), urlPattern)){
                 return true;
             }
         }
 
         return false;
+    }
+
+    private boolean isServletPathMatch(String servletPath, String urlPattern){
+        String regexp;
+
+        if(urlPattern.endsWith("*")){
+            regexp = urlPattern + ".*";
+        } else {
+            regexp = urlPattern;
+        }
+
+        return servletPath.matches(regexp);
     }
 }

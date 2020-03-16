@@ -14,7 +14,7 @@ public class AuthFilterHandlerImpl implements AuthFilterHandler {
 
         UrlFilter urlFilter = authFilterClass.getAnnotation(UrlFilter.class);
         if(urlFilter == null){
-            throw new RuntimeException("error 1");
+            return false;
         }
 
         for (ExcludeRequestMethod excludeRequestMethod : urlFilter.excludeRequestMethods()){

@@ -18,21 +18,19 @@ import java.io.IOException;
 public class AppMarketWebFilter extends HttpFilter {
     private static final long serialVersionUID = 4422158001342317500L;
 
-    private AuthFilterChain authFilterChain;
+    private WebApplicationContext webApplicationContext;
 
     @Override
     public void init(FilterConfig config) {
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils
+        webApplicationContext = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(config.getServletContext());
-
-        authFilterChain = webApplicationContext.getBean(AuthFilterChain.class);
     }
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        authFilterChain.initIterator();
+        AuthFilterChain authFilterChain = webApplicationContext.getBean(AuthFilterChain.class);
         authFilterChain.doFilter(request, response, chain);
     }
 }

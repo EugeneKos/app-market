@@ -2,8 +2,11 @@ package ru.market.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import ru.market.auth.api.AuthenticateService;
+import ru.market.auth.filter.AuthenticateFilter;
+import ru.market.auth.filter.PersonRequestFilter;
 import ru.market.auth.impl.AuthFilterChainImpl;
 import ru.market.auth.api.AuthFilterHandler;
 import ru.market.auth.impl.AuthFilterHandlerImpl;
@@ -15,6 +18,8 @@ import ru.market.data.session.impl.PersonDataManagementImpl;
 import ru.market.data.session.impl.SessionManagementImpl;
 
 import ru.market.domain.service.IPersonService;
+
+import java.util.Arrays;
 
 @Configuration
 public class AuthenticateConfiguration {
@@ -42,7 +47,17 @@ public class AuthenticateConfiguration {
     }
 
     @Bean
-    public AuthFilterChainImpl authFilterChain(AuthenticateService authenticateService, AuthFilterHandler authFilterHandler){
-        return new AuthFilterChainImpl(authenticateService, authFilterHandler);
+    @Scope("prototype")
+    public AuthFilterChainImpl authFilterChain(AuthFilterHandler authFilterHandler,
+                                               AuthenticateService authenticateService){
+
+        AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
+
+        authFilterChain.registerFilters(Arrays.asList(
+                new AuthenticateFilter(authenticateService),
+                new PersonRequestFilter()
+        ));
+
+        return authFilterChain;
     }
 }

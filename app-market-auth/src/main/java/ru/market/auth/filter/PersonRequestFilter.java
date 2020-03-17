@@ -5,6 +5,7 @@ import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 
 import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.dto.person.PersonWithPasswordDTO;
 import ru.market.utils.JSONObjectUtil;
 
@@ -17,13 +18,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @UrlFilter(urlPatterns = "/person*",
-        excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.PUT)}
+        excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.PUT),
+                                @ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.GET),
+                                @ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.DELETE)}
 )
 public class PersonRequestFilter implements AuthFilter {
     private PersonDataManagement personDataManagement;
+    private RequestBodyManagement requestBodyManagement;
 
-    public PersonRequestFilter(PersonDataManagement personDataManagement) {
+    public PersonRequestFilter(PersonDataManagement personDataManagement, RequestBodyManagement requestBodyManagement) {
         this.personDataManagement = personDataManagement;
+        this.requestBodyManagement = requestBodyManagement;
     }
 
     @Override
@@ -82,6 +87,12 @@ public class PersonRequestFilter implements AuthFilter {
         if(person == null){
             return false;
         }
-        return personId.equals(person.getId());
+
+        boolean isEqual = personId.equals(person.getId());
+        if(isEqual){
+            requestBodyManagement.setCurrentRequestBody(person);
+        }
+
+        return isEqual;
     }
 }

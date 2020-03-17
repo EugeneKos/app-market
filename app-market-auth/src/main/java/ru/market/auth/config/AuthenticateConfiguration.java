@@ -14,8 +14,10 @@ import ru.market.auth.impl.AuthFilterHandlerImpl;
 import ru.market.auth.impl.AuthenticateServiceImpl;
 
 import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.data.session.api.SessionManagement;
 import ru.market.data.session.impl.PersonDataManagementImpl;
+import ru.market.data.session.impl.RequestBodyManagementImpl;
 import ru.market.data.session.impl.SessionManagementImpl;
 
 import ru.market.domain.service.IPersonService;
@@ -48,16 +50,22 @@ public class AuthenticateConfiguration {
     }
 
     @Bean
+    public RequestBodyManagement requestBodyManagement(){
+        return new RequestBodyManagementImpl();
+    }
+
+    @Bean
     @Scope("prototype")
     public AuthFilterChain authFilterChain(AuthFilterHandler authFilterHandler,
                                            AuthenticateService authenticateService,
-                                           PersonDataManagement personDataManagement){
+                                           PersonDataManagement personDataManagement,
+                                           RequestBodyManagement requestBodyManagement){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
         authFilterChain.registerFilters(Arrays.asList(
                 new AuthenticateFilter(authenticateService),
-                new PersonRequestFilter(personDataManagement)
+                new PersonRequestFilter(personDataManagement, requestBodyManagement)
         ));
 
         return authFilterChain;

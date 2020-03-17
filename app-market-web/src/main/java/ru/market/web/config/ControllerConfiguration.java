@@ -8,6 +8,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 import ru.market.auth.api.AuthenticateService;
 
+import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.domain.service.IPersonService;
 
 import ru.market.web.controller.MainController;
@@ -33,8 +35,13 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public PersonController personController(IPersonService personService, AuthenticateService authenticateService){
-        return new PersonController(personService, authenticateService);
+    public PersonController personController(IPersonService personService,
+                                             AuthenticateService authenticateService,
+                                             RequestBodyManagement requestBodyManagement,
+                                             PersonDataManagement personDataManagement){
+
+        return new PersonController(personService, authenticateService,
+                requestBodyManagement, personDataManagement);
     }
 
     @Bean

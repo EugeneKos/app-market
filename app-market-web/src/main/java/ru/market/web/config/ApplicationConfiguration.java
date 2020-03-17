@@ -4,10 +4,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ru.market.auth.config.AuthenticateConfiguration;
-
+import ru.market.data.session.config.DataSessionConfiguration;
 import ru.market.domain.config.DomainConfiguration;
 
 @Configuration
-@Import({DomainConfiguration.class, ControllerConfiguration.class, AuthenticateConfiguration.class})
+@Import({DomainConfiguration.class, ControllerConfiguration.class,
+        AuthenticateConfiguration.class, DataSessionConfiguration.class}
+)
 public class ApplicationConfiguration {
 }

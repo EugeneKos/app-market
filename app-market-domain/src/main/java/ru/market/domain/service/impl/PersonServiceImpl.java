@@ -12,6 +12,7 @@ import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.service.IPersonService;
+import ru.market.dto.person.PersonWithPasswordDTO;
 
 @Service
 public class PersonServiceImpl implements IPersonService {
@@ -81,6 +82,12 @@ public class PersonServiceImpl implements IPersonService {
     public PersonDTO getByUsername(String username) {
         Person person = personRepository.findByUsername(username);
         return personConverter.convertToPersonDTO(person);
+    }
+
+    @Override
+    public PersonWithPasswordDTO getByUserNameWithPassword(String username) {
+        Person person = personRepository.findByUsername(username);
+        return personConverter.convertToPersonWithPasswordDTO(person);
     }
 
     @Override

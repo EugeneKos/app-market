@@ -6,8 +6,15 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import ru.market.auth.api.AuthenticateService;
+
+import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.domain.service.IPersonService;
+
 import ru.market.web.controller.MainController;
+import ru.market.web.controller.rest.AuthenticateController;
+import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.PersonController;
 
 @Configuration
@@ -28,7 +35,22 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public PersonController personController(IPersonService personService){
-        return new PersonController(personService);
+    public PersonController personController(IPersonService personService,
+                                             AuthenticateService authenticateService,
+                                             RequestBodyManagement requestBodyManagement,
+                                             PersonDataManagement personDataManagement){
+
+        return new PersonController(personService, authenticateService,
+                requestBodyManagement, personDataManagement);
+    }
+
+    @Bean
+    public AuthenticateController authenticateController(AuthenticateService authenticateService){
+        return new AuthenticateController(authenticateService);
+    }
+
+    @Bean
+    public MyController myController(){
+        return new MyController();
     }
 }

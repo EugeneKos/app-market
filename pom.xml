@@ -11,7 +11,7 @@
 
     <properties>
         <spring.version>5.1.5.RELEASE</spring.version>
-        <spring-security.version>5.1.4.RELEASE</spring-security.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
         <junit.version>4.12</junit.version>
         <spring-data-jpa.version>2.1.5.RELEASE</spring-data-jpa.version>
         <hibernate-entitymanager.version>5.4.1.Final</hibernate-entitymanager.version>
@@ -21,6 +21,9 @@
         <module>app-market-web</module>
         <module>app-market-domain</module>
         <module>app-market-dto</module>
+        <module>app-market-data-session</module>
+        <module>app-market-auth</module>
+        <module>app-market-utils</module>
     </modules>
 
     <build>
@@ -36,17 +39,26 @@
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

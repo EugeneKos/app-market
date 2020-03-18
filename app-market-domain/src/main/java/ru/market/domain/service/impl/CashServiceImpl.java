@@ -9,6 +9,7 @@ import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.repository.CashRepository;
 import ru.market.domain.service.ICashService;
+import ru.market.domain.service.IPersonProvider;
 import ru.market.dto.cash.CashDTO;
 import ru.market.dto.cash.CashNoIdDTO;
 
@@ -19,9 +20,15 @@ public class CashServiceImpl implements ICashService {
     private CashRepository cashRepository;
     private CashConverter cashConverter;
 
+    private IPersonProvider personProvider;
+
     public CashServiceImpl(CashRepository cashRepository, CashConverter cashConverter) {
         this.cashRepository = cashRepository;
         this.cashConverter = cashConverter;
+    }
+
+    public void setPersonProvider(IPersonProvider personProvider) {
+        this.personProvider = personProvider;
     }
 
     @Transactional
@@ -48,6 +55,8 @@ public class CashServiceImpl implements ICashService {
 
         assertExistById(cash);
         assertUniqueByName(cash);
+
+        cash.setPerson(personProvider.getCurrentPerson());
 
         cash = cashRepository.saveAndFlush(cash);
         return cashConverter.convertToCashDTO(cash);

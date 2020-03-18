@@ -8,12 +8,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ru.market.domain.config.DomainConfiguration;
+import ru.market.domain.config.DomainTestConfiguration;
 import ru.market.dto.cash.CashDTO;
 import ru.market.dto.cash.CashNoIdDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DomainConfiguration.class)
+@ContextConfiguration(classes = DomainTestConfiguration.class)
 @TestPropertySource(locations = "classpath:data-test-config.properties")
 public class ICashServiceTest {
     @Autowired

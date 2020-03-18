@@ -9,6 +9,7 @@ import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.repository.CardRepository;
 import ru.market.domain.service.ICardService;
+import ru.market.domain.service.IPersonProvider;
 import ru.market.dto.card.CardDTO;
 import ru.market.dto.card.CardNoIdDTO;
 
@@ -19,9 +20,15 @@ public class CardServiceImpl implements ICardService {
     private CardRepository cardRepository;
     private CardConverter cardConverter;
 
+    private IPersonProvider personProvider;
+
     public CardServiceImpl(CardRepository cardRepository, CardConverter cardConverter) {
         this.cardRepository = cardRepository;
         this.cardConverter = cardConverter;
+    }
+
+    public void setPersonProvider(IPersonProvider personProvider) {
+        this.personProvider = personProvider;
     }
 
     @Transactional
@@ -48,6 +55,8 @@ public class CardServiceImpl implements ICardService {
 
         assertExistById(card);
         assertUniqueByNumber(card);
+
+        card.setPerson(personProvider.getCurrentPerson());
 
         card = cardRepository.saveAndFlush(card);
         return cardConverter.convertToCardDTO(card);

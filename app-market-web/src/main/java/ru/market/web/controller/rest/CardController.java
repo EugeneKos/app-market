@@ -11,6 +11,8 @@ import ru.market.domain.service.ICardService;
 import ru.market.dto.card.CardDTO;
 import ru.market.dto.card.CardNoIdDTO;
 
+import java.util.Set;
+
 @RestController
 public class CardController {
     private ICardService cardService;
@@ -34,5 +36,10 @@ public class CardController {
     @RequestMapping(path = "/card/{id}", method = RequestMethod.DELETE)
     public void deleteById(@PathVariable(name = "id") Long id){
         cardService.deleteById(id);
+    }
+
+    @RequestMapping(path = "/card", method = RequestMethod.GET)
+    public Set<CardDTO> getAll(){
+        return cardService.getAll();
     }
 }

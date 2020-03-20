@@ -11,6 +11,8 @@ import ru.market.domain.service.ICashService;
 import ru.market.dto.cash.CashDTO;
 import ru.market.dto.cash.CashNoIdDTO;
 
+import java.util.Set;
+
 @RestController
 public class CashController {
     private ICashService cashService;
@@ -34,5 +36,10 @@ public class CashController {
     @RequestMapping(path = "/cash/{id}", method = RequestMethod.DELETE)
     public void deleteById(@PathVariable(name = "id") Long id){
         cashService.deleteById(id);
+    }
+
+    @RequestMapping(path = "/cash", method = RequestMethod.GET)
+    public Set<CashDTO> getAll(){
+        return cashService.getAll();
     }
 }

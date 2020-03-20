@@ -95,6 +95,7 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        // todo: Здесь можно сделать событие
         personRepository.deleteById(id);
     }
 

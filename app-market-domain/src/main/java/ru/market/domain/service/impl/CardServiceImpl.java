@@ -13,8 +13,8 @@ import ru.market.domain.service.IPersonProvider;
 import ru.market.dto.card.CardDTO;
 import ru.market.dto.card.CardNoIdDTO;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CardServiceImpl implements ICardService {
     private CardRepository cardRepository;
@@ -87,12 +87,24 @@ public class CardServiceImpl implements ICardService {
 
     @Override
     public Set<CardDTO> getAll() {
-        return new HashSet<>();
+        return cardRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
+                .map(cardConverter::convertToCardDTO)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Long> getAllCardIdByPersonId(Long personId) {
+        return cardRepository.findAllCardIdByPersonId(personId);
     }
 
     @Transactional
     @Override
     public void deleteById(Long id) {
         cardRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllByPersonId(Long personId) {
+        cardRepository.deleteByPersonId(personId);
     }
 }

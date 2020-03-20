@@ -10,5 +10,7 @@ public interface ICardService {
     CardDTO update(CardDTO cardDTO);
     CardDTO getById(Long id);
     Set<CardDTO> getAll();
+    Set<Long> getAllCardIdByPersonId(Long personId);
     void deleteById(Long id);
+    void deleteAllByPersonId(Long personId);
 }

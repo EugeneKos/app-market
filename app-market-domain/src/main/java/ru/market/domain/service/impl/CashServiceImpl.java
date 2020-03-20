@@ -13,8 +13,8 @@ import ru.market.domain.service.IPersonProvider;
 import ru.market.dto.cash.CashDTO;
 import ru.market.dto.cash.CashNoIdDTO;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CashServiceImpl implements ICashService {
     private CashRepository cashRepository;
@@ -87,11 +87,23 @@ public class CashServiceImpl implements ICashService {
 
     @Override
     public Set<CashDTO> getAll() {
-        return new HashSet<>();
+        return cashRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
+                .map(cashConverter::convertToCashDTO)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Long> getAllCashIdByPersonId(Long personId) {
+        return cashRepository.findAllCashIdByPersonId(personId);
     }
 
     @Override
     public void deleteById(Long id) {
         cashRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllByPersonId(Long personId) {
+        cashRepository.deleteByPersonId(personId);
     }
 }

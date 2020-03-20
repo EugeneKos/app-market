@@ -10,5 +10,7 @@ public interface ICashService {
     CashDTO update(CashDTO cashDTO);
     CashDTO getById(Long id);
     Set<CashDTO> getAll();
+    Set<Long> getAllCashIdByPersonId(Long personId);
     void deleteById(Long id);
+    void deleteAllByPersonId(Long personId);
 }

@@ -1,11 +1,11 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
+import ru.market.domain.event.PersonDeleteEvent;
 import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
@@ -14,15 +14,19 @@ import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.dto.person.PersonWithPasswordDTO;
 
-@Service
 public class PersonServiceImpl implements IPersonService {
     private PersonRepository personRepository;
     private PersonConverter personConverter;
 
-    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public PersonServiceImpl(PersonRepository personRepository, PersonConverter personConverter) {
         this.personRepository = personRepository;
         this.personConverter = personConverter;
+    }
+
+    public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -95,7 +99,7 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        // todo: Здесь можно сделать событие
+        eventPublisher.publishEvent(new PersonDeleteEvent(this, id));
         personRepository.deleteById(id);
     }
 

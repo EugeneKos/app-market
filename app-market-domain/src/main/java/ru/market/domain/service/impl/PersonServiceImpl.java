@@ -1,11 +1,11 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
+import ru.market.domain.event.PersonDeleteEvent;
 import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
@@ -14,15 +14,19 @@ import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.dto.person.PersonWithPasswordDTO;
 
-@Service
 public class PersonServiceImpl implements IPersonService {
     private PersonRepository personRepository;
     private PersonConverter personConverter;
 
-    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public PersonServiceImpl(PersonRepository personRepository, PersonConverter personConverter) {
         this.personRepository = personRepository;
         this.personConverter = personConverter;
+    }
+
+    public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -43,21 +47,23 @@ public class PersonServiceImpl implements IPersonService {
         }
 
         Person person = personConverter.convertToPerson(personDTO);
+        if(!isMustId){
+            person.setId(null);
+        }
+        if(isMustId && person.getId() == null){
+            throw new MustIdException("Person id should be given");
+        }
 
-        assertExistById(person, isMustId);
+        assertExistById(person);
         assertUniqueByUsername(person);
 
         person = personRepository.saveAndFlush(person);
         return personConverter.convertToPersonDTO(person);
     }
 
-    private void assertExistById(Person person, boolean isMustId){
-        if(!isMustId){
-            person.setId(null);
-            return;
-        }
+    private void assertExistById(Person person){
         if(person.getId() == null){
-            throw new MustIdException("Person id should be given");
+            return;
         }
 
         personRepository.findById(person.getId()).orElseThrow(
@@ -68,7 +74,7 @@ public class PersonServiceImpl implements IPersonService {
     private void assertUniqueByUsername(Person person){
         Person founded = personRepository.findByUsername(person.getUsername());
         if(founded != null && !founded.getId().equals(person.getId())){
-            throw new NotUniqueException("Person with login: " + founded.getUsername() + " already exist");
+            throw new NotUniqueException("Person with username: " + founded.getUsername() + " already exist");
         }
     }
 
@@ -93,6 +99,7 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        eventPublisher.publishEvent(new PersonDeleteEvent(this, id));
         personRepository.deleteById(id);
     }
 

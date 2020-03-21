@@ -13,7 +13,7 @@ import javax.persistence.SequenceGenerator;
 import java.util.Objects;
 
 @MappedSuperclass
-abstract class Bank {
+public abstract class Bank {
     @Id
     @SequenceGenerator(name = "bank_id_seq", sequenceName = "bank_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_id_seq")

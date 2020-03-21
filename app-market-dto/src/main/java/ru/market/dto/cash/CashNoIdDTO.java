@@ -1,8 +1,10 @@
 package ru.market.dto.cash;
 
+import ru.market.dto.bank.BankNoIdDTO;
+
 import java.util.Objects;
 
-public class CashNoIdDTO {
+public class CashNoIdDTO extends BankNoIdDTO {
     private String name;
 
     public String getName() {

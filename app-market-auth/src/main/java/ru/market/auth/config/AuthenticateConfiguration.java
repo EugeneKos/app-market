@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Scope;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
 import ru.market.auth.filter.AuthenticateFilter;
+import ru.market.auth.filter.CardRequestFilter;
+import ru.market.auth.filter.CashRequestFilter;
 import ru.market.auth.filter.PersonRequestFilter;
 import ru.market.auth.impl.AuthFilterChainImpl;
 import ru.market.auth.api.AuthFilterHandler;
@@ -17,6 +19,8 @@ import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.data.session.api.SessionManagement;
 
+import ru.market.domain.service.ICardService;
+import ru.market.domain.service.ICashService;
 import ru.market.domain.service.IPersonService;
 
 import java.util.Arrays;
@@ -41,13 +45,17 @@ public class AuthenticateConfiguration {
     public AuthFilterChain authFilterChain(AuthFilterHandler authFilterHandler,
                                            AuthenticateService authenticateService,
                                            PersonDataManagement personDataManagement,
-                                           RequestBodyManagement requestBodyManagement){
+                                           RequestBodyManagement requestBodyManagement,
+                                           ICardService cardService,
+                                           ICashService cashService){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
         authFilterChain.registerFilters(Arrays.asList(
                 new AuthenticateFilter(authenticateService),
-                new PersonRequestFilter(personDataManagement, requestBodyManagement)
+                new PersonRequestFilter(personDataManagement, requestBodyManagement),
+                new CardRequestFilter(personDataManagement, cardService),
+                new CashRequestFilter(personDataManagement, cashService)
         ));
 
         return authFilterChain;

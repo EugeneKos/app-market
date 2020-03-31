@@ -5,16 +5,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ru.market.data.session.api.PersonDataManagement;
+import ru.market.domain.converter.BankAccountConverter;
 import ru.market.domain.converter.CardConverter;
 import ru.market.domain.converter.CashConverter;
 import ru.market.domain.converter.PersonConverter;
+import ru.market.domain.repository.BankAccountRepository;
 import ru.market.domain.repository.CardRepository;
 import ru.market.domain.repository.CashRepository;
 import ru.market.domain.repository.PersonRepository;
+import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.ICardService;
 import ru.market.domain.service.ICashService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
+import ru.market.domain.service.impl.BankAccountServiceImpl;
 import ru.market.domain.service.impl.CardServiceImpl;
 import ru.market.domain.service.impl.CashServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
@@ -30,6 +34,14 @@ public class ServiceConfiguration {
         PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter);
         personService.setEventPublisher(eventPublisher);
         return personService;
+    }
+
+    @Bean
+    public IBankAccountService bankAccountService(BankAccountRepository bankAccountRepository,
+                                                  BankAccountConverter bankAccountConverter,
+                                                  IPersonProvider personProvider){
+
+        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, personProvider);
     }
 
     @Bean

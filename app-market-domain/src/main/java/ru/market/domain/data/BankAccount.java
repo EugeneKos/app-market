@@ -1,7 +1,11 @@
 package ru.market.domain.data;
 
+import ru.market.domain.data.enumeration.BankAccountType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +19,7 @@ import javax.persistence.UniqueConstraint;
 import java.util.Objects;
 
 @Entity
-@Table(name = "bank_account", uniqueConstraints = {@UniqueConstraint(name = "identify_uq", columnNames = "nidentify")})
+@Table(name = "bank_account", uniqueConstraints = {@UniqueConstraint(name = "identify_uq", columnNames = "identify")})
 public class BankAccount {
     @Id
     @SequenceGenerator(name = "bank_account_id_seq", sequenceName = "bank_account_id_seq", allocationSize = 1)
@@ -30,6 +34,10 @@ public class BankAccount {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "bank_account_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BankAccountType bankAccountType;
 
     @ManyToOne
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "bank_person_fk"))
@@ -65,6 +73,14 @@ public class BankAccount {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BankAccountType getBankAccountType() {
+        return bankAccountType;
+    }
+
+    public void setBankAccountType(BankAccountType bankAccountType) {
+        this.bankAccountType = bankAccountType;
     }
 
     public Person getPerson() {

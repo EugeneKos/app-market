@@ -4,6 +4,7 @@ import org.dozer.DozerBeanMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import ru.market.domain.converter.BankAccountConverter;
 import ru.market.domain.converter.CardConverter;
 import ru.market.domain.converter.CashConverter;
 import ru.market.domain.converter.PersonConverter;
@@ -18,6 +19,11 @@ public class ConverterConfiguration {
     @Bean
     public PersonConverter personConverter(DozerBeanMapper dozerBeanMapper){
         return new PersonConverter(dozerBeanMapper);
+    }
+
+    @Bean
+    public BankAccountConverter bankAccountConverter(DozerBeanMapper dozerBeanMapper){
+        return new BankAccountConverter(dozerBeanMapper);
     }
 
     @Bean

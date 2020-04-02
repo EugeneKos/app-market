@@ -16,21 +16,21 @@ public abstract class AccountRequestFilter implements AuthFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Set<Long> allBankId = getAllAccountId();
+        Set<Long> allAccountId = getAllAccountId();
 
         String servletPath = request.getServletPath();
         String requestMethod = request.getMethod();
-        String bankPathIdentifier = getAccountPathIdentifier();
+        String accountPathIdentifier = getAccountPathIdentifier();
 
         boolean isWell;
 
         switch (requestMethod){
             case "GET":{
-                isWell = containsBankId(servletPath, bankPathIdentifier, allBankId);
+                isWell = containsBankId(servletPath, accountPathIdentifier, allAccountId);
                 break;
             }
             case "DELETE":{
-                isWell = containsBankId(servletPath, bankPathIdentifier, allBankId);
+                isWell = containsBankId(servletPath, accountPathIdentifier, allAccountId);
                 break;
             }
             default:

@@ -10,7 +10,7 @@ import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.exception.NotUniqueException;
-import ru.market.domain.repository.PersonRepository;
+import ru.market.domain.repository.common.PersonRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.dto.person.PersonWithPasswordDTO;
 

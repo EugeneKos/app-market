@@ -1,12 +1,13 @@
 package ru.market.domain.config;
 
 import org.dozer.DozerBeanMapper;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ru.market.domain.converter.BankAccountConverter;
-import ru.market.domain.converter.CardConverter;
-import ru.market.domain.converter.CashConverter;
+import ru.market.domain.converter.CardAccountConverter;
+import ru.market.domain.converter.CashAccountConverter;
 import ru.market.domain.converter.PersonConverter;
 
 @Configuration
@@ -27,12 +28,12 @@ public class ConverterConfiguration {
     }
 
     @Bean
-    public CardConverter cardConverter(DozerBeanMapper dozerBeanMapper){
-        return new CardConverter(dozerBeanMapper);
+    public CardAccountConverter cardAccountConverter(DozerBeanMapper dozerBeanMapper){
+        return new CardAccountConverter(dozerBeanMapper);
     }
 
     @Bean
-    public CashConverter cashConverter(DozerBeanMapper dozerBeanMapper){
-        return new CashConverter(dozerBeanMapper);
+    public CashAccountConverter cashAccountConverter(DozerBeanMapper dozerBeanMapper){
+        return new CashAccountConverter(dozerBeanMapper);
     }
 }

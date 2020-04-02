@@ -11,16 +11,16 @@ import java.io.IOException;
 
 import java.util.Set;
 
-public abstract class BankRequestFilter implements AuthFilter {
+public abstract class AccountRequestFilter implements AuthFilter {
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Set<Long> allBankId = getAllBankId();
+        Set<Long> allBankId = getAllAccountId();
 
         String servletPath = request.getServletPath();
         String requestMethod = request.getMethod();
-        String bankPathIdentifier = getBankPathIdentifier();
+        String bankPathIdentifier = getAccountPathIdentifier();
 
         boolean isWell;
 
@@ -45,9 +45,9 @@ public abstract class BankRequestFilter implements AuthFilter {
 
     }
 
-    abstract Set<Long> getAllBankId();
+    abstract Set<Long> getAllAccountId();
 
-    abstract String getBankPathIdentifier();
+    abstract String getAccountPathIdentifier();
 
     private boolean containsBankId(String servletPath, String bankPathIdentifier, Set<Long> bankIdSet){
         int lastIndexOfSlash = servletPath.lastIndexOf(bankPathIdentifier);

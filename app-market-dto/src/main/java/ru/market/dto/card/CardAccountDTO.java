@@ -1,8 +1,8 @@
-package ru.market.dto.bank;
+package ru.market.dto.card;
 
 import java.util.Objects;
 
-public class BankDTO extends BankNoIdDTO {
+public class CardAccountDTO extends CardAccountNoIdDTO {
     private Long id;
 
     public Long getId() {
@@ -17,12 +17,13 @@ public class BankDTO extends BankNoIdDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BankDTO bankDTO = (BankDTO) o;
-        return Objects.equals(id, bankDTO.id);
+        if (!super.equals(o)) return false;
+        CardAccountDTO that = (CardAccountDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(super.hashCode(), id);
     }
 }

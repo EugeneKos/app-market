@@ -10,25 +10,25 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.market.domain.config.DomainTestConfiguration;
-import ru.market.dto.bank.BankAccountDTO;
-import ru.market.dto.bank.BankAccountNoIdDTO;
+import ru.market.dto.cash.CashAccountDTO;
+import ru.market.dto.cash.CashAccountNoIdDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
 @TestPropertySource(locations = "classpath:data-test-config.properties")
-public class IBankAccountServiceTest {
+public class ICashAccountServiceTest {
     @Autowired
-    private IBankAccountService bankAccountService;
+    private ICashAccountService cashAccountService;
 
     @Test
     public void createTest(){
-        BankAccountNoIdDTO bankAccountNoIdDTO = new BankAccountNoIdDTO();
-        bankAccountNoIdDTO.setBalance("30000");
-        bankAccountNoIdDTO.setDescription("bank account test");
+        CashAccountNoIdDTO noIdDTO = new CashAccountNoIdDTO();
+        noIdDTO.setName("Кошелёк");
+        noIdDTO.setBalance("700");
 
-        BankAccountDTO bankAccountDTO = bankAccountService.create(bankAccountNoIdDTO);
+        CashAccountDTO dto = cashAccountService.create(noIdDTO);
 
-        Assert.assertNotNull(bankAccountDTO);
-        Assert.assertNotNull(bankAccountDTO.getId());
+        Assert.assertNotNull(dto);
+        Assert.assertNotNull(dto.getId());
     }
 }

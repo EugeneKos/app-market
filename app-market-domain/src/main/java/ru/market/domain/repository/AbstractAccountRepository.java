@@ -7,12 +7,12 @@ import ru.market.domain.data.Person;
 
 import java.util.Set;
 
-public interface AbstractBankRepository<E extends BankAccount> extends JpaRepository<E, Long> {
-    E findByIdentify(String identify);
+public interface AbstractAccountRepository<E extends BankAccount> extends JpaRepository<E, Long> {
+    //E findByIdentify(String identify);
 
     Set<E> findAllByPerson(Person person);
 
-    Set<Long> findAllBankIdByPersonId(Long personId);
+    Set<Long> findAllAccountIdByPersonId(Long personId);
 
     void deleteById(Long id);
 

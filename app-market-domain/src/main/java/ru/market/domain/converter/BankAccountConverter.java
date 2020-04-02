@@ -7,7 +7,7 @@ import ru.market.domain.data.BankAccount;
 import ru.market.dto.bank.BankAccountDTO;
 import ru.market.dto.bank.BankAccountNoIdDTO;
 
-public class BankAccountConverter extends AbstractBankConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> {
+public class BankAccountConverter extends AbstractAccountConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> {
     private DozerBeanMapper mapper;
 
     public BankAccountConverter(DozerBeanMapper mapper) {

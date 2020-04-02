@@ -4,23 +4,23 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import ru.market.domain.data.BankAccount;
+import ru.market.domain.data.CashAccount;
 import ru.market.domain.data.Person;
 
 import java.util.Set;
 
-public interface BankAccountRepository extends AbstractAccountRepository<BankAccount> {
-    @Query("select b from BankAccount b where b.person = :person")
-    Set<BankAccount> findAllByPerson(@Param("person") Person person);
+public interface CashAccountRepository extends AbstractAccountRepository<CashAccount> {
+    @Query("select c from CashAccount c where c.person = :person")
+    Set<CashAccount> findAllByPerson(@Param("person") Person person);
 
-    @Query("select b.id from BankAccount b where b.person.id = :personId")
+    @Query("select c.id from CashAccount c where c.person.id = :personId")
     Set<Long> findAllAccountIdByPersonId(@Param("personId") Long personId);
 
-    @Query("delete from BankAccount b where b.id = :id")
+    @Query("delete from CashAccount c where c.id = :id")
     @Modifying
     void deleteById(@Param("id") Long id);
 
-    @Query("delete from BankAccount b where b.person.id = :personId")
+    @Query("delete from CashAccount c where c.person.id = :personId")
     @Modifying
     void deleteByPersonId(@Param("personId") Long personId);
 }

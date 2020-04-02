@@ -6,21 +6,21 @@ import org.springframework.context.annotation.Configuration;
 
 import ru.market.data.session.api.PersonDataManagement;
 import ru.market.domain.converter.BankAccountConverter;
-import ru.market.domain.converter.CardConverter;
-import ru.market.domain.converter.CashConverter;
+import ru.market.domain.converter.CardAccountConverter;
+import ru.market.domain.converter.CashAccountConverter;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.repository.BankAccountRepository;
-import ru.market.domain.repository.CardRepository;
-import ru.market.domain.repository.CashRepository;
+import ru.market.domain.repository.CardAccountRepository;
+import ru.market.domain.repository.CashAccountRepository;
 import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.service.IBankAccountService;
-import ru.market.domain.service.ICardService;
-import ru.market.domain.service.ICashService;
+import ru.market.domain.service.ICardAccountService;
+import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.impl.BankAccountServiceImpl;
-import ru.market.domain.service.impl.CardServiceImpl;
-import ru.market.domain.service.impl.CashServiceImpl;
+import ru.market.domain.service.impl.CardAccountServiceImpl;
+import ru.market.domain.service.impl.CashAccountServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
 
@@ -45,17 +45,19 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public ICardService cardService(CardRepository cardRepository, CardConverter cardConverter, IPersonProvider personProvider){
-        CardServiceImpl cardService = new CardServiceImpl(cardRepository, cardConverter);
-        cardService.setPersonProvider(personProvider);
-        return cardService;
+    public ICardAccountService cardAccountService(CardAccountRepository cardAccountRepository,
+                                                  CardAccountConverter cardAccountConverter,
+                                                  IPersonProvider personProvider){
+
+        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, personProvider);
     }
 
     @Bean
-    public ICashService cashService(CashRepository cashRepository, CashConverter cashConverter, IPersonProvider personProvider){
-        CashServiceImpl cashService = new CashServiceImpl(cashRepository, cashConverter);
-        cashService.setPersonProvider(personProvider);
-        return cashService;
+    public ICashAccountService cashAccountService(CashAccountRepository cashAccountRepository,
+                                                  CashAccountConverter cashAccountConverter,
+                                                  IPersonProvider personProvider){
+
+        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, personProvider);
     }
 
     @Bean

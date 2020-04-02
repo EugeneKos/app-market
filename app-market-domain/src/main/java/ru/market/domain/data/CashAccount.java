@@ -2,14 +2,17 @@ package ru.market.domain.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "cash", uniqueConstraints = {@UniqueConstraint(name = "name_uq", columnNames = "name")})
-public class Cash extends Bank {
+@Table(name = "cash_account", uniqueConstraints = {@UniqueConstraint(name = "cash_name_uq", columnNames = "name")})
+@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "account_cash_bank"))
+public class CashAccount extends BankAccount {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -27,8 +30,8 @@ public class Cash extends Bank {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Cash cash = (Cash) o;
-        return Objects.equals(name, cash.name);
+        CashAccount that = (CashAccount) o;
+        return Objects.equals(name, that.name);
     }
 
     @Override

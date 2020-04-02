@@ -1,6 +1,6 @@
 package ru.market.domain.service.impl;
 
-import ru.market.domain.converter.AbstractAccountConverter;
+import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.repository.AbstractAccountRepository;
 import ru.market.domain.service.IBankAccountService;
@@ -13,9 +13,9 @@ public class BankAccountServiceImpl extends AbstractAccountService<BankAccount, 
         implements IBankAccountService {
 
     public BankAccountServiceImpl(AbstractAccountRepository<BankAccount> abstractAccountRepository,
-                                  AbstractAccountConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> abstractAccountConverter,
+                                  AbstractDefaultConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> abstractDefaultConverter,
                                   IPersonProvider personProvider) {
 
-        super(abstractAccountRepository, abstractAccountConverter, personProvider);
+        super(abstractAccountRepository, abstractDefaultConverter, personProvider);
     }
 }

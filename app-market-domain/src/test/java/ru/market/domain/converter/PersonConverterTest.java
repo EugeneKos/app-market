@@ -27,7 +27,7 @@ public class PersonConverterTest {
         personDTO.setUsername("ivanov");
         personDTO.setPassword("ivanow123456");
 
-        Person person = personConverter.convertToPerson(personDTO);
+        Person person = personConverter.convertToEntity(personDTO);
 
         Assert.assertNotNull(person);
         Assert.assertEquals("Иван", person.getFirstName());
@@ -46,7 +46,7 @@ public class PersonConverterTest {
         person.setUsername("ivanov");
         person.setPassword("ivanow123456");
 
-        PersonDTO personDTO = personConverter.convertToPersonDTO(person);
+        PersonDTO personDTO = personConverter.convertToBasedDTO(person);
 
         Assert.assertNotNull(personDTO);
         Assert.assertEquals("Иван", personDTO.getFirstName());

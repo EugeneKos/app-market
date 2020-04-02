@@ -2,8 +2,8 @@ package ru.market.domain.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
-import ru.market.domain.converter.AbstractAccountConverter;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.AbstractAccountRepository;
@@ -14,16 +14,16 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO, DTO extends NoIdDTO> {
     private AbstractAccountRepository<Entity> abstractAccountRepository;
-    private AbstractAccountConverter<Entity, NoIdDTO, DTO> abstractAccountConverter;
+    private AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter;
 
     private IPersonProvider personProvider;
 
     AbstractAccountService(AbstractAccountRepository<Entity> abstractAccountRepository,
-                           AbstractAccountConverter<Entity, NoIdDTO, DTO> abstractAccountConverter,
+                           AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter,
                            IPersonProvider personProvider) {
 
         this.abstractAccountRepository = abstractAccountRepository;
-        this.abstractAccountConverter = abstractAccountConverter;
+        this.abstractDefaultConverter = abstractDefaultConverter;
         this.personProvider = personProvider;
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
             return null;
         }
 
-        Entity entity = abstractAccountConverter.convertToEntity(dto);
+        Entity entity = abstractDefaultConverter.convertToEntity(dto);
         if(isMustId && entity.getId() == null){
             throw new MustIdException("Card id should be given");
         }
@@ -54,7 +54,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
         entity.setPerson(personProvider.getCurrentPerson());
 
         entity = abstractAccountRepository.saveAndFlush(entity);
-        return abstractAccountConverter.convertToDTO(entity);
+        return abstractDefaultConverter.convertToDTO(entity);
     }
 
     private void assertExistById(Entity entity){
@@ -78,12 +78,12 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
     public DTO getById(Long id) {
         Entity entity = abstractAccountRepository.findById(id).orElse(null);
-        return abstractAccountConverter.convertToDTO(entity);
+        return abstractDefaultConverter.convertToDTO(entity);
     }
 
     public Set<DTO> getAll() {
         return abstractAccountRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
-                .map(abstractAccountConverter::convertToDTO)
+                .map(abstractDefaultConverter::convertToDTO)
                 .collect(Collectors.toSet());
     }
 

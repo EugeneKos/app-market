@@ -1,6 +1,6 @@
 package ru.market.domain.service.impl;
 
-import ru.market.domain.converter.AbstractAccountConverter;
+import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.CashAccount;
 import ru.market.domain.repository.AbstractAccountRepository;
 import ru.market.domain.service.ICashAccountService;
@@ -13,9 +13,9 @@ public class CashAccountServiceImpl extends AbstractAccountService<CashAccount, 
         implements ICashAccountService {
 
     public CashAccountServiceImpl(AbstractAccountRepository<CashAccount> abstractAccountRepository,
-                                  AbstractAccountConverter<CashAccount, CashAccountNoIdDTO, CashAccountDTO> abstractAccountConverter,
+                                  AbstractDefaultConverter<CashAccount, CashAccountNoIdDTO, CashAccountDTO> abstractDefaultConverter,
                                   IPersonProvider personProvider) {
 
-        super(abstractAccountRepository, abstractAccountConverter, personProvider);
+        super(abstractAccountRepository, abstractDefaultConverter, personProvider);
     }
 }

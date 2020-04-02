@@ -46,7 +46,7 @@ public class PersonServiceImpl implements IPersonService {
             return null;
         }
 
-        Person person = personConverter.convertToPerson(personDTO);
+        Person person = personConverter.convertToEntity(personDTO);
         if(!isMustId){
             person.setId(null);
         }
@@ -58,7 +58,7 @@ public class PersonServiceImpl implements IPersonService {
         assertUniqueByUsername(person);
 
         person = personRepository.saveAndFlush(person);
-        return personConverter.convertToPersonDTO(person);
+        return personConverter.convertToBasedDTO(person);
     }
 
     private void assertExistById(Person person){
@@ -81,19 +81,19 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     public PersonDTO getById(Long id) {
         Person person = personRepository.findById(id).orElse(null);
-        return personConverter.convertToPersonDTO(person);
+        return personConverter.convertToBasedDTO(person);
     }
 
     @Override
     public PersonDTO getByUsername(String username) {
         Person person = personRepository.findByUsername(username);
-        return personConverter.convertToPersonDTO(person);
+        return personConverter.convertToBasedDTO(person);
     }
 
     @Override
     public PersonWithPasswordDTO getByUserNameWithPassword(String username) {
         Person person = personRepository.findByUsername(username);
-        return personConverter.convertToPersonWithPasswordDTO(person);
+        return personConverter.convertToDTO(person);
     }
 
     @Override

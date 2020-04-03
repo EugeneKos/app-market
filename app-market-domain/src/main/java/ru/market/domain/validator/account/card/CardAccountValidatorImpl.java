@@ -22,6 +22,12 @@ public class CardAccountValidatorImpl<E extends CardAccount> extends AccountVali
         if(number == null || number.isEmpty()){
             throw new ValidateException("Номер карты не должен быть пустым");
         }
+
+        if(!number.matches("\\d{4}-\\d{4}-\\d{4}-\\d{4}")){
+            throw new ValidateException(
+                    "Номер карты не соответствует формату: ****-****-****-**** где (*) цифровое значение"
+            );
+        }
     }
 
     @Override

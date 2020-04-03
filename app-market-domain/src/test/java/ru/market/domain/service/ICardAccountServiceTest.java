@@ -23,7 +23,7 @@ public class ICardAccountServiceTest {
     @Test
     public void createTest(){
         CardAccountNoIdDTO noIdDTO = new CardAccountNoIdDTO();
-        noIdDTO.setNumber("7777-8888");
+        noIdDTO.setNumber("7777-8888-8898-1111");
         noIdDTO.setBalance("250");
 
         CardAccountDTO dto = cardAccountService.create(noIdDTO);

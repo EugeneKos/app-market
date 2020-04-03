@@ -8,19 +8,23 @@ import ru.market.data.session.api.PersonDataManagement;
 import ru.market.domain.converter.BankAccountConverter;
 import ru.market.domain.converter.CardAccountConverter;
 import ru.market.domain.converter.CashAccountConverter;
+import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.account.CardAccountRepository;
 import ru.market.domain.repository.account.CashAccountRepository;
+import ru.market.domain.repository.common.OperationRepository;
 import ru.market.domain.repository.common.PersonRepository;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.impl.BankAccountServiceImpl;
 import ru.market.domain.service.impl.CardAccountServiceImpl;
 import ru.market.domain.service.impl.CashAccountServiceImpl;
+import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
 
@@ -63,5 +67,13 @@ public class ServiceConfiguration {
     @Bean
     public IPersonProvider personProvider(PersonDataManagement personDataManagement, PersonConverter personConverter){
         return new PersonProviderImpl(personDataManagement, personConverter);
+    }
+
+    @Bean
+    public IOperationService operationService(OperationRepository operationRepository,
+                                              OperationConverter operationConverter,
+                                              BankAccountRepository bankAccountRepository){
+
+        return new OperationServiceImpl(operationRepository, operationConverter, bankAccountRepository);
     }
 }

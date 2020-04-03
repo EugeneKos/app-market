@@ -6,23 +6,23 @@ import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
-import ru.market.domain.repository.AbstractAccountRepository;
+import ru.market.domain.repository.account.AccountRepository;
 import ru.market.domain.service.IPersonProvider;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO, DTO extends NoIdDTO> {
-    private AbstractAccountRepository<Entity> abstractAccountRepository;
+    private AccountRepository<Entity> accountRepository;
     private AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter;
 
     private IPersonProvider personProvider;
 
-    AbstractAccountService(AbstractAccountRepository<Entity> abstractAccountRepository,
+    AbstractAccountService(AccountRepository<Entity> accountRepository,
                            AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter,
                            IPersonProvider personProvider) {
 
-        this.abstractAccountRepository = abstractAccountRepository;
+        this.accountRepository = accountRepository;
         this.abstractDefaultConverter = abstractDefaultConverter;
         this.personProvider = personProvider;
     }
@@ -53,7 +53,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
         entity.setPerson(personProvider.getCurrentPerson());
 
-        entity = abstractAccountRepository.saveAndFlush(entity);
+        entity = accountRepository.saveAndFlush(entity);
         return abstractDefaultConverter.convertToDTO(entity);
     }
 
@@ -62,14 +62,14 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
             return;
         }
 
-        abstractAccountRepository.findById(entity.getId()).orElseThrow(
+        accountRepository.findById(entity.getId()).orElseThrow(
                 () -> new NotFoundException(entity.getClass().getSimpleName()
                         + " with id " + entity.getId() + " not found")
         );
     }
 
     private void assertUniqueByIdentify(Entity entity){
-        /*Entity founded = abstractAccountRepository.findByIdentify(entity.getIdentify());
+        /*Entity founded = accountRepository.findByIdentify(entity.getIdentify());
         if(founded != null && !founded.getId().equals(entity.getId())){
             throw new NotUniqueException(entity.getClass().getSimpleName()
                     + " with identify: " + founded.getIdentify() + " already exist");
@@ -77,27 +77,27 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
     }
 
     public DTO getById(Long id) {
-        Entity entity = abstractAccountRepository.findById(id).orElse(null);
+        Entity entity = accountRepository.findById(id).orElse(null);
         return abstractDefaultConverter.convertToDTO(entity);
     }
 
     public Set<DTO> getAll() {
-        return abstractAccountRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
+        return accountRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
                 .map(abstractDefaultConverter::convertToDTO)
                 .collect(Collectors.toSet());
     }
 
     public Set<Long> getAllAccountIdByPersonId(Long personId) {
-        return abstractAccountRepository.findAllAccountIdByPersonId(personId);
+        return accountRepository.findAllAccountIdByPersonId(personId);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        abstractAccountRepository.deleteById(id);
+        accountRepository.deleteById(id);
     }
 
     @Transactional
     public void deleteAllByPersonId(Long personId) {
-        abstractAccountRepository.deleteByPersonId(personId);
+        accountRepository.deleteByPersonId(personId);
     }
 }

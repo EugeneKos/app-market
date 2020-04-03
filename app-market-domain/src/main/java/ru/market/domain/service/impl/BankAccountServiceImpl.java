@@ -6,6 +6,10 @@ import ru.market.domain.repository.account.AccountRepository;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.IPersonProvider;
 
+import ru.market.domain.validator.CommonValidator;
+import ru.market.domain.validator.account.AccountValidator;
+import ru.market.domain.validator.account.AccountValidatorImpl;
+
 import ru.market.dto.bank.BankAccountDTO;
 import ru.market.dto.bank.BankAccountNoIdDTO;
 
@@ -17,5 +21,11 @@ public class BankAccountServiceImpl extends AbstractAccountService<BankAccount, 
                                   IPersonProvider personProvider) {
 
         super(accountRepository, abstractDefaultConverter, personProvider);
+    }
+
+    @Override
+    protected CommonValidator<BankAccount> validator() {
+        AccountValidator<BankAccount> accountValidator = new AccountValidatorImpl<>();
+        return accountValidator::validateBalance;
     }
 }

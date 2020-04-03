@@ -8,6 +8,7 @@ import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.account.AccountRepository;
 import ru.market.domain.service.IPersonProvider;
+import ru.market.domain.validator.CommonValidator;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO, DTO extends NoIdDTO> {
     private AccountRepository<Entity> accountRepository;
     private AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter;
+
+    private CommonValidator<Entity> commonValidator;
 
     private IPersonProvider personProvider;
 
@@ -24,8 +27,11 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
         this.accountRepository = accountRepository;
         this.abstractDefaultConverter = abstractDefaultConverter;
+        this.commonValidator = validator();
         this.personProvider = personProvider;
     }
+
+    protected abstract CommonValidator<Entity> validator();
 
     @Transactional
     public DTO create(NoIdDTO dto){
@@ -44,12 +50,12 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
         Entity entity = abstractDefaultConverter.convertToEntity(dto);
         if(isMustId && entity.getId() == null){
-            throw new MustIdException("Card id should be given");
+            throw new MustIdException("Account id should be given");
         }
 
         assertExistById(entity);
-        // todo: Не забыть про валидацию
-        assertUniqueByIdentify(entity);
+
+        commonValidator.validate(entity);
 
         entity.setPerson(personProvider.getCurrentPerson());
 
@@ -63,17 +69,8 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
         }
 
         accountRepository.findById(entity.getId()).orElseThrow(
-                () -> new NotFoundException(entity.getClass().getSimpleName()
-                        + " with id " + entity.getId() + " not found")
+                () -> new NotFoundException("Account with id " + entity.getId() + " not found")
         );
-    }
-
-    private void assertUniqueByIdentify(Entity entity){
-        /*Entity founded = accountRepository.findByIdentify(entity.getIdentify());
-        if(founded != null && !founded.getId().equals(entity.getId())){
-            throw new NotUniqueException(entity.getClass().getSimpleName()
-                    + " with identify: " + founded.getIdentify() + " already exist");
-        }*/
     }
 
     public DTO getById(Long id) {

@@ -93,7 +93,7 @@ public class OperationTransferExecutor implements OperationExecutor {
                                        Supplier<String> supplierWithNotEqualPerson){
 
         if(fromAccountPerson.equals(toAccountPerson)){
-            supplierWithEqualPerson.get();
+            return supplierWithEqualPerson.get();
         }
 
         return supplierWithNotEqualPerson.get();

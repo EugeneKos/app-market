@@ -18,11 +18,13 @@ import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
+import ru.market.domain.service.ITransactionalTestService;
 import ru.market.domain.service.impl.BankAccountServiceImpl;
 import ru.market.domain.service.impl.CardAccountServiceImpl;
 import ru.market.domain.service.impl.CashAccountServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
+import ru.market.domain.service.impl.TransactionalTestServiceImpl;
 
 @Configuration
 public class ServiceConfiguration {
@@ -63,5 +65,10 @@ public class ServiceConfiguration {
     @Bean
     public IPersonProvider personProvider(PersonDataManagement personDataManagement, PersonConverter personConverter){
         return new PersonProviderImpl(personDataManagement, personConverter);
+    }
+
+    @Bean
+    public ITransactionalTestService transactionalTestService(BankAccountRepository bankAccountRepository){
+        return new TransactionalTestServiceImpl(bankAccountRepository);
     }
 }

@@ -13,6 +13,7 @@ import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.account.CardAccountRepository;
 import ru.market.domain.repository.account.CashAccountRepository;
 import ru.market.domain.repository.common.PersonRepository;
+import ru.market.domain.repository.common.TestEntityRepository;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
@@ -68,7 +69,7 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public ITransactionalTestService transactionalTestService(BankAccountRepository bankAccountRepository){
-        return new TransactionalTestServiceImpl(bankAccountRepository);
+    public ITransactionalTestService transactionalTestService(TestEntityRepository testEntityRepository){
+        return new TransactionalTestServiceImpl(testEntityRepository);
     }
 }

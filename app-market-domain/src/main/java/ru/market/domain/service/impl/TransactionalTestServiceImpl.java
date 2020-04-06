@@ -2,36 +2,38 @@ package ru.market.domain.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.market.domain.data.BankAccount;
-import ru.market.domain.repository.account.BankAccountRepository;
+import ru.market.domain.data.TestEntity;
+import ru.market.domain.repository.common.TestEntityRepository;
 import ru.market.domain.service.ITransactionalTestService;
 
 public class TransactionalTestServiceImpl implements ITransactionalTestService {
     private static final Integer DELTA = 2000;
 
-    private BankAccountRepository bankAccountRepository;
+    private TestEntityRepository testEntityRepository;
 
-    public TransactionalTestServiceImpl(BankAccountRepository bankAccountRepository) {
-        this.bankAccountRepository = bankAccountRepository;
+    public TransactionalTestServiceImpl(TestEntityRepository testEntityRepository) {
+        this.testEntityRepository = testEntityRepository;
     }
 
     @Override
     public void changeBalance(Long accountId) {
-        System.out.println("---------------------------------------------------------------------------------------");
+        String threadName = Thread.currentThread().getName();
 
-        BankAccount bankAccount = bankAccountRepository.findById(
+        System.out.println("-----------------------------" + threadName + " begin ----------------------------------------------------------");
+
+        TestEntity testEntity = testEntityRepository.findById(
                 accountId).orElseThrow(() -> new NullPointerException("ERROR-25")
         );
 
-        String balance = bankAccount.getBalance();
+        String balance = testEntity.getBalance();
 
         balance = String.valueOf(Integer.parseInt(balance) + DELTA);
 
-        bankAccount.setBalance(balance);
+        testEntity.setBalance(balance);
 
-        bankAccountRepository.saveAndFlush(bankAccount);
+        testEntityRepository.saveAndFlush(testEntity);
 
-        System.out.println("---------------------------------------------------------------------------------------");
+        System.out.println("-----------------------------" + threadName + " end ------------------------------------------------------------");
     }
 
     @Transactional

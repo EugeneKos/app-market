@@ -9,6 +9,7 @@ import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.common.OperationRepository;
 import ru.market.domain.service.operation.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
+import ru.market.domain.validator.CommonValidator;
 
 import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
@@ -20,17 +21,21 @@ public class OperationTransferExecutor implements OperationExecutor {
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
+    private CommonValidator<Operation> commonValidator;
+
     private OperationTransferDTO transferDTO;
 
     private BankAccountRepository bankAccountRepository;
 
     OperationTransferExecutor(OperationRepository operationRepository,
                                      OperationConverter operationConverter,
+                                     CommonValidator<Operation> commonValidator,
                                      OperationTransferDTO transferDTO,
                                      BankAccountRepository bankAccountRepository) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
+        this.commonValidator = commonValidator;
         this.transferDTO = transferDTO;
         this.bankAccountRepository = bankAccountRepository;
     }
@@ -80,6 +85,9 @@ public class OperationTransferExecutor implements OperationExecutor {
                                             BiFunction<BankAccount, Operation, OperationResultDTO> process){
 
         Operation operation = operationConverter.convertToEntity(transferDTO);
+
+        commonValidator.validate(operation);
+
         operation.setOperationType(operationType);
         operation.setDescription(operationDescription);
 

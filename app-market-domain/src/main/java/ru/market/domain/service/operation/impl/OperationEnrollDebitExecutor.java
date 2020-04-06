@@ -7,6 +7,7 @@ import ru.market.domain.data.enumeration.OperationType;
 import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.common.OperationRepository;
 import ru.market.domain.service.operation.OperationExecutor;
+import ru.market.domain.validator.CommonValidator;
 
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationResultDTO;
@@ -17,6 +18,8 @@ public class OperationEnrollDebitExecutor implements OperationExecutor {
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
+    private CommonValidator<Operation> commonValidator;
+
     private OperationEnrollDebitDTO enrollDebitDTO;
     private OperationType operationType;
 
@@ -26,6 +29,7 @@ public class OperationEnrollDebitExecutor implements OperationExecutor {
 
     OperationEnrollDebitExecutor(OperationRepository operationRepository,
                                         OperationConverter operationConverter,
+                                        CommonValidator<Operation> commonValidator,
                                         OperationEnrollDebitDTO enrollDebitDTO,
                                         OperationType operationType,
                                         BiFunction<BankAccount, Operation, OperationResultDTO> process,
@@ -33,6 +37,7 @@ public class OperationEnrollDebitExecutor implements OperationExecutor {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
+        this.commonValidator = commonValidator;
         this.enrollDebitDTO = enrollDebitDTO;
         this.operationType = operationType;
         this.process = process;
@@ -42,6 +47,9 @@ public class OperationEnrollDebitExecutor implements OperationExecutor {
     @Override
     public OperationResultDTO execute() {
         Operation operation = operationConverter.convertToEntity(enrollDebitDTO);
+
+        commonValidator.validate(operation);
+
         operation.setOperationType(operationType);
 
         BankAccount bankAccount = bankAccountRepository.getOne(enrollDebitDTO.getAccountId());

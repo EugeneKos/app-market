@@ -27,6 +27,8 @@ import ru.market.domain.service.impl.CashAccountServiceImpl;
 import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
+import ru.market.domain.service.operation.OperationHandler;
+import ru.market.domain.service.operation.impl.OperationHandlerImpl;
 
 @Configuration
 public class ServiceConfiguration {
@@ -70,10 +72,18 @@ public class ServiceConfiguration {
     }
 
     @Bean
+    public OperationHandler operationHandler(OperationRepository operationRepository,
+                                             OperationConverter operationConverter,
+                                             BankAccountRepository bankAccountRepository){
+
+        return new OperationHandlerImpl(operationRepository, operationConverter, bankAccountRepository);
+    }
+
+    @Bean
     public IOperationService operationService(OperationRepository operationRepository,
                                               OperationConverter operationConverter,
-                                              BankAccountRepository bankAccountRepository){
+                                              OperationHandler operationHandler){
 
-        return new OperationServiceImpl(operationRepository, operationConverter, bankAccountRepository);
+        return new OperationServiceImpl(operationRepository, operationConverter, operationHandler);
     }
 }

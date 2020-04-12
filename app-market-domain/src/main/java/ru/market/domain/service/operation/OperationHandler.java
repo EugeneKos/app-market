@@ -4,7 +4,7 @@ import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 
 public interface OperationHandler {
-    OperationExecutor enrollment(OperationEnrollDebitDTO enrollDebitDTO);
-    OperationExecutor debit(OperationEnrollDebitDTO enrollDebitDTO);
-    OperationExecutor transfer(OperationTransferDTO transferDTO);
+    OperationPrepare enrollment(OperationEnrollDebitDTO enrollDebitDTO);
+    OperationPrepare debit(OperationEnrollDebitDTO enrollDebitDTO);
+    OperationPrepare transfer(OperationTransferDTO transferDTO);
 }

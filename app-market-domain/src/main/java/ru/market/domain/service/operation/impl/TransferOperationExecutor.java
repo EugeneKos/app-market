@@ -4,8 +4,8 @@ import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.enumeration.OperationType;
-import ru.market.domain.repository.account.BankAccountRepository;
-import ru.market.domain.repository.common.OperationRepository;
+
+import ru.market.domain.service.operation.OperationAdditionalServices;
 import ru.market.domain.service.operation.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
 
@@ -19,10 +19,10 @@ public class TransferOperationExecutor extends AbstractOperationExecutor impleme
 
     private Operation operation;
 
-    public TransferOperationExecutor(OperationRepository operationRepository, BankAccountRepository bankAccountRepository,
-                                     BankAccount fromAccount, BankAccount toAccount, Operation operation) {
+    TransferOperationExecutor(OperationAdditionalServices operationAdditionalServices,
+                              BankAccount fromAccount, BankAccount toAccount, Operation operation) {
 
-        super(operationRepository, bankAccountRepository);
+        super(operationAdditionalServices);
 
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
@@ -66,8 +66,9 @@ public class TransferOperationExecutor extends AbstractOperationExecutor impleme
         Person fromAccountPerson = fromAccount.getPerson();
         Person toAccountPerson = toAccount.getPerson();
 
-        operation.setOperationType(OperationType.DEBIT);
-        operation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
+        Operation debitOperation = operation.customClone();
+        debitOperation.setOperationType(OperationType.DEBIT);
+        debitOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
                 () -> "Перевод средств на счет ID: " + toAccount.getId(),
                 () -> String.format("Перевод средств (%s %s %s)",
                         toAccountPerson.getLastName(),
@@ -75,12 +76,11 @@ public class TransferOperationExecutor extends AbstractOperationExecutor impleme
                         toAccountPerson.getMiddleName())
         ));
 
-        saveAndUpdate(fromAccount, operation);
+        saveAndUpdate(fromAccount, debitOperation);
 
-        operation.setId(null);
-
-        operation.setOperationType(OperationType.ENROLLMENT);
-        operation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
+        Operation enrollOperation = operation.customClone();
+        enrollOperation.setOperationType(OperationType.ENROLLMENT);
+        enrollOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
                 () -> "Зачисление средств со счета ID: " + fromAccount.getId(),
                 () -> String.format("Зачисление средств от (%s %s %s)",
                         fromAccountPerson.getLastName(),
@@ -88,7 +88,7 @@ public class TransferOperationExecutor extends AbstractOperationExecutor impleme
                         fromAccountPerson.getMiddleName())
         ));
 
-        saveAndUpdate(toAccount, operation);
+        saveAndUpdate(toAccount, enrollOperation);
     }
 
     private String transferDescription(Person fromAccountPerson, Person toAccountPerson,

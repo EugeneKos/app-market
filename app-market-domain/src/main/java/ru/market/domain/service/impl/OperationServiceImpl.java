@@ -33,19 +33,19 @@ public class OperationServiceImpl implements IOperationService {
     @Transactional
     @Override
     public OperationResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
-        return operationHandler.enrollment(enrollDebitDTO).execute();
+        return operationHandler.enrollment(enrollDebitDTO).prepare().execute();
     }
 
     @Transactional
     @Override
     public OperationResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
-        return operationHandler.debit(enrollDebitDTO).execute();
+        return operationHandler.debit(enrollDebitDTO).prepare().execute();
     }
 
     @Transactional
     @Override
     public OperationResultDTO transfer(OperationTransferDTO transferDTO) {
-        return operationHandler.transfer(transferDTO).execute();
+        return operationHandler.transfer(transferDTO).prepare().execute();
     }
 
     @Override

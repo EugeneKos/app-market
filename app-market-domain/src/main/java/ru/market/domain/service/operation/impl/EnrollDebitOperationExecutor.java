@@ -3,10 +3,10 @@ package ru.market.domain.service.operation.impl;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.enumeration.OperationType;
-import ru.market.domain.repository.account.BankAccountRepository;
-import ru.market.domain.repository.common.OperationRepository;
 
+import ru.market.domain.service.operation.OperationAdditionalServices;
 import ru.market.domain.service.operation.OperationExecutor;
+
 import ru.market.dto.operation.OperationResultDTO;
 
 import java.util.function.BiFunction;
@@ -19,11 +19,11 @@ public class EnrollDebitOperationExecutor extends AbstractOperationExecutor impl
 
     private BiFunction<BankAccount, Operation, OperationResultDTO> function;
 
-    public EnrollDebitOperationExecutor(OperationRepository operationRepository, BankAccountRepository bankAccountRepository,
-                                        BankAccount bankAccount, Operation operation, OperationType operationType,
-                                        BiFunction<BankAccount, Operation, OperationResultDTO> function) {
+    EnrollDebitOperationExecutor(OperationAdditionalServices operationAdditionalServices,
+                                 BankAccount bankAccount, Operation operation, OperationType operationType,
+                                 BiFunction<BankAccount, Operation, OperationResultDTO> function) {
 
-        super(operationRepository, bankAccountRepository);
+        super(operationAdditionalServices);
 
         this.bankAccount = bankAccount;
         this.operation = operation;

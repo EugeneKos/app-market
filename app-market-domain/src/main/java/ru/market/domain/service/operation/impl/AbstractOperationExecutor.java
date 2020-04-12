@@ -3,23 +3,18 @@ package ru.market.domain.service.operation.impl;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.Operation;
 
-import ru.market.domain.repository.account.BankAccountRepository;
-import ru.market.domain.repository.common.OperationRepository;
+import ru.market.domain.service.operation.OperationAdditionalServices;
 
 abstract class AbstractOperationExecutor {
-    private OperationRepository operationRepository;
-    private BankAccountRepository bankAccountRepository;
+    private OperationAdditionalServices operationAdditionalServices;
 
-    AbstractOperationExecutor(OperationRepository operationRepository,
-                              BankAccountRepository bankAccountRepository) {
-
-        this.operationRepository = operationRepository;
-        this.bankAccountRepository = bankAccountRepository;
+    AbstractOperationExecutor(OperationAdditionalServices operationAdditionalServices) {
+        this.operationAdditionalServices = operationAdditionalServices;
     }
 
     void saveAndUpdate(BankAccount bankAccount, Operation operation){
-        bankAccountRepository.saveAndFlush(bankAccount);
+        operationAdditionalServices.bankAccountRepository().saveAndFlush(bankAccount);
         operation.setBankAccount(bankAccount);
-        operationRepository.saveAndFlush(operation);
+        operationAdditionalServices.operationRepository().saveAndFlush(operation);
     }
 }

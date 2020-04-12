@@ -47,6 +47,15 @@ public class Operation {
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "operation_account_fk"))
     private BankAccount bankAccount;
 
+    public Operation(){
+    }
+
+    private Operation(LocalDate date, LocalTime time, String amount){
+        this.date = date;
+        this.time = time;
+        this.amount = amount;
+    }
+
     public Long getId() {
         return id;
     }
@@ -114,5 +123,13 @@ public class Operation {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Operation customClone() {
+        return new Operation(
+                LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()),
+                LocalTime.of(time.getHour(), time.getMinute()),
+                amount
+        );
     }
 }

@@ -11,29 +11,29 @@ public class TransactionalTestServiceImpl implements ITransactionalTestService {
 
     private TestEntityRepository testEntityRepository;
 
+    private final Object lock = new Object();
+
     public TransactionalTestServiceImpl(TestEntityRepository testEntityRepository) {
         this.testEntityRepository = testEntityRepository;
     }
 
     @Override
     public void changeBalance(Long accountId) {
-        String threadName = Thread.currentThread().getName();
+        synchronized (lock){
+            TestEntity testEntity = testEntityRepository.findById(
+                    accountId).orElseThrow(() -> new NullPointerException("ERROR-25")
+            );
 
-        System.out.println("-----------------------------" + threadName + " begin ----------------------------------------------------------");
+            String balance = testEntity.getBalance();
 
-        TestEntity testEntity = testEntityRepository.findById(
-                accountId).orElseThrow(() -> new NullPointerException("ERROR-25")
-        );
+            System.out.println(String.format("Balance: %s, Thread name: %s", balance, Thread.currentThread().getName()));
 
-        String balance = testEntity.getBalance();
+            balance = String.valueOf(Integer.parseInt(balance) + DELTA);
 
-        balance = String.valueOf(Integer.parseInt(balance) + DELTA);
+            testEntity.setBalance(balance);
 
-        testEntity.setBalance(balance);
-
-        testEntityRepository.saveAndFlush(testEntity);
-
-        System.out.println("-----------------------------" + threadName + " end ------------------------------------------------------------");
+            testEntityRepository.saveAndFlush(testEntity);
+        }
     }
 
     @Transactional

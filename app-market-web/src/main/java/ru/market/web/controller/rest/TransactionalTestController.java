@@ -16,12 +16,12 @@ public class TransactionalTestController {
         this.transactionalTestService = transactionalTestService;
     }
 
-    @RequestMapping(path = "/transactional/{id}")
+    @RequestMapping(path = "/t/{id}")
     public void changeBalance(@PathVariable(name = "id") Long id){
         transactionalTestService.changeBalance(id);
     }
 
-    @RequestMapping(path = "/transactional2/{id}")
+    @RequestMapping(path = "/t2/{id}")
     public void transactionalChangeBalance(@PathVariable(name = "id") Long id){
         transactionalTestService.transactionalChangeBalance(id);
     }

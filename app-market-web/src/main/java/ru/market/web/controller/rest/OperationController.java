@@ -2,17 +2,15 @@ package ru.market.web.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.domain.service.IOperationService;
 
 import ru.market.dto.operation.OperationDTO;
-import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationResultDTO;
-import ru.market.dto.operation.OperationTransferDTO;
 
 import java.util.Set;
 
@@ -20,28 +18,27 @@ import java.util.Set;
 @RequestMapping(path = "/operation")
 public class OperationController {
     private IOperationService operationService;
+    private RequestBodyManagement requestBodyManagement;
 
     @Autowired
-    public OperationController(IOperationService operationService) {
+    public OperationController(IOperationService operationService, RequestBodyManagement requestBodyManagement) {
         this.operationService = operationService;
+        this.requestBodyManagement = requestBodyManagement;
     }
 
-    @RequestMapping(path = "/enrollment", method = RequestMethod.PUT,
-            consumes = "application/json", produces = "application/json")
-    public OperationResultDTO enrollment(@RequestBody OperationEnrollDebitDTO enrollDebitDTO){
-        return operationService.enrollment(enrollDebitDTO);
+    @RequestMapping(path = "/enrollment", method = RequestMethod.PUT, produces = "application/json")
+    public OperationResultDTO enrollment(){
+        return operationService.enrollment(requestBodyManagement.getCurrentRequestBody());
     }
 
-    @RequestMapping(path = "/debit", method = RequestMethod.PUT,
-            consumes = "application/json", produces = "application/json")
-    public OperationResultDTO debit(@RequestBody OperationEnrollDebitDTO enrollDebitDTO){
-        return operationService.debit(enrollDebitDTO);
+    @RequestMapping(path = "/debit", method = RequestMethod.PUT, produces = "application/json")
+    public OperationResultDTO debit(){
+        return operationService.debit(requestBodyManagement.getCurrentRequestBody());
     }
 
-    @RequestMapping(path = "/transfer", method = RequestMethod.PUT,
-            consumes = "application/json", produces = "application/json")
-    public OperationResultDTO transfer(@RequestBody OperationTransferDTO transferDTO){
-        return operationService.transfer(transferDTO);
+    @RequestMapping(path = "/transfer", method = RequestMethod.PUT, produces = "application/json")
+    public OperationResultDTO transfer(){
+        return operationService.transfer(requestBodyManagement.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/account/{accountId}", method = RequestMethod.GET, produces = "application/json")

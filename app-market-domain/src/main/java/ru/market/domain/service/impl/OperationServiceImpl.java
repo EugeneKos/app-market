@@ -11,6 +11,7 @@ import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
+import ru.market.utils.AccountLockHolder;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +22,8 @@ public class OperationServiceImpl implements IOperationService {
 
     private OperationHandler operationHandler;
 
+    private final Object lock = new Object();
+
     public OperationServiceImpl(OperationRepository operationRepository,
                                 OperationConverter operationConverter,
                                 OperationHandler operationHandler) {
@@ -30,22 +33,41 @@ public class OperationServiceImpl implements IOperationService {
         this.operationHandler = operationHandler;
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public OperationResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
-        return operationHandler.enrollment(enrollDebitDTO).prepare().execute();
+        synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
+            return operationHandler.enrollment(enrollDebitDTO).prepare().execute();
+        }
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public OperationResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
-        return operationHandler.debit(enrollDebitDTO).prepare().execute();
+        synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
+            return operationHandler.debit(enrollDebitDTO).prepare().execute();
+        }
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public OperationResultDTO transfer(OperationTransferDTO transferDTO) {
-        return operationHandler.transfer(transferDTO).prepare().execute();
+        Long fromAccountId = transferDTO.getFromAccountId();
+        Long toAccountId = transferDTO.getToAccountId();
+
+        if(fromAccountId < toAccountId){
+            synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
+                synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
+                    return operationHandler.transfer(transferDTO).prepare().execute();
+                }
+            }
+        } else {
+            synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
+                synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
+                    return operationHandler.transfer(transferDTO).prepare().execute();
+                }
+            }
+        }
     }
 
     @Override

@@ -32,7 +32,7 @@ public class EnrollDebitOperationExecutor extends AbstractOperationExecutor impl
     }
 
     public OperationResultDTO execute(){
-        synchronized (bankAccount){
+        //synchronized (bankAccount){
             operation.setOperationType(operationType);
 
             OperationResultDTO result = function.apply(bankAccount, operation);
@@ -44,6 +44,6 @@ public class EnrollDebitOperationExecutor extends AbstractOperationExecutor impl
             saveAndUpdate(bankAccount, operation);
 
             return result;
-        }
+        //}
     }
 }

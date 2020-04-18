@@ -21,14 +21,14 @@ import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
+import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.impl.BankAccountServiceImpl;
 import ru.market.domain.service.impl.CardAccountServiceImpl;
 import ru.market.domain.service.impl.CashAccountServiceImpl;
 import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
-import ru.market.domain.service.operation.OperationHandler;
-import ru.market.domain.service.operation.impl.OperationHandlerImpl;
+import ru.market.domain.service.impl.OperationExecutorImpl;
 
 @Configuration
 public class ServiceConfiguration {
@@ -72,18 +72,18 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public OperationHandler operationHandler(OperationRepository operationRepository,
-                                             OperationConverter operationConverter,
-                                             BankAccountRepository bankAccountRepository){
+    public OperationExecutor operationExecutor(OperationRepository operationRepository,
+                                               OperationConverter operationConverter,
+                                               BankAccountRepository bankAccountRepository){
 
-        return new OperationHandlerImpl(operationRepository, operationConverter, bankAccountRepository);
+        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountRepository);
     }
 
     @Bean
     public IOperationService operationService(OperationRepository operationRepository,
                                               OperationConverter operationConverter,
-                                              OperationHandler operationHandler){
+                                              OperationExecutor operationExecutor){
 
-        return new OperationServiceImpl(operationRepository, operationConverter, operationHandler);
+        return new OperationServiceImpl(operationRepository, operationConverter, operationExecutor);
     }
 }

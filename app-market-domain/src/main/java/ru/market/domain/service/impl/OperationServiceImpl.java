@@ -1,16 +1,17 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import ru.market.domain.converter.OperationConverter;
+import ru.market.domain.data.enumeration.OperationType;
 import ru.market.domain.repository.common.OperationRepository;
 import ru.market.domain.service.IOperationService;
-import ru.market.domain.service.operation.OperationHandler;
+import ru.market.domain.service.OperationExecutor;
+import ru.market.domain.service.utils.OperationHelper;
 
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
+
 import ru.market.utils.AccountLockHolder;
 
 import java.util.Set;
@@ -20,36 +21,31 @@ public class OperationServiceImpl implements IOperationService {
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
-    private OperationHandler operationHandler;
-
-    private final Object lock = new Object();
+    private OperationExecutor operationExecutor;
 
     public OperationServiceImpl(OperationRepository operationRepository,
                                 OperationConverter operationConverter,
-                                OperationHandler operationHandler) {
+                                OperationExecutor operationExecutor) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
-        this.operationHandler = operationHandler;
+        this.operationExecutor = operationExecutor;
     }
 
-    //@Transactional
     @Override
     public OperationResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
-            return operationHandler.enrollment(enrollDebitDTO).prepare().execute();
+            return operationExecutor.execute(enrollDebitDTO, OperationType.ENROLLMENT, OperationHelper::enrollment);
         }
     }
 
-    //@Transactional
     @Override
     public OperationResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
-            return operationHandler.debit(enrollDebitDTO).prepare().execute();
+            return operationExecutor.execute(enrollDebitDTO, OperationType.DEBIT, OperationHelper::debit);
         }
     }
 
-    //@Transactional
     @Override
     public OperationResultDTO transfer(OperationTransferDTO transferDTO) {
         Long fromAccountId = transferDTO.getFromAccountId();
@@ -58,13 +54,13 @@ public class OperationServiceImpl implements IOperationService {
         if(fromAccountId < toAccountId){
             synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
                 synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
-                    return operationHandler.transfer(transferDTO).prepare().execute();
+                    return operationExecutor.execute(transferDTO);
                 }
             }
         } else {
             synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
                 synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
-                    return operationHandler.transfer(transferDTO).prepare().execute();
+                    return operationExecutor.execute(transferDTO);
                 }
             }
         }

@@ -6,6 +6,8 @@ public class OperationDTO extends OperationBasedDTO {
     private Long id;
     private String operationType;
     private String description;
+    private String newBalance;
+    private String oldBalance;
 
     public Long getId() {
         return id;
@@ -29,6 +31,22 @@ public class OperationDTO extends OperationBasedDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getNewBalance() {
+        return newBalance;
+    }
+
+    public void setNewBalance(String newBalance) {
+        this.newBalance = newBalance;
+    }
+
+    public String getOldBalance() {
+        return oldBalance;
+    }
+
+    public void setOldBalance(String oldBalance) {
+        this.oldBalance = oldBalance;
     }
 
     @Override

@@ -11,18 +11,25 @@ public final class OperationHelper {
     private OperationHelper(){}
 
     public static OperationResultDTO enrollment(BankAccount bankAccount, Operation operation){
-        bankAccount.setBalance(Calculate.plus(bankAccount.getBalance(), operation.getAmount()));
+        String oldBalance = bankAccount.getBalance();
+        operation.setOldBalance(oldBalance);
+        String newBalance = Calculate.plus(oldBalance, operation.getAmount());
+        bankAccount.setBalance(newBalance);
+        operation.setNewBalance(newBalance);
         return new OperationResultDTO(true, "Зачисление выполнено");
     }
 
     public static OperationResultDTO debit(BankAccount bankAccount, Operation operation){
-        String balance = Calculate.minus(bankAccount.getBalance(), operation.getAmount());
+        String oldBalance = bankAccount.getBalance();
+        operation.setOldBalance(oldBalance);
+        String newBalance = Calculate.minus(oldBalance, operation.getAmount());
 
-        if(Double.parseDouble(balance) < 0){
+        if(Double.parseDouble(newBalance) < 0){
             return new OperationResultDTO(false, "Недостаточно средств");
         }
 
-        bankAccount.setBalance(balance);
+        bankAccount.setBalance(newBalance);
+        operation.setNewBalance(newBalance);
         return new OperationResultDTO(true, "Списание выполнено");
     }
 }

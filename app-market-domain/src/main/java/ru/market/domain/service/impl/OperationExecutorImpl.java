@@ -67,19 +67,21 @@ public class OperationExecutorImpl implements OperationExecutor {
     @Override
     public OperationResultDTO execute(OperationTransferDTO transferDTO) {
         Operation operation = convertAndValidate(transferDTO);
+        Operation debitOperation = operation.customClone();
+        Operation enrollOperation = operation.customClone();
 
         BankAccount fromAccount = getBankAccountById(transferDTO.getFromAccountId());
         BankAccount toAccount = getBankAccountById(transferDTO.getToAccountId());
 
-        OperationResultDTO result = OperationHelper.debit(fromAccount, operation);
+        OperationResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
 
         if(!result.isSuccess()){
             return result;
         }
 
-        OperationHelper.enrollment(toAccount, operation);
+        OperationHelper.enrollment(toAccount, enrollOperation);
 
-        prepareToSave(operation, fromAccount, toAccount);
+        prepareToSave(debitOperation, enrollOperation, fromAccount, toAccount);
 
         return new OperationResultDTO(true, "Перевод выполнен");
     }
@@ -103,11 +105,12 @@ public class OperationExecutorImpl implements OperationExecutor {
                         () -> new NotFoundException("Account with id " + accountId + " not found"));
     }
 
-    private void prepareToSave(Operation operation, BankAccount fromAccount, BankAccount toAccount) {
+    private void prepareToSave(Operation debitOperation, Operation enrollOperation,
+                               BankAccount fromAccount, BankAccount toAccount) {
+
         Person fromAccountPerson = fromAccount.getPerson();
         Person toAccountPerson = toAccount.getPerson();
 
-        Operation debitOperation = operation.customClone();
         debitOperation.setOperationType(OperationType.DEBIT);
         debitOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
                 () -> "Перевод средств на счет ID: " + toAccount.getId(),
@@ -119,7 +122,6 @@ public class OperationExecutorImpl implements OperationExecutor {
 
         saveAndUpdate(fromAccount, debitOperation);
 
-        Operation enrollOperation = operation.customClone();
         enrollOperation.setOperationType(OperationType.ENROLLMENT);
         enrollOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
                 () -> "Зачисление средств со счета ID: " + fromAccount.getId(),

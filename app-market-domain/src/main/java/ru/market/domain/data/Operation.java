@@ -43,6 +43,12 @@ public class Operation {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "new_balance", nullable = false)
+    private String newBalance;
+
+    @Column(name = "old_balance", nullable = false)
+    private String oldBalance;
+
     @ManyToOne
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "operation_account_fk"))
     private BankAccount bankAccount;
@@ -102,6 +108,22 @@ public class Operation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getNewBalance() {
+        return newBalance;
+    }
+
+    public void setNewBalance(String newBalance) {
+        this.newBalance = newBalance;
+    }
+
+    public String getOldBalance() {
+        return oldBalance;
+    }
+
+    public void setOldBalance(String oldBalance) {
+        this.oldBalance = oldBalance;
     }
 
     public BankAccount getBankAccount() {

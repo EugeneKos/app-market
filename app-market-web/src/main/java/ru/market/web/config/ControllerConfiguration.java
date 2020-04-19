@@ -72,7 +72,9 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public OperationController operationController(IOperationService operationService){
-        return new OperationController(operationService);
+    public OperationController operationController(IOperationService operationService,
+                                                   RequestBodyManagement requestBodyManagement){
+
+        return new OperationController(operationService, requestBodyManagement);
     }
 }

@@ -9,6 +9,7 @@ import ru.market.auth.api.AuthenticateService;
 import ru.market.auth.filter.AuthenticateFilter;
 import ru.market.auth.filter.CardAccountRequestFilter;
 import ru.market.auth.filter.CashAccountRequestFilter;
+import ru.market.auth.filter.OperationRequestFilter;
 import ru.market.auth.filter.PersonRequestFilter;
 import ru.market.auth.impl.AuthFilterChainImpl;
 import ru.market.auth.api.AuthFilterHandler;
@@ -19,6 +20,7 @@ import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.data.session.api.SessionManagement;
 
+import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IPersonService;
@@ -47,7 +49,8 @@ public class AuthenticateConfiguration {
                                            PersonDataManagement personDataManagement,
                                            RequestBodyManagement requestBodyManagement,
                                            ICardAccountService cardAccountService,
-                                           ICashAccountService cashAccountService){
+                                           ICashAccountService cashAccountService,
+                                           IBankAccountService bankAccountService){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
@@ -55,7 +58,8 @@ public class AuthenticateConfiguration {
                 new AuthenticateFilter(authenticateService),
                 new PersonRequestFilter(personDataManagement, requestBodyManagement),
                 new CardAccountRequestFilter(personDataManagement, cardAccountService),
-                new CashAccountRequestFilter(personDataManagement, cashAccountService)
+                new CashAccountRequestFilter(personDataManagement, cashAccountService),
+                new OperationRequestFilter(personDataManagement, requestBodyManagement, bankAccountService)
         ));
 
         return authFilterChain;

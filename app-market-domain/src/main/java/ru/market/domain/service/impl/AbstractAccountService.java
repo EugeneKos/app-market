@@ -69,8 +69,16 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
             return;
         }
 
-        accountRepository.findById(entity.getId()).orElseThrow(
-                () -> new NotFoundException("Account with id " + entity.getId() + " not found")
+        getAccount(entity.getId());
+    }
+
+    public void save(Entity entity){
+        accountRepository.saveAndFlush(entity);
+    }
+
+    public Entity getAccount(Long id){
+        return accountRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Account with id %d not found", id))
         );
     }
 

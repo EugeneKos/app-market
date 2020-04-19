@@ -74,9 +74,9 @@ public class ServiceConfiguration {
     @Bean
     public OperationExecutor operationExecutor(OperationRepository operationRepository,
                                                OperationConverter operationConverter,
-                                               BankAccountRepository bankAccountRepository){
+                                               IBankAccountService bankAccountService){
 
-        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountRepository);
+        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService);
     }
 
     @Bean

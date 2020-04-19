@@ -7,9 +7,8 @@ import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.enumeration.OperationType;
-import ru.market.domain.exception.NotFoundException;
-import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.common.OperationRepository;
+import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
 import ru.market.domain.validator.CommonValidator;
@@ -28,17 +27,17 @@ public class OperationExecutorImpl implements OperationExecutor {
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
-    private BankAccountRepository bankAccountRepository;
+    private IBankAccountService bankAccountService;
 
     private CommonValidator<Operation> validator;
 
     public OperationExecutorImpl(OperationRepository operationRepository,
                                  OperationConverter operationConverter,
-                                 BankAccountRepository bankAccountRepository) {
+                                 IBankAccountService bankAccountService) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
-        this.bankAccountRepository = bankAccountRepository;
+        this.bankAccountService = bankAccountService;
         this.validator = validator();
     }
 
@@ -50,7 +49,7 @@ public class OperationExecutorImpl implements OperationExecutor {
         Operation operation = convertAndValidate(enrollDebitDTO);
         operation.setOperationType(operationType);
 
-        BankAccount bankAccount = getBankAccountById(enrollDebitDTO.getAccountId());
+        BankAccount bankAccount = bankAccountService.getAccount(enrollDebitDTO.getAccountId());
 
         OperationResultDTO result = function.apply(bankAccount, operation);
 
@@ -70,8 +69,8 @@ public class OperationExecutorImpl implements OperationExecutor {
         Operation debitOperation = operation.customClone();
         Operation enrollOperation = operation.customClone();
 
-        BankAccount fromAccount = getBankAccountById(transferDTO.getFromAccountId());
-        BankAccount toAccount = getBankAccountById(transferDTO.getToAccountId());
+        BankAccount fromAccount = bankAccountService.getAccount(transferDTO.getFromAccountId());
+        BankAccount toAccount = bankAccountService.getAccount(transferDTO.getToAccountId());
 
         OperationResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
 
@@ -97,12 +96,6 @@ public class OperationExecutorImpl implements OperationExecutor {
             OperationValidator operationValidator = new OperationValidatorImpl();
             operationValidator.validateAmount(operation);
         };
-    }
-
-    private BankAccount getBankAccountById(Long accountId){
-        return bankAccountRepository
-                .findById(accountId).orElseThrow(
-                        () -> new NotFoundException("Account with id " + accountId + " not found"));
     }
 
     private void prepareToSave(Operation debitOperation, Operation enrollOperation,
@@ -146,7 +139,7 @@ public class OperationExecutorImpl implements OperationExecutor {
     }
 
     private void saveAndUpdate(BankAccount bankAccount, Operation operation){
-        bankAccountRepository.saveAndFlush(bankAccount);
+        bankAccountService.save(bankAccount);
         operation.setBankAccount(bankAccount);
         operationRepository.saveAndFlush(operation);
     }

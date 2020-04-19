@@ -9,6 +9,7 @@ import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.account.AccountRepository;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.validator.CommonValidator;
+import ru.market.utils.AccountLockHolder;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -68,8 +69,16 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
             return;
         }
 
-        accountRepository.findById(entity.getId()).orElseThrow(
-                () -> new NotFoundException("Account with id " + entity.getId() + " not found")
+        getAccount(entity.getId());
+    }
+
+    public void save(Entity entity){
+        accountRepository.saveAndFlush(entity);
+    }
+
+    public Entity getAccount(Long id){
+        return accountRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Account with id %d not found", id))
         );
     }
 
@@ -91,6 +100,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
     @Transactional
     public void deleteById(Long id) {
         accountRepository.deleteById(id);
+        AccountLockHolder.removeAccountLock(id);
     }
 
     @Transactional

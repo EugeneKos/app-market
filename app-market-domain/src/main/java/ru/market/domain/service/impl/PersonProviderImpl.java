@@ -19,6 +19,6 @@ public class PersonProviderImpl implements IPersonProvider {
     @Override
     public Person getCurrentPerson() {
         PersonDTO personDTO = personDataManagement.getPerson();
-        return personConverter.convertToPerson(personDTO);
+        return personConverter.convertToEntity(personDTO);
     }
 }

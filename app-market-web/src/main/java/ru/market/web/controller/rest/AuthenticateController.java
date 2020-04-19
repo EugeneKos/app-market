@@ -27,7 +27,7 @@ public class AuthenticateController {
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
-    public void authenticate(){
+    public void logout(){
         authenticateService.invalidate();
     }
 }

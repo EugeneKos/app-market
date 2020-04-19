@@ -6,8 +6,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import ru.market.domain.service.ICardService;
-import ru.market.domain.service.ICashService;
+import ru.market.domain.service.ICardAccountService;
+import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonService;
 
 import ru.market.auth.api.AuthenticateService;
@@ -15,12 +16,12 @@ import ru.market.auth.api.AuthenticateService;
 import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
 
-
 import ru.market.web.controller.MainController;
-import ru.market.web.controller.rest.CardController;
-import ru.market.web.controller.rest.CashController;
+import ru.market.web.controller.rest.CardAccountController;
+import ru.market.web.controller.rest.CashAccountController;
 import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.MyController;
+import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
 
 @Configuration
@@ -61,12 +62,19 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public CardController cardController(ICardService cardService){
-        return new CardController(cardService);
+    public CardAccountController cardController(ICardAccountService cardAccountService){
+        return new CardAccountController(cardAccountService);
     }
 
     @Bean
-    public CashController cashController(ICashService cashService){
-        return new CashController(cashService);
+    public CashAccountController cashController(ICashAccountService cashAccountService){
+        return new CashAccountController(cashAccountService);
+    }
+
+    @Bean
+    public OperationController operationController(IOperationService operationService,
+                                                   RequestBodyManagement requestBodyManagement){
+
+        return new OperationController(operationService, requestBodyManagement);
     }
 }

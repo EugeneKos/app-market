@@ -1,6 +1,7 @@
 package ru.market.domain.service.impl;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
@@ -20,6 +21,8 @@ public class PersonServiceImpl implements IPersonService {
 
     private ApplicationEventPublisher eventPublisher;
 
+    private PasswordEncoder passwordEncoder;
+
     public PersonServiceImpl(PersonRepository personRepository, PersonConverter personConverter) {
         this.personRepository = personRepository;
         this.personConverter = personConverter;
@@ -27,6 +30,10 @@ public class PersonServiceImpl implements IPersonService {
 
     public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -56,6 +63,8 @@ public class PersonServiceImpl implements IPersonService {
 
         assertExistById(person);
         assertUniqueByUsername(person);
+
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
 
         person = personRepository.saveAndFlush(person);
         return personConverter.convertToBasedDTO(person);

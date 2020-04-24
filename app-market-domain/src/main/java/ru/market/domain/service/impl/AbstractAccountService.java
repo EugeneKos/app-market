@@ -1,9 +1,11 @@
 package ru.market.domain.service.impl;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
+import ru.market.domain.event.AccountDeleteEvent;
 import ru.market.domain.exception.MustIdException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.account.AccountRepository;
@@ -22,15 +24,19 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
     private IPersonProvider personProvider;
 
+    private ApplicationEventPublisher eventPublisher;
+
     AbstractAccountService(AccountRepository<Entity> accountRepository,
                            AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter,
                            CommonValidator<Entity> validator,
-                           IPersonProvider personProvider) {
+                           IPersonProvider personProvider,
+                           ApplicationEventPublisher eventPublisher) {
 
         this.accountRepository = accountRepository;
         this.abstractDefaultConverter = abstractDefaultConverter;
         this.validator = validator;
         this.personProvider = personProvider;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -98,6 +104,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
     @Transactional
     public void deleteById(Long id) {
+        eventPublisher.publishEvent(new AccountDeleteEvent(this, id));
         accountRepository.deleteById(id);
         AccountLockHolder.removeAccountLock(id);
     }

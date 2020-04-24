@@ -1,5 +1,7 @@
 package ru.market.domain.service.impl;
 
+import org.springframework.context.ApplicationEventPublisher;
+
 import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.repository.account.AccountRepository;
@@ -17,8 +19,9 @@ public class BankAccountServiceImpl extends AbstractAccountService<BankAccount, 
     public BankAccountServiceImpl(AccountRepository<BankAccount> accountRepository,
                                   AbstractDefaultConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> abstractDefaultConverter,
                                   CommonValidator<BankAccount> validator,
-                                  IPersonProvider personProvider) {
+                                  IPersonProvider personProvider,
+                                  ApplicationEventPublisher eventPublisher) {
 
-        super(accountRepository, abstractDefaultConverter, validator, personProvider);
+        super(accountRepository, abstractDefaultConverter, validator, personProvider, eventPublisher);
     }
 }

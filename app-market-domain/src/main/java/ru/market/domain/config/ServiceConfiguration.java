@@ -62,27 +62,36 @@ public class ServiceConfiguration {
     public IBankAccountService bankAccountService(BankAccountRepository bankAccountRepository,
                                                   BankAccountConverter bankAccountConverter,
                                                   CommonValidator<BankAccount> validator,
-                                                  IPersonProvider personProvider){
+                                                  IPersonProvider personProvider,
+                                                  ApplicationEventPublisher eventPublisher){
 
-        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, validator, personProvider);
+        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter,
+                validator, personProvider, eventPublisher
+        );
     }
 
     @Bean
     public ICardAccountService cardAccountService(CardAccountRepository cardAccountRepository,
                                                   CardAccountConverter cardAccountConverter,
                                                   CommonValidator<CardAccount> validator,
-                                                  IPersonProvider personProvider){
+                                                  IPersonProvider personProvider,
+                                                  ApplicationEventPublisher eventPublisher){
 
-        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, validator, personProvider);
+        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter
+                , validator, personProvider, eventPublisher
+        );
     }
 
     @Bean
     public ICashAccountService cashAccountService(CashAccountRepository cashAccountRepository,
                                                   CashAccountConverter cashAccountConverter,
                                                   CommonValidator<CashAccount> validator,
-                                                  IPersonProvider personProvider){
+                                                  IPersonProvider personProvider,
+                                                  ApplicationEventPublisher eventPublisher){
 
-        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, validator, personProvider);
+        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter,
+                validator, personProvider, eventPublisher
+        );
     }
 
     @Bean

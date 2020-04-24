@@ -11,5 +11,4 @@ public interface DefaultAccountService<NoIdDTO, DTO extends NoIdDTO> {
     Set<Long> getAllAccountIdByPersonId(Long personId);
 
     void deleteById(Long id);
-    void deleteAllByPersonId(Long personId);
 }

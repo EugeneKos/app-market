@@ -6,17 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import ru.market.domain.event.AccountDeleteEventListener;
 import ru.market.domain.event.PersonDeleteEventListener;
 
-import ru.market.domain.service.ICardAccountService;
-import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.IOperationService;
 
 @Configuration
 public class EventConfiguration {
     @Bean
-    public PersonDeleteEventListener personDeleteEventListener(ICardAccountService cardAccountService,
-                                                               ICashAccountService cashAccountService){
+    public PersonDeleteEventListener personDeleteEventListener(IBankAccountService bankAccountService){
 
-        return new PersonDeleteEventListener(cardAccountService, cashAccountService);
+        return new PersonDeleteEventListener(bankAccountService);
     }
 
     @Bean

@@ -56,6 +56,7 @@ public class AccountRepositoryImpl<Entity extends BankAccount> extends SimpleJpa
 
     @Override
     public void deleteByPersonId(Long personId) {
+        // fixme: Также удалять и операции
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaDelete<Entity> criteriaDelete = criteriaBuilder.createCriteriaDelete(domainClass);

@@ -1,6 +1,7 @@
 package ru.market.domain.service.impl;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.AbstractDefaultConverter;
 import ru.market.domain.data.BankAccount;
@@ -16,6 +17,8 @@ import ru.market.dto.bank.BankAccountNoIdDTO;
 public class BankAccountServiceImpl extends AbstractAccountService<BankAccount, BankAccountNoIdDTO, BankAccountDTO>
         implements IBankAccountService {
 
+    private AccountRepository<BankAccount> accountRepository;
+
     public BankAccountServiceImpl(AccountRepository<BankAccount> accountRepository,
                                   AbstractDefaultConverter<BankAccount, BankAccountNoIdDTO, BankAccountDTO> abstractDefaultConverter,
                                   CommonValidator<BankAccount> validator,
@@ -23,5 +26,11 @@ public class BankAccountServiceImpl extends AbstractAccountService<BankAccount, 
                                   ApplicationEventPublisher eventPublisher) {
 
         super(accountRepository, abstractDefaultConverter, validator, personProvider, eventPublisher);
+        this.accountRepository = accountRepository;
+    }
+
+    @Transactional
+    public void deleteAllByPersonId(Long personId) {
+        accountRepository.deleteByPersonId(personId);
     }
 }

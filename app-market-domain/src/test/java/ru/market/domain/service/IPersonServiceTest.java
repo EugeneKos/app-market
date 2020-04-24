@@ -22,7 +22,7 @@ public class IPersonServiceTest {
     @Test
     public void createTest(){
         PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван", "Иванов",
-                "Иванович", "ivanov", "ivanow123456");
+                "Иванович", "ivanov", "Iivanow123456");
 
         PersonDTO personDTO = personService.create(personWithPasswordDTO);
 
@@ -33,7 +33,7 @@ public class IPersonServiceTest {
     @Test
     public void updateTest(){
         PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван1", "Иванов1",
-                "Иванович1", "ivanov1", "ivanow1234561");
+                "Иванович1", "ivanov1", "Iivanow1234561");
 
         personWithPasswordDTO.setId(2556484L);
 
@@ -58,7 +58,7 @@ public class IPersonServiceTest {
     @Test
     public void getByIdTest(){
         PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван2", "Иванов2",
-                "Иванович2", "ivanov2", "ivanow1234562");
+                "Иванович2", "ivanov2", "Iivanow1234562");
 
         PersonDTO personDTO = personService.create(personWithPasswordDTO);
         Assert.assertNotNull(personDTO);
@@ -70,7 +70,7 @@ public class IPersonServiceTest {
     @Test
     public void deleteByIdTest(){
         PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван3", "Иванов3",
-                "Иванович3", "ivanov3", "ivanow123456");
+                "Иванович3", "ivanov3", "Iivanow123456");
 
         PersonDTO personDTO = personService.create(personWithPasswordDTO);
         Assert.assertNotNull(personDTO);

@@ -18,21 +18,20 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
     private AccountRepository<Entity> accountRepository;
     private AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter;
 
-    private CommonValidator<Entity> commonValidator;
+    private CommonValidator<Entity> validator;
 
     private IPersonProvider personProvider;
 
     AbstractAccountService(AccountRepository<Entity> accountRepository,
                            AbstractDefaultConverter<Entity, NoIdDTO, DTO> abstractDefaultConverter,
+                           CommonValidator<Entity> validator,
                            IPersonProvider personProvider) {
 
         this.accountRepository = accountRepository;
         this.abstractDefaultConverter = abstractDefaultConverter;
-        this.commonValidator = validator();
+        this.validator = validator;
         this.personProvider = personProvider;
     }
-
-    protected abstract CommonValidator<Entity> validator();
 
     @Transactional
     public DTO create(NoIdDTO dto){
@@ -56,7 +55,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
         assertExistById(entity);
 
-        commonValidator.validate(entity);
+        validator.validate(entity);
 
         entity.setPerson(personProvider.getCurrentPerson());
 

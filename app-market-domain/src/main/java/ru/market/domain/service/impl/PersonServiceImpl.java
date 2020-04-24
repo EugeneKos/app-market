@@ -7,10 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
 import ru.market.domain.event.PersonDeleteEvent;
+import ru.market.domain.validator.CommonValidator;
 import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
-import ru.market.domain.exception.NotFoundException;
-import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.repository.common.PersonRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.dto.person.PersonWithPasswordDTO;
@@ -18,14 +17,19 @@ import ru.market.dto.person.PersonWithPasswordDTO;
 public class PersonServiceImpl implements IPersonService {
     private PersonRepository personRepository;
     private PersonConverter personConverter;
+    private CommonValidator<Person> validator;
 
     private ApplicationEventPublisher eventPublisher;
 
     private PasswordEncoder passwordEncoder;
 
-    public PersonServiceImpl(PersonRepository personRepository, PersonConverter personConverter) {
+    public PersonServiceImpl(PersonRepository personRepository,
+                             PersonConverter personConverter,
+                             CommonValidator<Person> validator) {
+
         this.personRepository = personRepository;
         this.personConverter = personConverter;
+        this.validator = validator;
     }
 
     public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
@@ -61,30 +65,12 @@ public class PersonServiceImpl implements IPersonService {
             throw new MustIdException("Person id should be given");
         }
 
-        assertExistById(person);
-        assertUniqueByUsername(person);
+        validator.validate(person);
 
         person.setPassword(passwordEncoder.encode(person.getPassword()));
 
         person = personRepository.saveAndFlush(person);
         return personConverter.convertToBasedDTO(person);
-    }
-
-    private void assertExistById(Person person){
-        if(person.getId() == null){
-            return;
-        }
-
-        personRepository.findById(person.getId()).orElseThrow(
-                () -> new NotFoundException("Person with id " + person.getId() + " not found")
-        );
-    }
-
-    private void assertUniqueByUsername(Person person){
-        Person founded = personRepository.findByUsername(person.getUsername());
-        if(founded != null && !founded.getId().equals(person.getId())){
-            throw new NotUniqueException("Person with username: " + founded.getUsername() + " already exist");
-        }
     }
 
     @Override

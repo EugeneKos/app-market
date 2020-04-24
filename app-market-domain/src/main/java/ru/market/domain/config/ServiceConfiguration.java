@@ -12,6 +12,11 @@ import ru.market.domain.converter.CardAccountConverter;
 import ru.market.domain.converter.CashAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
+import ru.market.domain.data.BankAccount;
+import ru.market.domain.data.CardAccount;
+import ru.market.domain.data.CashAccount;
+import ru.market.domain.data.Operation;
+import ru.market.domain.data.Person;
 import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.account.CardAccountRepository;
 import ru.market.domain.repository.account.CashAccountRepository;
@@ -31,6 +36,7 @@ import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
 import ru.market.domain.service.impl.OperationExecutorImpl;
+import ru.market.domain.validator.CommonValidator;
 
 @Configuration
 public class ServiceConfiguration {
@@ -42,10 +48,11 @@ public class ServiceConfiguration {
     @Bean
     public IPersonService personService(PersonRepository personRepository,
                                         PersonConverter personConverter,
+                                        CommonValidator<Person> validator,
                                         ApplicationEventPublisher eventPublisher,
                                         PasswordEncoder passwordEncoder){
 
-        PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter);
+        PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter, validator);
         personService.setEventPublisher(eventPublisher);
         personService.setPasswordEncoder(passwordEncoder);
         return personService;
@@ -54,25 +61,28 @@ public class ServiceConfiguration {
     @Bean
     public IBankAccountService bankAccountService(BankAccountRepository bankAccountRepository,
                                                   BankAccountConverter bankAccountConverter,
+                                                  CommonValidator<BankAccount> validator,
                                                   IPersonProvider personProvider){
 
-        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, personProvider);
+        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, validator, personProvider);
     }
 
     @Bean
     public ICardAccountService cardAccountService(CardAccountRepository cardAccountRepository,
                                                   CardAccountConverter cardAccountConverter,
+                                                  CommonValidator<CardAccount> validator,
                                                   IPersonProvider personProvider){
 
-        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, personProvider);
+        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, validator, personProvider);
     }
 
     @Bean
     public ICashAccountService cashAccountService(CashAccountRepository cashAccountRepository,
                                                   CashAccountConverter cashAccountConverter,
+                                                  CommonValidator<CashAccount> validator,
                                                   IPersonProvider personProvider){
 
-        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, personProvider);
+        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, validator, personProvider);
     }
 
     @Bean
@@ -83,9 +93,10 @@ public class ServiceConfiguration {
     @Bean
     public OperationExecutor operationExecutor(OperationRepository operationRepository,
                                                OperationConverter operationConverter,
-                                               IBankAccountService bankAccountService){
+                                               IBankAccountService bankAccountService,
+                                               CommonValidator<Operation> validator){
 
-        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService);
+        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService, validator);
     }
 
     @Bean

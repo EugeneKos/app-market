@@ -12,8 +12,6 @@ import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
 import ru.market.domain.validator.CommonValidator;
-import ru.market.domain.validator.operation.OperationValidator;
-import ru.market.domain.validator.operation.OperationValidatorImpl;
 
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
@@ -33,12 +31,13 @@ public class OperationExecutorImpl implements OperationExecutor {
 
     public OperationExecutorImpl(OperationRepository operationRepository,
                                  OperationConverter operationConverter,
-                                 IBankAccountService bankAccountService) {
+                                 IBankAccountService bankAccountService,
+                                 CommonValidator<Operation> validator) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
         this.bankAccountService = bankAccountService;
-        this.validator = validator();
+        this.validator = validator;
     }
 
     @Transactional
@@ -89,13 +88,6 @@ public class OperationExecutorImpl implements OperationExecutor {
         Operation operation = operationConverter.convertToEntity(basedDTO);
         validator.validate(operation);
         return operation;
-    }
-
-    private CommonValidator<Operation> validator() {
-        return operation -> {
-            OperationValidator operationValidator = new OperationValidatorImpl();
-            operationValidator.validateAmount(operation);
-        };
     }
 
     private void prepareToSave(Operation debitOperation, Operation enrollOperation,

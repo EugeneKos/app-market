@@ -1,22 +1,25 @@
-package ru.market.domain.validator.account.cash;
+package ru.market.domain.validator.account;
 
 import ru.market.domain.data.CashAccount;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.exception.ValidateException;
 import ru.market.domain.repository.account.CashAccountRepository;
-import ru.market.domain.validator.account.AccountValidatorImpl;
+import ru.market.domain.validator.CommonValidator;
 
-public class CashAccountValidatorImpl<E extends CashAccount> extends AccountValidatorImpl<E>
-        implements CashAccountValidator<E> {
-
+public class CashAccountValidator extends AccountValidator<CashAccount> implements CommonValidator<CashAccount> {
     private CashAccountRepository cashAccountRepository;
 
-    public CashAccountValidatorImpl(CashAccountRepository cashAccountRepository) {
+    public CashAccountValidator(CashAccountRepository cashAccountRepository) {
         this.cashAccountRepository = cashAccountRepository;
     }
 
     @Override
-    public void validateUniqueName(E cashAccount) throws ValidateException {
+    public void validate(CashAccount cashAccount) throws ValidateException {
+        validateBalance(cashAccount);
+        validateUniqueName(cashAccount);
+    }
+
+    private void validateUniqueName(CashAccount cashAccount) throws ValidateException {
         try {
             assertUniqueByName(cashAccount);
         } catch (Exception e){

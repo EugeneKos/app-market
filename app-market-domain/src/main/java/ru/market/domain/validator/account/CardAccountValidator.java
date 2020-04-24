@@ -1,22 +1,26 @@
-package ru.market.domain.validator.account.card;
+package ru.market.domain.validator.account;
 
 import ru.market.domain.data.CardAccount;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.exception.ValidateException;
 import ru.market.domain.repository.account.CardAccountRepository;
-import ru.market.domain.validator.account.AccountValidatorImpl;
+import ru.market.domain.validator.CommonValidator;
 
-public class CardAccountValidatorImpl<E extends CardAccount> extends AccountValidatorImpl<E>
-        implements CardAccountValidator<E> {
-
+public class CardAccountValidator extends AccountValidator<CardAccount> implements CommonValidator<CardAccount> {
     private CardAccountRepository cardAccountRepository;
 
-    public CardAccountValidatorImpl(CardAccountRepository cardAccountRepository) {
+    public CardAccountValidator(CardAccountRepository cardAccountRepository) {
         this.cardAccountRepository = cardAccountRepository;
     }
 
     @Override
-    public void validateNumber(E cardAccount) throws ValidateException {
+    public void validate(CardAccount cardAccount) throws ValidateException {
+        validateNumber(cardAccount);
+        validateBalance(cardAccount);
+        validateUniqueNumber(cardAccount);
+    }
+
+    private void validateNumber(CardAccount cardAccount) throws ValidateException {
         String number = cardAccount.getNumber();
 
         if(number == null || number.isEmpty()){
@@ -30,8 +34,7 @@ public class CardAccountValidatorImpl<E extends CardAccount> extends AccountVali
         }
     }
 
-    @Override
-    public void validateUniqueNumber(E cardAccount) throws ValidateException {
+    private void validateUniqueNumber(CardAccount cardAccount) throws ValidateException {
         try {
             assertUniqueByNumber(cardAccount);
         } catch (Exception e){

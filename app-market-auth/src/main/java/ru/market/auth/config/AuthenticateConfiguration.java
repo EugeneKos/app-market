@@ -3,6 +3,7 @@ package ru.market.auth.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
@@ -36,10 +37,11 @@ public class AuthenticateConfiguration {
 
     @Bean
     public AuthenticateService authenticateService(IPersonService personService,
+                                                   PasswordEncoder passwordEncoder,
                                                    SessionManagement sessionManagement,
                                                    PersonDataManagement personDataManagement){
 
-        return new AuthenticateServiceImpl(personService, sessionManagement, personDataManagement);
+        return new AuthenticateServiceImpl(personService, passwordEncoder, sessionManagement, personDataManagement);
     }
 
     @Bean

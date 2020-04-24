@@ -1,5 +1,7 @@
 package ru.market.auth.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import ru.market.auth.api.AuthenticateService;
 
 import ru.market.data.session.api.PersonDataManagement;
@@ -17,14 +19,18 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private IPersonService personService;
 
+    private PasswordEncoder passwordEncoder;
+
     private SessionManagement sessionManagement;
     private PersonDataManagement personDataManagement;
 
     public AuthenticateServiceImpl(IPersonService personService,
+                                   PasswordEncoder passwordEncoder,
                                    SessionManagement sessionManagement,
                                    PersonDataManagement personDataManagement) {
 
         this.personService = personService;
+        this.passwordEncoder = passwordEncoder;
         this.sessionManagement = sessionManagement;
         this.personDataManagement = personDataManagement;
     }
@@ -36,7 +42,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             return new AuthAnswerDTO("failed", "username not found");
         }
 
-        return person.getPassword().equals(usernamePasswordDTO.getPassword())
+        return passwordEncoder.matches(usernamePasswordDTO.getPassword(), person.getPassword())
                 ? authenticateSuccess(person)
                 : new AuthAnswerDTO("failed", "password doesn't match");
     }

@@ -3,6 +3,8 @@ package ru.market.domain.config;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.data.session.api.PersonDataManagement;
 import ru.market.domain.converter.BankAccountConverter;
@@ -33,12 +35,19 @@ import ru.market.domain.service.impl.OperationExecutorImpl;
 @Configuration
 public class ServiceConfiguration {
     @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public IPersonService personService(PersonRepository personRepository,
                                         PersonConverter personConverter,
-                                        ApplicationEventPublisher eventPublisher){
+                                        ApplicationEventPublisher eventPublisher,
+                                        PasswordEncoder passwordEncoder){
 
         PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter);
         personService.setEventPublisher(eventPublisher);
+        personService.setPasswordEncoder(passwordEncoder);
         return personService;
     }
 

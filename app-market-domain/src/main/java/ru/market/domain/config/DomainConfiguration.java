@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         DataConfiguration.class, ServiceConfiguration.class, ConverterConfiguration.class,
-        EventConfiguration.class, ValidatorConfiguration.class
+        ValidatorConfiguration.class
 })
 public class DomainConfiguration {
 }

@@ -15,6 +15,4 @@ public interface IOperationService {
     OperationResultDTO transfer(OperationTransferDTO transferDTO);
 
     Set<OperationDTO> getAllByAccountId(Long accountId);
-
-    void deleteAllByAccountId(Long accountId);
 }

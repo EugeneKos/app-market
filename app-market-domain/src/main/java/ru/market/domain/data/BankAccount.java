@@ -1,5 +1,6 @@
 package ru.market.domain.data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -10,9 +11,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +36,9 @@ public class BankAccount {
     @ManyToOne
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "bank_person_fk"))
     private Person person;
+
+    @OneToMany(targetEntity = Operation.class, cascade = {CascadeType.REMOVE}, mappedBy = "bankAccount")
+    private List<Operation> operations;
 
     public Long getId() {
         return id;
@@ -64,6 +70,14 @@ public class BankAccount {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<Operation> operations) {
+        this.operations = operations;
     }
 
     @Override

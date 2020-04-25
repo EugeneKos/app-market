@@ -1,7 +1,5 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.data.enumeration.OperationType;
 import ru.market.domain.repository.common.OperationRepository;
@@ -74,11 +72,5 @@ public class OperationServiceImpl implements IOperationService {
                 .stream()
                 .map(operationConverter::convertToDTO)
                 .collect(Collectors.toSet());
-    }
-
-    @Transactional
-    @Override
-    public void deleteAllByAccountId(Long accountId) {
-        operationRepository.deleteByAccountId(accountId);
     }
 }

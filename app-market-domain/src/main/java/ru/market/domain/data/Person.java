@@ -1,15 +1,18 @@
 package ru.market.domain.data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "persons",
@@ -34,6 +37,9 @@ public class Person {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToMany(targetEntity = BankAccount.class, cascade = {CascadeType.REMOVE}, mappedBy = "person")
+    private Set<BankAccount> accounts;
 
     public Long getId() {
         return id;
@@ -81,6 +87,14 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<BankAccount> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<BankAccount> accounts) {
+        this.accounts = accounts;
     }
 
     @Override

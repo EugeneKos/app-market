@@ -1,6 +1,5 @@
 package ru.market.domain.config;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,11 +48,9 @@ public class ServiceConfiguration {
     public IPersonService personService(PersonRepository personRepository,
                                         PersonConverter personConverter,
                                         CommonValidator<Person> validator,
-                                        ApplicationEventPublisher eventPublisher,
                                         PasswordEncoder passwordEncoder){
 
         PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter, validator);
-        personService.setEventPublisher(eventPublisher);
         personService.setPasswordEncoder(passwordEncoder);
         return personService;
     }
@@ -62,36 +59,27 @@ public class ServiceConfiguration {
     public IBankAccountService bankAccountService(BankAccountRepository bankAccountRepository,
                                                   BankAccountConverter bankAccountConverter,
                                                   CommonValidator<BankAccount> validator,
-                                                  IPersonProvider personProvider,
-                                                  ApplicationEventPublisher eventPublisher){
+                                                  IPersonProvider personProvider){
 
-        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter,
-                validator, personProvider, eventPublisher
-        );
+        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, validator, personProvider);
     }
 
     @Bean
     public ICardAccountService cardAccountService(CardAccountRepository cardAccountRepository,
                                                   CardAccountConverter cardAccountConverter,
                                                   CommonValidator<CardAccount> validator,
-                                                  IPersonProvider personProvider,
-                                                  ApplicationEventPublisher eventPublisher){
+                                                  IPersonProvider personProvider){
 
-        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter
-                , validator, personProvider, eventPublisher
-        );
+        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, validator, personProvider);
     }
 
     @Bean
     public ICashAccountService cashAccountService(CashAccountRepository cashAccountRepository,
                                                   CashAccountConverter cashAccountConverter,
                                                   CommonValidator<CashAccount> validator,
-                                                  IPersonProvider personProvider,
-                                                  ApplicationEventPublisher eventPublisher){
+                                                  IPersonProvider personProvider){
 
-        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter,
-                validator, personProvider, eventPublisher
-        );
+        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, validator, personProvider);
     }
 
     @Bean

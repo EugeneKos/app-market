@@ -8,5 +8,4 @@ import ru.market.dto.bank.BankAccountNoIdDTO;
 public interface IBankAccountService extends DefaultAccountService<BankAccountNoIdDTO, BankAccountDTO> {
     void save(BankAccount bankAccount);
     BankAccount getAccount(Long id);
-    void deleteAllByPersonId(Long personId);
 }

@@ -11,10 +11,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("select p from Person p where p.username = :username")
     Person findByUsername(@Param("username") String username);
 
-    @Query("delete from Person p where p.id = :id")
-    @Modifying
-    void deleteById(@Param("id") Long id);
-
     @Query("delete from Person p where p.username = :username")
     @Modifying
     void deleteByUsername(@Param("username") String username);

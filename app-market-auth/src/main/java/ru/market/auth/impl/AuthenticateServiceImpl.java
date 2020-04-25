@@ -9,10 +9,11 @@ import ru.market.data.session.api.SessionManagement;
 
 import ru.market.domain.service.IPersonService;
 
-import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.person.PersonDTO;
 import ru.market.dto.person.PersonWithPasswordDTO;
+import ru.market.dto.result.ResultDTO;
+import ru.market.dto.result.ResultStatus;
 
 public class AuthenticateServiceImpl implements AuthenticateService {
     private static final int INACTIVE_INTERVAL = 1200; // 20 min
@@ -36,21 +37,21 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public AuthAnswerDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) {
+    public ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) {
         PersonWithPasswordDTO person = personService.getByUserNameWithPassword(usernamePasswordDTO.getUsername());
         if(person == null){
-            return new AuthAnswerDTO("failed", "username not found");
+            return new ResultDTO(ResultStatus.FAILED, "username not found");
         }
 
         return passwordEncoder.matches(usernamePasswordDTO.getPassword(), person.getPassword())
                 ? authenticateSuccess(person)
-                : new AuthAnswerDTO("failed", "password doesn't match");
+                : new ResultDTO(ResultStatus.FAILED, "password doesn't match");
     }
 
-    private AuthAnswerDTO authenticateSuccess(PersonDTO person){
+    private ResultDTO authenticateSuccess(PersonDTO person){
         personDataManagement.setPerson(person);
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
-        return new AuthAnswerDTO("success", "authenticate success");
+        return new ResultDTO(ResultStatus.SUCCESS, "authenticate success");
     }
 
     @Override

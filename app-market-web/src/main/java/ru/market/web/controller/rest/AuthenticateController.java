@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.market.auth.api.AuthenticateService;
 
-import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;
+import ru.market.dto.result.ResultDTO;
 
 @RestController
 public class AuthenticateController {
@@ -22,7 +22,7 @@ public class AuthenticateController {
 
     @RequestMapping(path = "/auth", method = RequestMethod.POST,
             consumes = "application/json", produces = "application/json")
-    public AuthAnswerDTO authenticate(@RequestBody UsernamePasswordDTO usernamePasswordDTO){
+    public ResultDTO authenticate(@RequestBody UsernamePasswordDTO usernamePasswordDTO){
         return authenticateService.authenticate(usernamePasswordDTO);
     }
 

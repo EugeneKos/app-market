@@ -1,22 +1,22 @@
-package ru.market.dto.auth;
+package ru.market.dto.result;
 
-public class AuthAnswerDTO {
-    private String status;
+public class ResultDTO {
+    private ResultStatus status;
     private String description;
 
-    public AuthAnswerDTO() {
+    public ResultDTO() {
     }
 
-    public AuthAnswerDTO(String status, String description) {
+    public ResultDTO(ResultStatus status, String description) {
         this.status = status;
         this.description = description;
     }
 
-    public String getStatus() {
+    public ResultStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ResultStatus status) {
         this.status = status;
     }
 

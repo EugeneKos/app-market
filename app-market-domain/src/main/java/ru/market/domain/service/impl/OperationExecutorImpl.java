@@ -15,8 +15,9 @@ import ru.market.domain.validator.CommonValidator;
 
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
-import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
+import ru.market.dto.result.ResultDTO;
+import ru.market.dto.result.ResultStatus;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -42,17 +43,17 @@ public class OperationExecutorImpl implements OperationExecutor {
 
     @Transactional
     @Override
-    public OperationResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
-                                      BiFunction<BankAccount, Operation, OperationResultDTO> function) {
+    public ResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
+                             BiFunction<BankAccount, Operation, ResultDTO> function) {
 
         Operation operation = convertAndValidate(enrollDebitDTO);
         operation.setOperationType(operationType);
 
         BankAccount bankAccount = bankAccountService.getAccount(enrollDebitDTO.getAccountId());
 
-        OperationResultDTO result = function.apply(bankAccount, operation);
+        ResultDTO result = function.apply(bankAccount, operation);
 
-        if(!result.isSuccess()){
+        if(result.getStatus() != ResultStatus.SUCCESS){
             return result;
         }
 
@@ -63,7 +64,7 @@ public class OperationExecutorImpl implements OperationExecutor {
 
     @Transactional
     @Override
-    public OperationResultDTO execute(OperationTransferDTO transferDTO) {
+    public ResultDTO execute(OperationTransferDTO transferDTO) {
         Operation operation = convertAndValidate(transferDTO);
         Operation debitOperation = operation.customClone();
         Operation enrollOperation = operation.customClone();
@@ -71,9 +72,9 @@ public class OperationExecutorImpl implements OperationExecutor {
         BankAccount fromAccount = bankAccountService.getAccount(transferDTO.getFromAccountId());
         BankAccount toAccount = bankAccountService.getAccount(transferDTO.getToAccountId());
 
-        OperationResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
+        ResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
 
-        if(!result.isSuccess()){
+        if(result.getStatus() != ResultStatus.SUCCESS){
             return result;
         }
 
@@ -81,7 +82,7 @@ public class OperationExecutorImpl implements OperationExecutor {
 
         prepareToSave(debitOperation, enrollOperation, fromAccount, toAccount);
 
-        return new OperationResultDTO(true, "Перевод выполнен");
+        return new ResultDTO(ResultStatus.SUCCESS, "Перевод выполнен");
     }
 
     private Operation convertAndValidate(OperationBasedDTO basedDTO){

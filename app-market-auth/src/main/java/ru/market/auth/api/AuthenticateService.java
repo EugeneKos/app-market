@@ -1,10 +1,10 @@
 package ru.market.auth.api;
 
-import ru.market.dto.auth.AuthAnswerDTO;
 import ru.market.dto.auth.UsernamePasswordDTO;
+import ru.market.dto.result.ResultDTO;
 
 public interface AuthenticateService {
-    AuthAnswerDTO authenticate(UsernamePasswordDTO usernamePasswordDTO);
+    ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO);
     boolean isAuthenticate();
     void invalidate();
 }

@@ -15,7 +15,6 @@ public interface AccountRepository<Entity extends BankAccount> extends JpaReposi
 
     Set<Long> findAllAccountIdByPersonId(@Param("personId") Long personId);
 
-    void deleteById(@Param("id") Long id);
-
+    @Deprecated
     void deleteByPersonId(@Param("personId") Long personId);
 }

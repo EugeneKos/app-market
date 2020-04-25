@@ -101,9 +101,4 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
         accountRepository.deleteById(id);
         AccountLockHolder.removeAccountLock(id);
     }
-
-    @Transactional
-    public void deleteAllByPersonId(Long personId) {
-        accountRepository.deleteByPersonId(personId);
-    }
 }

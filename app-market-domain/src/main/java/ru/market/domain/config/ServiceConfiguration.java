@@ -1,6 +1,5 @@
 package ru.market.domain.config;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,11 +48,9 @@ public class ServiceConfiguration {
     public IPersonService personService(PersonRepository personRepository,
                                         PersonConverter personConverter,
                                         CommonValidator<Person> validator,
-                                        ApplicationEventPublisher eventPublisher,
                                         PasswordEncoder passwordEncoder){
 
         PersonServiceImpl personService = new PersonServiceImpl(personRepository, personConverter, validator);
-        personService.setEventPublisher(eventPublisher);
         personService.setPasswordEncoder(passwordEncoder);
         return personService;
     }

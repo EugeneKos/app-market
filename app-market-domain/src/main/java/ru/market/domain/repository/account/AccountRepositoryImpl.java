@@ -54,8 +54,10 @@ public class AccountRepositoryImpl<Entity extends BankAccount> extends SimpleJpa
         return new HashSet<>(entityManager.createQuery(queryLong).getResultList());
     }
 
+    @Deprecated
     @Override
     public void deleteByPersonId(Long personId) {
+        // Оставил для примера удаления через criteria API
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaDelete<Entity> criteriaDelete = criteriaBuilder.createCriteriaDelete(domainClass);

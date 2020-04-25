@@ -1,12 +1,10 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
-import ru.market.domain.event.PersonDeleteEvent;
 import ru.market.domain.validator.CommonValidator;
 import ru.market.dto.person.PersonDTO;
 import ru.market.domain.exception.MustIdException;
@@ -19,8 +17,6 @@ public class PersonServiceImpl implements IPersonService {
     private PersonConverter personConverter;
     private CommonValidator<Person> validator;
 
-    private ApplicationEventPublisher eventPublisher;
-
     private PasswordEncoder passwordEncoder;
 
     public PersonServiceImpl(PersonRepository personRepository,
@@ -30,10 +26,6 @@ public class PersonServiceImpl implements IPersonService {
         this.personRepository = personRepository;
         this.personConverter = personConverter;
         this.validator = validator;
-    }
-
-    public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
     }
 
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -94,7 +86,6 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        eventPublisher.publishEvent(new PersonDeleteEvent(this, id));
         personRepository.deleteById(id);
     }
 

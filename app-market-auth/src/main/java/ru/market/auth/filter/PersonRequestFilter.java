@@ -4,9 +4,9 @@ import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 
-import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
-import ru.market.dto.person.PersonWithPasswordDTO;
+import ru.market.data.session.api.UserDataManager;
+import ru.market.dto.person.PersonDTO;
 import ru.market.utils.JSONObjectUtil;
 
 import javax.servlet.FilterChain;
@@ -17,17 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 
-@UrlFilter(urlPatterns = "/person*",
-        excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.PUT),
-                                @ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.GET),
-                                @ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.DELETE)}
+@UrlFilter(urlPatterns = "/person",
+        excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.GET)}
 )
 public class PersonRequestFilter implements AuthFilter {
-    private PersonDataManagement personDataManagement;
+    private UserDataManager userDataManager;
     private RequestBodyManagement requestBodyManagement;
 
-    public PersonRequestFilter(PersonDataManagement personDataManagement, RequestBodyManagement requestBodyManagement) {
-        this.personDataManagement = personDataManagement;
+    public PersonRequestFilter(UserDataManager userDataManager, RequestBodyManagement requestBodyManagement) {
+        this.userDataManager = userDataManager;
         this.requestBodyManagement = requestBodyManagement;
     }
 
@@ -35,28 +33,14 @@ public class PersonRequestFilter implements AuthFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Long personId = personDataManagement.getPerson().getId();
+        Long personId = userDataManager.getUserData().getPersonId();
 
-        String servletPath = request.getServletPath();
         String requestMethod = request.getMethod();
 
-        boolean isWell;
+        boolean isWell = false;
 
-        switch (requestMethod){
-            case "GET":{
-                isWell = isEqualPersonId(servletPath, personId);
-                break;
-            }
-            case "DELETE":{
-                isWell = isEqualPersonId(servletPath, personId);
-                break;
-            }
-            case "POST":{
-                isWell = isEqualPersonId(request.getInputStream(), personId);
-                break;
-            }
-            default:
-                isWell = false;
+        if("POST".equals(requestMethod)){
+            isWell = isEqualPersonId(request.getInputStream(), personId);
         }
 
         if(isWell){
@@ -66,24 +50,8 @@ public class PersonRequestFilter implements AuthFilter {
         }
     }
 
-    private boolean isEqualPersonId(String servletPath, Long personId){
-        int lastIndexOfSlash = servletPath.lastIndexOf("person/");
-        if(lastIndexOfSlash == -1){
-            return false;
-        }
-        lastIndexOfSlash = lastIndexOfSlash + 7;
-
-        String possiblePersonId = servletPath.substring(lastIndexOfSlash, servletPath.length());
-
-        if(!possiblePersonId.matches("\\d+")){
-            return false;
-        }
-
-        return personId.equals(Long.parseLong(possiblePersonId));
-    }
-
     private boolean isEqualPersonId(InputStream inputStream, Long personId){
-        PersonWithPasswordDTO person = JSONObjectUtil.getJsonObjectFromInputStream(inputStream, PersonWithPasswordDTO.class);
+        PersonDTO person = JSONObjectUtil.getJsonObjectFromInputStream(inputStream, PersonDTO.class);
         if(person == null){
             return false;
         }

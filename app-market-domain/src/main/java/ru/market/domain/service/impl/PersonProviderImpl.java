@@ -1,24 +1,23 @@
 package ru.market.domain.service.impl;
 
-import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.UserDataManager;
 
-import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
 import ru.market.domain.service.IPersonProvider;
-import ru.market.dto.person.PersonDTO;
+import ru.market.domain.service.IPersonService;
 
 public class PersonProviderImpl implements IPersonProvider {
-    private PersonDataManagement personDataManagement;
-    private PersonConverter personConverter;
+    private UserDataManager userDataManager;
+    private IPersonService personService;
 
-    public PersonProviderImpl(PersonDataManagement personDataManagement, PersonConverter personConverter) {
-        this.personDataManagement = personDataManagement;
-        this.personConverter = personConverter;
+    public PersonProviderImpl(UserDataManager userDataManager, IPersonService personService) {
+        this.userDataManager = userDataManager;
+        this.personService = personService;
     }
 
     @Override
     public Person getCurrentPerson() {
-        PersonDTO personDTO = personDataManagement.getPerson();
-        return personConverter.convertToEntity(personDTO);
+        Long personId = userDataManager.getUserData().getPersonId();
+        return personService.getPersonById(personId);
     }
 }

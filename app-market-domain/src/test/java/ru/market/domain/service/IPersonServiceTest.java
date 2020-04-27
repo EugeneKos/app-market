@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.market.domain.config.DomainTestConfiguration;
 import ru.market.dto.person.PersonDTO;
-import ru.market.dto.person.PersonWithPasswordDTO;
+import ru.market.dto.person.PersonNoIdDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
@@ -21,75 +21,31 @@ public class IPersonServiceTest {
 
     @Test
     public void createTest(){
-        PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван", "Иванов",
-                "Иванович", "ivanov", "Iivanow123456");
+        PersonNoIdDTO personNoIdDTO = createPersonDTO("Иван", "Иванов", "Иванович");
 
-        PersonDTO personDTO = personService.create(personWithPasswordDTO);
-
-        Assert.assertNotNull(personDTO);
-        Assert.assertNotNull(personDTO.getId());
-    }
-
-    @Test
-    public void updateTest(){
-        PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван1", "Иванов1",
-                "Иванович1", "ivanov1", "Iivanow1234561");
-
-        personWithPasswordDTO.setId(2556484L);
-
-        PersonDTO personDTO = personService.create(personWithPasswordDTO);
+        PersonDTO personDTO = personService.create(personNoIdDTO);
 
         Assert.assertNotNull(personDTO);
         Assert.assertNotNull(personDTO.getId());
-        Assert.assertNotEquals(2556484L, personDTO.getId().longValue());
-        Assert.assertEquals("Иван1", personDTO.getFirstName());
-        Assert.assertEquals("Иванов1", personDTO.getLastName());
-        Assert.assertEquals("Иванович1", personDTO.getMiddleName());
-        Assert.assertEquals("ivanov1", personDTO.getUsername());
-
-        personWithPasswordDTO.setId(personDTO.getId());
-        personWithPasswordDTO.setUsername("ivanov55");
-        personDTO = personService.update(personWithPasswordDTO);
-
-        Assert.assertNotNull(personDTO);
-        Assert.assertEquals("ivanov55", personDTO.getUsername());
     }
 
     @Test
     public void getByIdTest(){
-        PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван2", "Иванов2",
-                "Иванович2", "ivanov2", "Iivanow1234562");
+        PersonNoIdDTO personNoIdDTO = createPersonDTO("Иван2", "Иванов2", "Иванович2");
 
-        PersonDTO personDTO = personService.create(personWithPasswordDTO);
+        PersonDTO personDTO = personService.create(personNoIdDTO);
         Assert.assertNotNull(personDTO);
 
         PersonDTO founded = personService.getById(personDTO.getId());
         Assert.assertNotNull(founded);
     }
 
-    @Test
-    public void deleteByIdTest(){
-        PersonWithPasswordDTO personWithPasswordDTO = createPersonDTO("Иван3", "Иванов3",
-                "Иванович3", "ivanov3", "Iivanow123456");
+    private PersonNoIdDTO createPersonDTO(String firstName, String lastName, String middleName){
 
-        PersonDTO personDTO = personService.create(personWithPasswordDTO);
-        Assert.assertNotNull(personDTO);
-
-        personService.deleteById(personDTO.getId());
-
-        personDTO = personService.getById(personDTO.getId());
-        Assert.assertNull(personDTO);
-    }
-
-    private PersonWithPasswordDTO createPersonDTO(String firstName, String lastName, String middleName,
-                                                  String username, String password){
-
-        PersonWithPasswordDTO personWithPasswordDTO = new PersonWithPasswordDTO();
-        personWithPasswordDTO.setFirstName(firstName);
-        personWithPasswordDTO.setLastName(lastName);
-        personWithPasswordDTO.setMiddleName(middleName);
-        personWithPasswordDTO.setUsername(username);
-        personWithPasswordDTO.setPassword(password);
-        return personWithPasswordDTO;
+        PersonNoIdDTO personNoIdDTO = new PersonNoIdDTO();
+        personNoIdDTO.setFirstName(firstName);
+        personNoIdDTO.setLastName(lastName);
+        personNoIdDTO.setMiddleName(middleName);
+        return personNoIdDTO;
     }
 }

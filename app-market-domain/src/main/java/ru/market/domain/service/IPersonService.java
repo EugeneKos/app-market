@@ -1,14 +1,13 @@
 package ru.market.domain.service;
 
+import ru.market.domain.data.Person;
+
 import ru.market.dto.person.PersonDTO;
-import ru.market.dto.person.PersonWithPasswordDTO;
+import ru.market.dto.person.PersonNoIdDTO;
 
 public interface IPersonService {
-    PersonDTO create(PersonDTO personDTO);
+    PersonDTO create(PersonNoIdDTO personNoIdDTO);
     PersonDTO update(PersonDTO personDTO);
     PersonDTO getById(Long id);
-    PersonDTO getByUsername(String username);
-    PersonWithPasswordDTO getByUserNameWithPassword(String username);
-    void deleteById(Long id);
-    void deleteByUsername(String username);
+    Person getPersonById(Long id);
 }

@@ -17,14 +17,14 @@ import ru.market.auth.api.AuthFilterHandler;
 import ru.market.auth.impl.AuthFilterHandlerImpl;
 import ru.market.auth.impl.AuthenticateServiceImpl;
 
-import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
 import ru.market.data.session.api.SessionManagement;
+import ru.market.data.session.api.UserDataManager;
 
 import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
-import ru.market.domain.service.IPersonService;
+import ru.market.domain.service.IUserService;
 
 import java.util.Arrays;
 
@@ -36,19 +36,19 @@ public class AuthenticateConfiguration {
     }
 
     @Bean
-    public AuthenticateService authenticateService(IPersonService personService,
+    public AuthenticateService authenticateService(IUserService userService,
                                                    PasswordEncoder passwordEncoder,
                                                    SessionManagement sessionManagement,
-                                                   PersonDataManagement personDataManagement){
+                                                   UserDataManager userDataManager){
 
-        return new AuthenticateServiceImpl(personService, passwordEncoder, sessionManagement, personDataManagement);
+        return new AuthenticateServiceImpl(userService, passwordEncoder, sessionManagement, userDataManager);
     }
 
     @Bean
     @Scope("prototype")
     public AuthFilterChain authFilterChain(AuthFilterHandler authFilterHandler,
                                            AuthenticateService authenticateService,
-                                           PersonDataManagement personDataManagement,
+                                           UserDataManager userDataManage,
                                            RequestBodyManagement requestBodyManagement,
                                            ICardAccountService cardAccountService,
                                            ICashAccountService cashAccountService,
@@ -58,10 +58,10 @@ public class AuthenticateConfiguration {
 
         authFilterChain.registerFilters(Arrays.asList(
                 new AuthenticateFilter(authenticateService),
-                new PersonRequestFilter(personDataManagement, requestBodyManagement),
-                new CardAccountRequestFilter(personDataManagement, cardAccountService),
-                new CashAccountRequestFilter(personDataManagement, cashAccountService),
-                new OperationRequestFilter(personDataManagement, requestBodyManagement, bankAccountService)
+                new PersonRequestFilter(userDataManage, requestBodyManagement),
+                new CardAccountRequestFilter(userDataManage, cardAccountService),
+                new CashAccountRequestFilter(userDataManage, cashAccountService),
+                new OperationRequestFilter(userDataManage, requestBodyManagement, bankAccountService)
         ));
 
         return authFilterChain;

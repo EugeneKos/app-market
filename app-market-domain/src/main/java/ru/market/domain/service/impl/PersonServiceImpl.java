@@ -1,23 +1,21 @@
 package ru.market.domain.service.impl;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
+import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.validator.CommonValidator;
-import ru.market.dto.person.PersonDTO;
-import ru.market.domain.exception.MustIdException;
 import ru.market.domain.repository.common.PersonRepository;
 import ru.market.domain.service.IPersonService;
-import ru.market.dto.person.PersonWithPasswordDTO;
+
+import ru.market.dto.person.PersonDTO;
+import ru.market.dto.person.PersonNoIdDTO;
 
 public class PersonServiceImpl implements IPersonService {
     private PersonRepository personRepository;
     private PersonConverter personConverter;
     private CommonValidator<Person> validator;
-
-    private PasswordEncoder passwordEncoder;
 
     public PersonServiceImpl(PersonRepository personRepository,
                              PersonConverter personConverter,
@@ -28,70 +26,41 @@ public class PersonServiceImpl implements IPersonService {
         this.validator = validator;
     }
 
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    @Transactional
+    @Override
+    public PersonDTO create(PersonNoIdDTO personNoIdDTO) {
+        return updateAndSave(personNoIdDTO);
     }
 
-    @Override
     @Transactional
-    public PersonDTO create(PersonDTO personDTO) {
-        return update(personDTO, false);
-    }
-
     @Override
-    @Transactional
     public PersonDTO update(PersonDTO personDTO) {
-        return update(personDTO, true);
+        return updateAndSave(personDTO);
     }
 
-    private PersonDTO update(PersonDTO personDTO, boolean isMustId){
+    private PersonDTO updateAndSave(PersonNoIdDTO personDTO){
         if(personDTO == null){
             return null;
         }
 
         Person person = personConverter.convertToEntity(personDTO);
-        if(!isMustId){
-            person.setId(null);
-        }
-        if(isMustId && person.getId() == null){
-            throw new MustIdException("Person id should be given");
-        }
 
         validator.validate(person);
 
-        person.setPassword(passwordEncoder.encode(person.getPassword()));
-
         person = personRepository.saveAndFlush(person);
-        return personConverter.convertToBasedDTO(person);
-    }
-
-    @Override
-    public PersonDTO getById(Long id) {
-        Person person = personRepository.findById(id).orElse(null);
-        return personConverter.convertToBasedDTO(person);
-    }
-
-    @Override
-    public PersonDTO getByUsername(String username) {
-        Person person = personRepository.findByUsername(username);
-        return personConverter.convertToBasedDTO(person);
-    }
-
-    @Override
-    public PersonWithPasswordDTO getByUserNameWithPassword(String username) {
-        Person person = personRepository.findByUsername(username);
         return personConverter.convertToDTO(person);
     }
 
     @Override
-    @Transactional
-    public void deleteById(Long id) {
-        personRepository.deleteById(id);
+    public PersonDTO getById(Long id) {
+        Person person = getPersonById(id);
+        return personConverter.convertToDTO(person);
     }
 
     @Override
-    @Transactional
-    public void deleteByUsername(String username) {
-        personRepository.deleteByUsername(username);
+    public Person getPersonById(Long id) {
+        return personRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Person with id %d not found", id))
+        );
     }
 }

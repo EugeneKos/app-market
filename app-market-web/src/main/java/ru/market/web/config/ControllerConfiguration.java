@@ -10,10 +10,11 @@ import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonService;
+import ru.market.domain.service.IUserService;
 
 import ru.market.auth.api.AuthenticateService;
 
-import ru.market.data.session.api.PersonDataManagement;
+import ru.market.data.session.api.UserDataManager;
 import ru.market.data.session.api.RequestBodyManagement;
 
 import ru.market.web.controller.MainController;
@@ -23,6 +24,7 @@ import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
+import ru.market.web.controller.rest.UserController;
 
 @Configuration
 @EnableWebMvc
@@ -43,12 +45,18 @@ public class ControllerConfiguration {
 
     @Bean
     public PersonController personController(IPersonService personService,
-                                             AuthenticateService authenticateService,
                                              RequestBodyManagement requestBodyManagement,
-                                             PersonDataManagement personDataManagement){
+                                             UserDataManager userDataManager){
 
-        return new PersonController(personService, authenticateService,
-                requestBodyManagement, personDataManagement);
+        return new PersonController(personService, requestBodyManagement, userDataManager);
+    }
+
+    @Bean
+    public UserController userController(IUserService userService,
+                                         UserDataManager userDataManager,
+                                         AuthenticateService authenticateService){
+
+        return new UserController(userService, userDataManager, authenticateService);
     }
 
     @Bean

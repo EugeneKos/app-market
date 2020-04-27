@@ -40,12 +40,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) {
         UserSecretDTO secretDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
         if(secretDTO == null){
-            return new ResultDTO(ResultStatus.FAILED, "username not found");
+            return failed("username not found");
         }
 
         return passwordEncoder.matches(usernamePasswordDTO.getPassword(), secretDTO.getPassword())
                 ? authenticateSuccess(secretDTO)
-                : new ResultDTO(ResultStatus.FAILED, "password doesn't match");
+                : failed("password doesn't match");
     }
 
     private ResultDTO authenticateSuccess(UserSecretDTO secretDTO){
@@ -57,6 +57,11 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new ResultDTO(ResultStatus.SUCCESS, "authenticate success");
+    }
+
+    private ResultDTO failed(String description){
+        sessionManagement.invalidateSession();
+        return new ResultDTO(ResultStatus.FAILED, description);
     }
 
     @Override

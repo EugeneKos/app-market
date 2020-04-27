@@ -4,64 +4,69 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.auth.api.AuthenticateService;
 
-import ru.market.data.session.api.PersonDataManagement;
-import ru.market.data.session.api.SessionManagement;
+import ru.market.domain.service.IUserService;
 
-import ru.market.domain.service.IPersonService;
+import ru.market.data.session.api.SessionManagement;
+import ru.market.data.session.api.UserDataManager;
+import ru.market.data.session.data.UserData;
 
 import ru.market.dto.auth.UsernamePasswordDTO;
-import ru.market.dto.person.PersonDTO;
-import ru.market.dto.person.PersonWithPasswordDTO;
 import ru.market.dto.result.ResultDTO;
 import ru.market.dto.result.ResultStatus;
+import ru.market.dto.user.UserSecretDTO;
 
 public class AuthenticateServiceImpl implements AuthenticateService {
     private static final int INACTIVE_INTERVAL = 1200; // 20 min
 
-    private IPersonService personService;
+    private IUserService userService;
 
     private PasswordEncoder passwordEncoder;
 
     private SessionManagement sessionManagement;
-    private PersonDataManagement personDataManagement;
+    private UserDataManager userDataManager;
 
-    public AuthenticateServiceImpl(IPersonService personService,
+    public AuthenticateServiceImpl(IUserService userService,
                                    PasswordEncoder passwordEncoder,
                                    SessionManagement sessionManagement,
-                                   PersonDataManagement personDataManagement) {
+                                   UserDataManager userDataManager) {
 
-        this.personService = personService;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.sessionManagement = sessionManagement;
-        this.personDataManagement = personDataManagement;
+        this.userDataManager = userDataManager;
     }
 
     @Override
     public ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) {
-        PersonWithPasswordDTO person = personService.getByUserNameWithPassword(usernamePasswordDTO.getUsername());
-        if(person == null){
+        UserSecretDTO secretDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
+        if(secretDTO == null){
             return new ResultDTO(ResultStatus.FAILED, "username not found");
         }
 
-        return passwordEncoder.matches(usernamePasswordDTO.getPassword(), person.getPassword())
-                ? authenticateSuccess(person)
+        return passwordEncoder.matches(usernamePasswordDTO.getPassword(), secretDTO.getPassword())
+                ? authenticateSuccess(secretDTO)
                 : new ResultDTO(ResultStatus.FAILED, "password doesn't match");
     }
 
-    private ResultDTO authenticateSuccess(PersonDTO person){
-        personDataManagement.setPerson(person);
+    private ResultDTO authenticateSuccess(UserSecretDTO secretDTO){
+        UserData userData = new UserData();
+        userData.setUserId(secretDTO.getId());
+        userData.setPersonId(secretDTO.getPerson().getId());
+
+        userDataManager.setUserData(userData);
+
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new ResultDTO(ResultStatus.SUCCESS, "authenticate success");
     }
 
     @Override
     public boolean isAuthenticate() {
-        return personDataManagement.getPerson() != null;
+        return userDataManager.getUserData() != null;
     }
 
     @Override
     public void invalidate() {
-        personDataManagement.removePerson();
+        userDataManager.removeUserData();
         sessionManagement.invalidateSession();
     }
 }

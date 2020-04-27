@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@UrlFilter(urlPatterns = {"/mi", "/person*", "/card*", "/cash*", "/operation*"},
+@UrlFilter(urlPatterns = {
+        "/mi", "/user", "/change/username", "/change/password", "/person", "/card*", "/cash*", "/operation*"
+},
         excludeRequestMethods = @ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.PUT)
 )
 public class AuthenticateFilter implements AuthFilter {

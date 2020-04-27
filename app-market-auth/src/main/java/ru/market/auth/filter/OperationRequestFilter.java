@@ -2,8 +2,8 @@ package ru.market.auth.filter;
 
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
-import ru.market.data.session.api.PersonDataManagement;
 import ru.market.data.session.api.RequestBodyManagement;
+import ru.market.data.session.api.UserDataManager;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
@@ -21,15 +21,15 @@ import java.util.Set;
 
 @UrlFilter(urlPatterns = "/operation*")
 public class OperationRequestFilter implements AuthFilter {
-    private PersonDataManagement personDataManagement;
+    private UserDataManager userDataManager;
     private RequestBodyManagement requestBodyManagement;
     private IBankAccountService bankAccountService;
 
-    public OperationRequestFilter(PersonDataManagement personDataManagement,
+    public OperationRequestFilter(UserDataManager userDataManager,
                                   RequestBodyManagement requestBodyManagement,
                                   IBankAccountService bankAccountService) {
 
-        this.personDataManagement = personDataManagement;
+        this.userDataManager = userDataManager;
         this.requestBodyManagement = requestBodyManagement;
         this.bankAccountService = bankAccountService;
     }
@@ -38,7 +38,7 @@ public class OperationRequestFilter implements AuthFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Long personId = personDataManagement.getPerson().getId();
+        Long personId = userDataManager.getUserData().getPersonId();
         Set<Long> allAccountId = bankAccountService.getAllAccountIdByPersonId(personId);
 
         String servletPath = request.getServletPath();

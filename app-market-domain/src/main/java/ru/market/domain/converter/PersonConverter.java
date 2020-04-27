@@ -5,10 +5,10 @@ import org.dozer.DozerBeanMapper;
 import ru.market.domain.data.Person;
 
 import ru.market.dto.person.PersonDTO;
-import ru.market.dto.person.PersonWithPasswordDTO;
+import ru.market.dto.person.PersonNoIdDTO;
 
-public class PersonConverter extends AbstractDefaultConverter<Person, PersonDTO, PersonWithPasswordDTO> {
+public class PersonConverter extends AbstractDefaultConverter<Person, PersonNoIdDTO, PersonDTO> {
     public PersonConverter(DozerBeanMapper mapper) {
-        super(mapper, Person.class, PersonDTO.class, PersonWithPasswordDTO.class);
+        super(mapper, Person.class, PersonNoIdDTO.class, PersonDTO.class);
     }
 }

@@ -10,6 +10,7 @@ import ru.market.domain.converter.CardAccountConverter;
 import ru.market.domain.converter.CashAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
+import ru.market.domain.converter.UserConverter;
 
 @Configuration
 public class ConverterConfiguration {
@@ -21,6 +22,11 @@ public class ConverterConfiguration {
     @Bean
     public PersonConverter personConverter(DozerBeanMapper dozerBeanMapper){
         return new PersonConverter(dozerBeanMapper);
+    }
+
+    @Bean
+    public UserConverter userConverter(DozerBeanMapper dozerBeanMapper){
+        return new UserConverter(dozerBeanMapper);
     }
 
     @Bean

@@ -4,8 +4,7 @@ import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 
-import ru.market.data.session.api.RequestBodyManagement;
-import ru.market.data.session.api.UserDataManager;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.dto.person.PersonDTO;
 import ru.market.utils.JSONObjectUtil;
 
@@ -21,19 +20,17 @@ import java.io.InputStream;
         excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.GET)}
 )
 public class PersonRequestFilter implements AuthFilter {
-    private UserDataManager userDataManager;
-    private RequestBodyManagement requestBodyManagement;
+    private SessionDataManager sessionDataManager;
 
-    public PersonRequestFilter(UserDataManager userDataManager, RequestBodyManagement requestBodyManagement) {
-        this.userDataManager = userDataManager;
-        this.requestBodyManagement = requestBodyManagement;
+    public PersonRequestFilter(SessionDataManager sessionDataManager) {
+        this.sessionDataManager = sessionDataManager;
     }
 
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Long personId = userDataManager.getUserData().getPersonId();
+        Long personId = sessionDataManager.getUserData().getPersonId();
 
         String requestMethod = request.getMethod();
 
@@ -58,7 +55,7 @@ public class PersonRequestFilter implements AuthFilter {
 
         boolean isEqual = personId.equals(person.getId());
         if(isEqual){
-            requestBodyManagement.setCurrentRequestBody(person);
+            sessionDataManager.setCurrentRequestBody(person);
         }
 
         return isEqual;

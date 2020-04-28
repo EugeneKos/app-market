@@ -10,8 +10,7 @@ import ru.market.domain.service.IUserService;
 
 import ru.market.data.session.api.SessionDataManager;
 import ru.market.data.session.api.SessionManagement;
-import ru.market.data.session.api.UserDataManager;
-import ru.market.data.session.data.UserData;
+import ru.market.data.session.api.UserData;
 
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
@@ -29,19 +28,16 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private SessionManagement sessionManagement;
     private SessionDataManager sessionDataManager;
-    private UserDataManager userDataManager;
 
     public AuthenticateServiceImpl(IUserService userService,
                                    PasswordEncoder passwordEncoder,
                                    SessionManagement sessionManagement,
-                                   SessionDataManager sessionDataManager,
-                                   UserDataManager userDataManager) {
+                                   SessionDataManager sessionDataManager) {
 
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.sessionDataManager = sessionDataManager;
         this.sessionManagement = sessionManagement;
-        this.userDataManager = userDataManager;
     }
 
     @Override
@@ -65,7 +61,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         String authToken = passwordEncoder.encode(secretKey);
 
         sessionDataManager.setSecretKey(secretKey);
-        userDataManager.setUserData(userData);
+        sessionDataManager.setUserData(userData);
 
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new Authenticate(authToken, new ResultDTO(ResultStatus.SUCCESS, "authenticate success"));
@@ -83,7 +79,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public boolean isAuthenticate(String authToken) {
-        if(StringUtils.isEmpty(authToken) || userDataManager.getUserData() == null){
+        if(StringUtils.isEmpty(authToken) || sessionDataManager.getUserData() == null){
             return false;
         }
 
@@ -97,7 +93,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public void invalidate() {
-        userDataManager.removeUserData();
         sessionManagement.invalidateSession();
     }
 }

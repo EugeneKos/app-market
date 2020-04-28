@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import ru.market.data.session.api.SessionDataManager;
+
 import ru.market.domain.service.ICardAccountService;
 import ru.market.domain.service.ICashAccountService;
 import ru.market.domain.service.IOperationService;
@@ -13,9 +15,6 @@ import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
 
 import ru.market.auth.api.AuthenticateService;
-
-import ru.market.data.session.api.UserDataManager;
-import ru.market.data.session.api.RequestBodyManagement;
 
 import ru.market.web.controller.MainController;
 import ru.market.web.controller.rest.CardAccountController;
@@ -45,18 +44,17 @@ public class ControllerConfiguration {
 
     @Bean
     public PersonController personController(IPersonService personService,
-                                             RequestBodyManagement requestBodyManagement,
-                                             UserDataManager userDataManager){
+                                             SessionDataManager sessionDataManager){
 
-        return new PersonController(personService, requestBodyManagement, userDataManager);
+        return new PersonController(personService, sessionDataManager);
     }
 
     @Bean
     public UserController userController(IUserService userService,
-                                         UserDataManager userDataManager,
+                                         SessionDataManager sessionDataManager,
                                          AuthenticateService authenticateService){
 
-        return new UserController(userService, userDataManager, authenticateService);
+        return new UserController(userService, sessionDataManager, authenticateService);
     }
 
     @Bean
@@ -81,8 +79,8 @@ public class ControllerConfiguration {
 
     @Bean
     public OperationController operationController(IOperationService operationService,
-                                                   RequestBodyManagement requestBodyManagement){
+                                                   SessionDataManager sessionDataManager){
 
-        return new OperationController(operationService, requestBodyManagement);
+        return new OperationController(operationService, sessionDataManager);
     }
 }

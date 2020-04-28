@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import ru.market.data.session.api.UserDataManager;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.converter.BankAccountConverter;
 import ru.market.domain.converter.CardAccountConverter;
 import ru.market.domain.converter.CashAccountConverter;
@@ -100,8 +100,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public IPersonProvider personProvider(UserDataManager userDataManager, IPersonService personService){
-        return new PersonProviderImpl(userDataManager, personService);
+    public IPersonProvider personProvider(SessionDataManager sessionDataManager, IPersonService personService){
+        return new PersonProviderImpl(sessionDataManager, personService);
     }
 
     @Bean

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.market.data.session.api.RequestBodyManagement;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.service.IOperationService;
 
 import ru.market.dto.operation.OperationDTO;
@@ -18,27 +18,27 @@ import java.util.Set;
 @RequestMapping(path = "/operation")
 public class OperationController {
     private IOperationService operationService;
-    private RequestBodyManagement requestBodyManagement;
+    private SessionDataManager sessionDataManager;
 
     @Autowired
-    public OperationController(IOperationService operationService, RequestBodyManagement requestBodyManagement) {
+    public OperationController(IOperationService operationService, SessionDataManager sessionDataManager) {
         this.operationService = operationService;
-        this.requestBodyManagement = requestBodyManagement;
+        this.sessionDataManager = sessionDataManager;
     }
 
     @RequestMapping(path = "/enrollment", method = RequestMethod.PUT, produces = "application/json")
     public ResultDTO enrollment(){
-        return operationService.enrollment(requestBodyManagement.getCurrentRequestBody());
+        return operationService.enrollment(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/debit", method = RequestMethod.PUT, produces = "application/json")
     public ResultDTO debit(){
-        return operationService.debit(requestBodyManagement.getCurrentRequestBody());
+        return operationService.debit(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.PUT, produces = "application/json")
     public ResultDTO transfer(){
-        return operationService.transfer(requestBodyManagement.getCurrentRequestBody());
+        return operationService.transfer(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/account/{accountId}", method = RequestMethod.GET, produces = "application/json")

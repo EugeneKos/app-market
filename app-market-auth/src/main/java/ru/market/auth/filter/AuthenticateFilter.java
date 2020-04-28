@@ -1,6 +1,7 @@
 package ru.market.auth.filter;
 
 import ru.market.auth.annotation.UrlFilter;
+import ru.market.auth.api.AuthFields;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
 
@@ -25,7 +26,7 @@ public class AuthenticateFilter implements AuthFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        if(authenticateService.isAuthenticate()){
+        if(authenticateService.isAuthenticate(request.getHeader(AuthFields.AUTH_TOKEN_HEADER))){
             authChain.doFilter(request, response, filterChain);
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");

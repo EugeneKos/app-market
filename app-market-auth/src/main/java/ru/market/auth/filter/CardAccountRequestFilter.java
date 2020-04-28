@@ -3,7 +3,7 @@ package ru.market.auth.filter;
 import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 
-import ru.market.data.session.api.UserDataManager;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.service.ICardAccountService;
 
 import java.util.Set;
@@ -13,17 +13,17 @@ import java.util.Set;
                 methods = {ExcludeRequestMethod.Method.PUT, ExcludeRequestMethod.Method.GET})}
 )
 public class CardAccountRequestFilter extends AccountRequestFilter {
-    private UserDataManager userDataManager;
+    private SessionDataManager sessionDataManager;
     private ICardAccountService cardAccountService;
 
-    public CardAccountRequestFilter(UserDataManager userDataManager, ICardAccountService cardAccountService) {
-        this.userDataManager = userDataManager;
+    public CardAccountRequestFilter(SessionDataManager sessionDataManager, ICardAccountService cardAccountService) {
+        this.sessionDataManager = sessionDataManager;
         this.cardAccountService = cardAccountService;
     }
 
     @Override
     Set<Long> getAllAccountId() {
-        Long personId = userDataManager.getUserData().getPersonId();
+        Long personId = sessionDataManager.getUserData().getPersonId();
         return cardAccountService.getAllAccountIdByPersonId(personId);
     }
 

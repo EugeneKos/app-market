@@ -2,8 +2,7 @@ package ru.market.auth.filter;
 
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
-import ru.market.data.session.api.RequestBodyManagement;
-import ru.market.data.session.api.UserDataManager;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
@@ -21,16 +20,12 @@ import java.util.Set;
 
 @UrlFilter(urlPatterns = "/operation*")
 public class OperationRequestFilter implements AuthFilter {
-    private UserDataManager userDataManager;
-    private RequestBodyManagement requestBodyManagement;
+    private SessionDataManager sessionDataManager;
     private IBankAccountService bankAccountService;
 
-    public OperationRequestFilter(UserDataManager userDataManager,
-                                  RequestBodyManagement requestBodyManagement,
-                                  IBankAccountService bankAccountService) {
+    public OperationRequestFilter(SessionDataManager sessionDataManager, IBankAccountService bankAccountService) {
 
-        this.userDataManager = userDataManager;
-        this.requestBodyManagement = requestBodyManagement;
+        this.sessionDataManager = sessionDataManager;
         this.bankAccountService = bankAccountService;
     }
 
@@ -38,7 +33,7 @@ public class OperationRequestFilter implements AuthFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
-        Long personId = userDataManager.getUserData().getPersonId();
+        Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allAccountId = bankAccountService.getAllAccountIdByPersonId(personId);
 
         String servletPath = request.getServletPath();
@@ -88,7 +83,7 @@ public class OperationRequestFilter implements AuthFilter {
 
         if(isWell){
             if(operationBasedDTO != null){
-                requestBodyManagement.setCurrentRequestBody(operationBasedDTO);
+                sessionDataManager.setCurrentRequestBody(operationBasedDTO);
             }
             authChain.doFilter(request, response, filterChain);
         } else {

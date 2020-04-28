@@ -1,4 +1,4 @@
-package ru.market.data.session.data;
+package ru.market.data.session.api;
 
 public class UserData {
     private Long userId;

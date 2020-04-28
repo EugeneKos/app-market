@@ -17,7 +17,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users",
-        uniqueConstraints = @UniqueConstraint(name = "username_person_uq", columnNames = {"username", "person_id"}))
+        uniqueConstraints = {
+                @UniqueConstraint(name = "username_person_uq", columnNames = {"username", "person_id"})
+})
 public class User {
     @Id
     @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)

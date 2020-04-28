@@ -15,6 +15,6 @@
     "type":"TASK",
     "code":"MARKET-3",
     "summary":"Реализовать получения токена аутентификации для предотвращения csrf атак",
-    "status":"OPEN-IN_PROGRESS"
+    "status":"CLOSED"
   }
 ]

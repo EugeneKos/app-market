@@ -39,7 +39,6 @@ public class IUserServiceTest {
 
         Assert.assertNotNull(userSecretDTO);
         Assert.assertNotNull(userSecretDTO.getPassword());
-        Assert.assertNotNull(userSecretDTO.getSecretKey());
     }
 
 }

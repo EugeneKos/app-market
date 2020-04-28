@@ -25,8 +25,6 @@ import ru.market.dto.user.UserPasswordDTO;
 import ru.market.dto.user.UserSecretDTO;
 import ru.market.dto.user.UserUsernameDTO;
 
-import java.util.UUID;
-
 public class UserServiceImpl implements IUserService {
     private UserRepository userRepository;
     private UserConverter userConverter;
@@ -72,16 +70,10 @@ public class UserServiceImpl implements IUserService {
         Person person = personConverter.convertToEntity(personDTO);
 
         user.setPerson(person);
-        user.setSecretKey(generateSecretKey());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user = userRepository.saveAndFlush(user);
         return userConverter.convertToBasedDTO(user);
-    }
-
-    private String generateSecretKey(){
-        String uuid = UUID.randomUUID().toString();
-        return uuid.replaceAll("-", "");
     }
 
     @Transactional

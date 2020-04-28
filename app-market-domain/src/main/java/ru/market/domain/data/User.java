@@ -18,8 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(name = "username_person_uq", columnNames = {"username", "person_id"}),
-                @UniqueConstraint(name = "secret_key_uq", columnNames = "secret_key")
+                @UniqueConstraint(name = "username_person_uq", columnNames = {"username", "person_id"})
 })
 public class User {
     @Id
@@ -32,9 +31,6 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "secret_key", nullable = false)
-    private String secretKey;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "user_person_fk"))
@@ -64,14 +60,6 @@ public class User {
         this.password = password;
     }
 
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
     public Person getPerson() {
         return person;
     }
@@ -87,12 +75,11 @@ public class User {
         User user = (User) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(username, user.username) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(secretKey, user.secretKey);
+                Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, secretKey);
+        return Objects.hash(id, username, password);
     }
 }

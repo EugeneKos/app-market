@@ -8,28 +8,20 @@ import ru.market.domain.data.CardAccount;
 import ru.market.domain.data.CashAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
-import ru.market.domain.data.User;
 import ru.market.domain.repository.account.CardAccountRepository;
 import ru.market.domain.repository.account.CashAccountRepository;
-import ru.market.domain.repository.common.UserRepository;
 import ru.market.domain.validator.CommonValidator;
 import ru.market.domain.validator.account.AccountValidator;
 import ru.market.domain.validator.account.CardAccountValidator;
 import ru.market.domain.validator.account.CashAccountValidator;
 import ru.market.domain.validator.operation.OperationValidator;
 import ru.market.domain.validator.person.PersonValidator;
-import ru.market.domain.validator.user.UserValidator;
 
 @Configuration
 public class ValidatorConfiguration {
     @Bean
     public CommonValidator<Person> personValidator(){
         return new PersonValidator();
-    }
-
-    @Bean
-    public CommonValidator<User> userValidator(UserRepository userRepository){
-        return new UserValidator(userRepository);
     }
 
     @Bean

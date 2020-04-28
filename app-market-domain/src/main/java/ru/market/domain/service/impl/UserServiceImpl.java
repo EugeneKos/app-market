@@ -14,6 +14,8 @@ import ru.market.domain.repository.common.UserRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
 import ru.market.domain.validator.CommonValidator;
+import ru.market.domain.validator.user.UserValidator;
+import ru.market.domain.validator.user.UserValidatorStrategy;
 
 import ru.market.dto.person.PersonDTO;
 import ru.market.dto.person.PersonNoIdDTO;
@@ -38,13 +40,11 @@ public class UserServiceImpl implements IUserService {
 
     public UserServiceImpl(UserRepository userRepository,
                            UserConverter userConverter,
-                           CommonValidator<User> validator,
                            IPersonService personService,
                            PersonConverter personConverter) {
 
         this.userRepository = userRepository;
         this.userConverter = userConverter;
-        this.validator = validator;
         this.personService = personService;
         this.personConverter = personConverter;
     }
@@ -63,6 +63,7 @@ public class UserServiceImpl implements IUserService {
         UserSecretDTO secretDTO = userConverter.convertToUserSecretDTO(registrationDTO);
         User user = userConverter.convertToEntity(secretDTO);
 
+        validator = new UserValidator(userRepository, UserValidatorStrategy.FULL);
         validator.validate(user);
 
         PersonNoIdDTO personNoIdDTO = userConverter.convertToPersonNoIdDTO(registrationDTO);
@@ -86,6 +87,7 @@ public class UserServiceImpl implements IUserService {
         User user = getUserById(userId);
         user.setUsername(usernameDTO.getUsername());
 
+        validator = new UserValidator(userRepository, UserValidatorStrategy.USERNAME_ONLY);
         validator.validate(user);
 
         user = userRepository.saveAndFlush(user);
@@ -108,6 +110,7 @@ public class UserServiceImpl implements IUserService {
 
         user.setPassword(passwordDTO.getNewPassword());
 
+        validator = new UserValidator(userRepository, UserValidatorStrategy.PASSWORD_ONLY);
         validator.validate(user);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

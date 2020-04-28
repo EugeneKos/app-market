@@ -12,15 +12,32 @@ public class UserValidator implements CommonValidator<User> {
     private static final int REQUIRED_PASSWORD_LENGTH = 8;
 
     private UserRepository userRepository;
+    private UserValidatorStrategy strategy;
 
-    public UserValidator(UserRepository userRepository) {
+    public UserValidator(UserRepository userRepository, UserValidatorStrategy strategy) {
         this.userRepository = userRepository;
+        this.strategy = strategy;
     }
 
     @Override
     public void validate(User user) throws ValidateException {
-        validatePassword(user);
-        validateUsername(user);
+        switch (strategy){
+            case FULL: {
+                validatePassword(user);
+                validateUsername(user);
+                break;
+            }
+            case USERNAME_ONLY: {
+                validateUsername(user);
+                break;
+            }
+            case PASSWORD_ONLY: {
+                validatePassword(user);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Стратегия валидации учетных данных не определена");
+        }
     }
 
     private void validatePassword(User user){

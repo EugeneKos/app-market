@@ -17,7 +17,6 @@ import ru.market.domain.data.CardAccount;
 import ru.market.domain.data.CashAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
-import ru.market.domain.data.User;
 import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.account.CardAccountRepository;
 import ru.market.domain.repository.account.CashAccountRepository;
@@ -60,14 +59,11 @@ public class ServiceConfiguration {
     @Bean
     public IUserService userService(UserRepository userRepository,
                                     UserConverter userConverter,
-                                    CommonValidator<User> validator,
                                     IPersonService personService,
                                     PersonConverter personConverter,
                                     PasswordEncoder passwordEncoder){
 
-        UserServiceImpl userService = new UserServiceImpl(userRepository, userConverter, validator,
-                personService, personConverter
-        );
+        UserServiceImpl userService = new UserServiceImpl(userRepository, userConverter, personService, personConverter);
         userService.setPasswordEncoder(passwordEncoder);
         return userService;
     }

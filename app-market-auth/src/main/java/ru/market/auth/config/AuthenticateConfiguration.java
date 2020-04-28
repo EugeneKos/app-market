@@ -18,6 +18,7 @@ import ru.market.auth.impl.AuthFilterHandlerImpl;
 import ru.market.auth.impl.AuthenticateServiceImpl;
 
 import ru.market.data.session.api.RequestBodyManagement;
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.data.session.api.SessionManagement;
 import ru.market.data.session.api.UserDataManager;
 
@@ -39,9 +40,10 @@ public class AuthenticateConfiguration {
     public AuthenticateService authenticateService(IUserService userService,
                                                    PasswordEncoder passwordEncoder,
                                                    SessionManagement sessionManagement,
+                                                   SessionDataManager sessionDataManager,
                                                    UserDataManager userDataManager){
 
-        return new AuthenticateServiceImpl(userService, passwordEncoder, sessionManagement, userDataManager);
+        return new AuthenticateServiceImpl(userService, passwordEncoder, sessionManagement, sessionDataManager, userDataManager);
     }
 
     @Bean

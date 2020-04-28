@@ -1,11 +1,14 @@
 package ru.market.auth.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 
+import ru.market.auth.api.Authenticate;
 import ru.market.auth.api.AuthenticateService;
 
 import ru.market.domain.service.IUserService;
 
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.data.session.api.SessionManagement;
 import ru.market.data.session.api.UserDataManager;
 import ru.market.data.session.data.UserData;
@@ -15,6 +18,8 @@ import ru.market.dto.result.ResultDTO;
 import ru.market.dto.result.ResultStatus;
 import ru.market.dto.user.UserSecretDTO;
 
+import java.util.UUID;
+
 public class AuthenticateServiceImpl implements AuthenticateService {
     private static final int INACTIVE_INTERVAL = 1200; // 20 min
 
@@ -23,21 +28,24 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private PasswordEncoder passwordEncoder;
 
     private SessionManagement sessionManagement;
+    private SessionDataManager sessionDataManager;
     private UserDataManager userDataManager;
 
     public AuthenticateServiceImpl(IUserService userService,
                                    PasswordEncoder passwordEncoder,
                                    SessionManagement sessionManagement,
+                                   SessionDataManager sessionDataManager,
                                    UserDataManager userDataManager) {
 
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.sessionDataManager = sessionDataManager;
         this.sessionManagement = sessionManagement;
         this.userDataManager = userDataManager;
     }
 
     @Override
-    public ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) {
+    public Authenticate authenticate(UsernamePasswordDTO usernamePasswordDTO) {
         UserSecretDTO secretDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
         if(secretDTO == null){
             return failed("username not found");
@@ -48,25 +56,43 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 : failed("password doesn't match");
     }
 
-    private ResultDTO authenticateSuccess(UserSecretDTO secretDTO){
+    private Authenticate authenticateSuccess(UserSecretDTO secretDTO){
         UserData userData = new UserData();
         userData.setUserId(secretDTO.getId());
         userData.setPersonId(secretDTO.getPerson().getId());
 
+        String secretKey = generateSecretKey();
+        String authToken = passwordEncoder.encode(secretKey);
+
+        sessionDataManager.setSecretKey(secretKey);
         userDataManager.setUserData(userData);
 
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
-        return new ResultDTO(ResultStatus.SUCCESS, "authenticate success");
+        return new Authenticate(authToken, new ResultDTO(ResultStatus.SUCCESS, "authenticate success"));
     }
 
-    private ResultDTO failed(String description){
+    private Authenticate failed(String description){
         sessionManagement.invalidateSession();
-        return new ResultDTO(ResultStatus.FAILED, description);
+        return new Authenticate(null, new ResultDTO(ResultStatus.FAILED, description));
+    }
+
+    private String generateSecretKey(){
+        String uuid = UUID.randomUUID().toString();
+        return uuid.replaceAll("-", "");
     }
 
     @Override
-    public boolean isAuthenticate() {
-        return userDataManager.getUserData() != null;
+    public boolean isAuthenticate(String authToken) {
+        if(StringUtils.isEmpty(authToken) || userDataManager.getUserData() == null){
+            return false;
+        }
+
+        String secretKey = sessionDataManager.getSecretKey();
+        if(StringUtils.isEmpty(secretKey)){
+            return false;
+        }
+
+        return passwordEncoder.matches(secretKey, authToken);
     }
 
     @Override

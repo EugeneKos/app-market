@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
+import ru.market.auth.filter.AuthTokenFilter;
 import ru.market.auth.filter.AuthenticateFilter;
 import ru.market.auth.filter.CardAccountRequestFilter;
 import ru.market.auth.filter.CashAccountRequestFilter;
@@ -48,6 +49,7 @@ public class AuthenticateConfiguration {
     public AuthFilterChain authFilterChain(AuthFilterHandler authFilterHandler,
                                            AuthenticateService authenticateService,
                                            SessionDataManager sessionDataManager,
+                                           PasswordEncoder passwordEncoder,
                                            ICardAccountService cardAccountService,
                                            ICashAccountService cashAccountService,
                                            IBankAccountService bankAccountService){
@@ -56,6 +58,7 @@ public class AuthenticateConfiguration {
 
         authFilterChain.registerFilters(Arrays.asList(
                 new AuthenticateFilter(authenticateService),
+                new AuthTokenFilter(sessionDataManager, passwordEncoder),
                 new PersonRequestFilter(sessionDataManager),
                 new CardAccountRequestFilter(sessionDataManager, cardAccountService),
                 new CashAccountRequestFilter(sessionDataManager, cashAccountService),

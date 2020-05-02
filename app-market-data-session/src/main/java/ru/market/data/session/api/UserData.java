@@ -3,6 +3,8 @@ package ru.market.data.session.api;
 public class UserData {
     private Long userId;
     private Long personId;
+    private boolean authenticate;
+    private String secretKey;
 
     public Long getUserId() {
         return userId;
@@ -18,5 +20,21 @@ public class UserData {
 
     public void setPersonId(Long personId) {
         this.personId = personId;
+    }
+
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }

@@ -26,15 +26,4 @@ public class SessionDataManagerImpl implements SessionDataManager {
         SessionContext.removeSessionAttribute(SessionAttributeNames.REQUEST_BODY);
         return body;
     }
-
-
-    @Override
-    public void setSecretKey(String secretKey) {
-        SessionContext.setSessionAttribute(SessionAttributeNames.SECRET_KEY, secretKey);
-    }
-
-    @Override
-    public String getSecretKey() {
-        return SessionContext.getSessionAttribute(SessionAttributeNames.SECRET_KEY);
-    }
 }

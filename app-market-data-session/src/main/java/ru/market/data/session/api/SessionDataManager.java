@@ -6,7 +6,4 @@ public interface SessionDataManager {
 
     <T> void setCurrentRequestBody(T body);
     <T> T getCurrentRequestBody();
-
-    void setSecretKey(String secretKey);
-    String getSecretKey();
 }

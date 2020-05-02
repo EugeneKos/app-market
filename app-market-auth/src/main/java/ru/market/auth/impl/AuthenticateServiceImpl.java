@@ -1,7 +1,6 @@
 package ru.market.auth.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
 
 import ru.market.auth.api.Authenticate;
 import ru.market.auth.api.AuthenticateService;
@@ -42,6 +41,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public Authenticate authenticate(UsernamePasswordDTO usernamePasswordDTO) {
+        sessionDataManager.setUserData(new UserData());
+
         UserSecretDTO secretDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
         if(secretDTO == null){
             return failed("username not found");
@@ -53,15 +54,15 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     private Authenticate authenticateSuccess(UserSecretDTO secretDTO){
-        UserData userData = new UserData();
-        userData.setUserId(secretDTO.getId());
-        userData.setPersonId(secretDTO.getPerson().getId());
+        UserData userData = sessionDataManager.getUserData();
 
         String secretKey = generateSecretKey();
         String authToken = passwordEncoder.encode(secretKey);
 
-        sessionDataManager.setSecretKey(secretKey);
-        sessionDataManager.setUserData(userData);
+        userData.setUserId(secretDTO.getId());
+        userData.setPersonId(secretDTO.getPerson().getId());
+        userData.setAuthenticate(true);
+        userData.setSecretKey(secretKey);
 
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new Authenticate(authToken, new ResultDTO(ResultStatus.SUCCESS, "authenticate success"));
@@ -78,17 +79,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public boolean isAuthenticate(String authToken) {
-        if(StringUtils.isEmpty(authToken) || sessionDataManager.getUserData() == null){
-            return false;
-        }
-
-        String secretKey = sessionDataManager.getSecretKey();
-        if(StringUtils.isEmpty(secretKey)){
-            return false;
-        }
-
-        return passwordEncoder.matches(secretKey, authToken);
+    public boolean isAuthenticate() {
+        return sessionDataManager.getUserData() != null && sessionDataManager.getUserData().isAuthenticate();
     }
 
     @Override

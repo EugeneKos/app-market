@@ -14,7 +14,7 @@ import ru.market.data.session.api.UserData;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
 import ru.market.dto.result.ResultStatus;
-import ru.market.dto.user.UserSecretDTO;
+import ru.market.dto.user.UserAdditionalDTO;
 
 import java.util.UUID;
 
@@ -43,24 +43,24 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public Authenticate authenticate(UsernamePasswordDTO usernamePasswordDTO) {
         sessionDataManager.setUserData(new UserData());
 
-        UserSecretDTO secretDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
-        if(secretDTO == null){
+        UserAdditionalDTO userAdditionalDTO = userService.getByUsername(usernamePasswordDTO.getUsername());
+        if(userAdditionalDTO == null){
             return failed("username not found");
         }
 
-        return passwordEncoder.matches(usernamePasswordDTO.getPassword(), secretDTO.getPassword())
-                ? authenticateSuccess(secretDTO)
+        return passwordEncoder.matches(usernamePasswordDTO.getPassword(), userAdditionalDTO.getPassword())
+                ? authenticateSuccess(userAdditionalDTO)
                 : failed("password doesn't match");
     }
 
-    private Authenticate authenticateSuccess(UserSecretDTO secretDTO){
+    private Authenticate authenticateSuccess(UserAdditionalDTO userAdditionalDTO){
         UserData userData = sessionDataManager.getUserData();
 
         String secretKey = generateSecretKey();
         String authToken = passwordEncoder.encode(secretKey);
 
-        userData.setUserId(secretDTO.getId());
-        userData.setPersonId(secretDTO.getPerson().getId());
+        userData.setUserId(userAdditionalDTO.getId());
+        userData.setPersonId(userAdditionalDTO.getPerson().getId());
         userData.setAuthenticate(true);
         userData.setSecretKey(secretKey);
 

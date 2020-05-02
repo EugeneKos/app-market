@@ -8,6 +8,7 @@ import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.converter.UserConverter;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.User;
+import ru.market.domain.data.enumeration.UserStatus;
 import ru.market.domain.exception.BadRequestException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.common.UserRepository;
@@ -24,8 +25,10 @@ import ru.market.dto.result.ResultStatus;
 import ru.market.dto.user.RegistrationDTO;
 import ru.market.dto.user.UserDTO;
 import ru.market.dto.user.UserPasswordDTO;
-import ru.market.dto.user.UserSecretDTO;
+import ru.market.dto.user.UserAdditionalDTO;
 import ru.market.dto.user.UserUsernameDTO;
+
+import java.time.LocalDateTime;
 
 public class UserServiceImpl implements IUserService {
     private UserRepository userRepository;
@@ -60,8 +63,8 @@ public class UserServiceImpl implements IUserService {
             return null;
         }
 
-        UserSecretDTO secretDTO = userConverter.convertToUserSecretDTO(registrationDTO);
-        User user = userConverter.convertToEntity(secretDTO);
+        UserAdditionalDTO userAdditionalDTO = userConverter.convertToUserAdditionalDTO(registrationDTO);
+        User user = userConverter.convertToEntity(userAdditionalDTO);
 
         validator = new UserValidator(userRepository, UserValidatorStrategy.FULL);
         validator.validate(user);
@@ -72,6 +75,8 @@ public class UserServiceImpl implements IUserService {
 
         user.setPerson(person);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setStatus(UserStatus.ACTIVE);
+        user.setTimestampStatus(LocalDateTime.now());
 
         user = userRepository.saveAndFlush(user);
         return userConverter.convertToBasedDTO(user);
@@ -132,9 +137,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserSecretDTO getByUsername(String username) {
+    public UserAdditionalDTO getByUsername(String username) {
         User user = userRepository.findByUsername(username);
         return userConverter.convertToDTO(user);
+    }
+
+    @Transactional
+    @Override
+    public void updateUserStatusByUsername(String username, UserStatus status) {
+        userRepository.updateUserStatusAndTimestampStatusByUsername(username, status, LocalDateTime.now());
     }
 
     @Transactional

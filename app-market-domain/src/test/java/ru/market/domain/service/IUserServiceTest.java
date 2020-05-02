@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.market.domain.config.DomainTestConfiguration;
 import ru.market.dto.user.RegistrationDTO;
 import ru.market.dto.user.UserDTO;
-import ru.market.dto.user.UserSecretDTO;
+import ru.market.dto.user.UserAdditionalDTO;
+import ru.market.dto.user.UserStatus;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
@@ -22,7 +23,13 @@ public class IUserServiceTest {
     private IUserService userService;
 
     @Test
-    public void registrationTest(){
+    public void userServiceTest(){
+        UserDTO userDTO = registrationTest();
+        UserAdditionalDTO userAdditionalDTO = getByUsernameTest(userDTO);
+        updateUserStatusByIdTest(userAdditionalDTO);
+    }
+
+    private UserDTO registrationTest(){
         RegistrationDTO registrationDTO = new RegistrationDTO();
         registrationDTO.setFirstName("Иван");
         registrationDTO.setLastName("Иванов");
@@ -35,10 +42,28 @@ public class IUserServiceTest {
         Assert.assertNotNull(userDTO);
         Assert.assertNotNull(userDTO.getId());
 
-        UserSecretDTO userSecretDTO = userService.getByUsername("ivanov");
-
-        Assert.assertNotNull(userSecretDTO);
-        Assert.assertNotNull(userSecretDTO.getPassword());
+        return userDTO;
     }
 
+    private UserAdditionalDTO getByUsernameTest(UserDTO userDTO){
+        UserAdditionalDTO userAdditionalDTO = userService.getByUsername(userDTO.getUsername());
+
+        Assert.assertNotNull(userAdditionalDTO);
+        Assert.assertNotNull(userAdditionalDTO.getPassword());
+        Assert.assertEquals(UserStatus.ACTIVE, userAdditionalDTO.getStatus());
+        Assert.assertNotNull(userAdditionalDTO.getTimestampStatus());
+
+        return userAdditionalDTO;
+    }
+
+    private void updateUserStatusByIdTest(UserAdditionalDTO userAdditionalDTO){
+        userService.updateUserStatusByUsername(
+                userAdditionalDTO.getUsername(), ru.market.domain.data.enumeration.UserStatus.TEMPORARY_LOCK
+        );
+
+        userAdditionalDTO = userService.getByUsername(userAdditionalDTO.getUsername());
+
+        Assert.assertNotNull(userAdditionalDTO);
+        Assert.assertEquals(UserStatus.TEMPORARY_LOCK, userAdditionalDTO.getStatus());
+    }
 }

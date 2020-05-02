@@ -1,8 +1,12 @@
 package ru.market.domain.data;
 
+import ru.market.domain.data.enumeration.UserStatus;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +36,13 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    @Column(name = "timestamp_status", nullable = false)
+    private LocalDateTime timestampStatus;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "user_person_fk"))
@@ -58,6 +70,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getTimestampStatus() {
+        return timestampStatus;
+    }
+
+    public void setTimestampStatus(LocalDateTime timestampStatus) {
+        this.timestampStatus = timestampStatus;
     }
 
     public Person getPerson() {

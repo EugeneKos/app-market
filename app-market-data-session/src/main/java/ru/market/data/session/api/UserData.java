@@ -5,6 +5,7 @@ public class UserData {
     private Long personId;
     private boolean authenticate;
     private String secretKey;
+    private int passwordAttemptCount;
 
     public Long getUserId() {
         return userId;
@@ -36,5 +37,13 @@ public class UserData {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public int getPasswordAttemptCount() {
+        return passwordAttemptCount;
+    }
+
+    public void setPasswordAttemptCount(int passwordAttemptCount) {
+        this.passwordAttemptCount = passwordAttemptCount;
     }
 }

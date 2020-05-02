@@ -57,8 +57,8 @@ public class IUserServiceTest {
     }
 
     private void updateUserStatusByIdTest(UserAdditionalDTO userAdditionalDTO){
-        userService.updateUserStatusById(
-                userAdditionalDTO.getId(), ru.market.domain.data.enumeration.UserStatus.TEMPORARY_LOCK
+        userService.updateUserStatusByUsername(
+                userAdditionalDTO.getUsername(), ru.market.domain.data.enumeration.UserStatus.TEMPORARY_LOCK
         );
 
         userAdditionalDTO = userService.getByUsername(userAdditionalDTO.getUsername());

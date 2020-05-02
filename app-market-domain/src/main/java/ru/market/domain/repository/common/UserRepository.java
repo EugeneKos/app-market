@@ -15,7 +15,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(@Param("username") String username);
 
     @Modifying
-    @Query("update User u set u.status = :status, u.timestampStatus = :timestampStatus where u.id = :id")
-    void updateUserStatusAndTimestampStatusById(@Param("id") Long id, @Param("status") UserStatus status,
-                                                @Param("timestampStatus") LocalDateTime timestampStatus);
+    @Query("update User u set u.status = :status, u.timestampStatus = :timestampStatus where u.username = :username")
+    void updateUserStatusAndTimestampStatusByUsername(@Param("username") String username,
+                                                      @Param("status") UserStatus status,
+                                                      @Param("timestampStatus") LocalDateTime timestampStatus);
 }

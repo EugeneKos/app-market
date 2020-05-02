@@ -144,8 +144,8 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public void updateUserStatusById(Long id, UserStatus status) {
-        userRepository.updateUserStatusAndTimestampStatusById(id, status, LocalDateTime.now());
+    public void updateUserStatusByUsername(String username, UserStatus status) {
+        userRepository.updateUserStatusAndTimestampStatusByUsername(username, status, LocalDateTime.now());
     }
 
     @Transactional

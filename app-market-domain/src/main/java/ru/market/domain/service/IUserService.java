@@ -15,6 +15,6 @@ public interface IUserService {
     ResultDTO changePassword(UserPasswordDTO passwordDTO, Long userId);
     UserDTO getById(Long id);
     UserAdditionalDTO getByUsername(String username);
-    void updateUserStatusById(Long id, UserStatus status);
+    void updateUserStatusByUsername(String username, UserStatus status);
     void deleteById(Long id);
 }

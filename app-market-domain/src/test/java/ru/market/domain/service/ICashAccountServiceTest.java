@@ -30,5 +30,8 @@ public class ICashAccountServiceTest {
 
         Assert.assertNotNull(dto);
         Assert.assertNotNull(dto.getId());
+        Assert.assertNotNull(dto.getDateCreatedStr());
+        Assert.assertEquals("Кошелёк", dto.getName());
+        Assert.assertEquals("700", dto.getBalance());
     }
 }

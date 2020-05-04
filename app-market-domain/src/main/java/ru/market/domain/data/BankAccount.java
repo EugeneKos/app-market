@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,9 @@ public class BankAccount {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "date_created", nullable = false)
+    private LocalDate dateCreated;
 
     @ManyToOne
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "bank_person_fk"))
@@ -62,6 +66,14 @@ public class BankAccount {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public Person getPerson() {

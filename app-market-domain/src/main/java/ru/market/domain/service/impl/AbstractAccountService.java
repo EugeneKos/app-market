@@ -11,6 +11,7 @@ import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.validator.CommonValidator;
 import ru.market.utils.AccountLockHolder;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,7 @@ public abstract class AbstractAccountService<Entity extends BankAccount, NoIdDTO
 
         validator.validate(entity);
 
+        entity.setDateCreated(LocalDate.now());
         entity.setPerson(personProvider.getCurrentPerson());
 
         entity = accountRepository.saveAndFlush(entity);

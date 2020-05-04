@@ -1,14 +1,19 @@
 package ru.market.domain.service.impl;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import ru.market.domain.converter.OperationConverter;
+import ru.market.domain.data.Operation;
 import ru.market.domain.data.enumeration.OperationType;
 import ru.market.domain.repository.common.OperationRepository;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
+import ru.market.domain.specification.OperationSpecification;
 
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
+import ru.market.dto.operation.OperationFilterDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 import ru.market.dto.result.ResultDTO;
 
@@ -69,6 +74,16 @@ public class OperationServiceImpl implements IOperationService {
     @Override
     public Set<OperationDTO> getAllByAccountId(Long accountId) {
         return operationRepository.findAllByAccountId(accountId)
+                .stream()
+                .map(operationConverter::convertToDTO)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<OperationDTO> getAllByAccountIdAndFilter(Long accountId, OperationFilterDTO filterDTO) {
+        Specification<Operation> specification = OperationSpecification.createSpecification(accountId, filterDTO);
+
+        return operationRepository.findAll(specification)
                 .stream()
                 .map(operationConverter::convertToDTO)
                 .collect(Collectors.toSet());

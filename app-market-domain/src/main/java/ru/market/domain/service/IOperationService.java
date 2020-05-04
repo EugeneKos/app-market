@@ -2,6 +2,7 @@ package ru.market.domain.service;
 
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
+import ru.market.dto.operation.OperationFilterDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 import ru.market.dto.result.ResultDTO;
 
@@ -15,4 +16,6 @@ public interface IOperationService {
     ResultDTO transfer(OperationTransferDTO transferDTO);
 
     Set<OperationDTO> getAllByAccountId(Long accountId);
+
+    Set<OperationDTO> getAllByAccountIdAndFilter(Long accountId, OperationFilterDTO filterDTO);
 }

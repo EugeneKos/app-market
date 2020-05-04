@@ -15,7 +15,6 @@ import ru.market.domain.converter.UserConverter;
 import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.CardAccount;
 import ru.market.domain.data.CashAccount;
-import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.repository.account.BankAccountRepository;
 import ru.market.domain.repository.account.CardAccountRepository;
@@ -103,10 +102,9 @@ public class ServiceConfiguration {
     @Bean
     public OperationExecutor operationExecutor(OperationRepository operationRepository,
                                                OperationConverter operationConverter,
-                                               IBankAccountService bankAccountService,
-                                               CommonValidator<Operation> validator){
+                                               IBankAccountService bankAccountService){
 
-        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService, validator);
+        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService);
     }
 
     @Bean

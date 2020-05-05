@@ -6,6 +6,7 @@ import ru.market.domain.exception.ValidateException;
 import ru.market.domain.service.utils.ServiceUtils;
 import ru.market.domain.validator.CommonValidator;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -23,13 +24,13 @@ public class OperationValidator implements CommonValidator<Operation> {
     }
 
     private void validateAmount(Operation operation) throws ValidateException {
-        String amount = operation.getAmount();
+        BigDecimal amount = operation.getAmount();
 
-        if(amount == null || amount.isEmpty()){
+        if(amount == null){
             throw new ValidateException("Сумма перевода должна быть заполнена.");
         }
 
-        if(ServiceUtils.isMatchMoney(amount)){
+        if(ServiceUtils.isMatchMoney(amount.toString())){
             return;
         }
 

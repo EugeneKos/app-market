@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class BankAccount {
     private Long id;
 
     @Column(name = "balance", nullable = false)
-    private String balance;
+    private BigDecimal balance;
 
     @Column(name = "description")
     private String description;
@@ -52,11 +53,11 @@ public class BankAccount {
         this.id = id;
     }
 
-    public String getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

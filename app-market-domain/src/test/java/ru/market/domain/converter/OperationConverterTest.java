@@ -14,6 +14,7 @@ import ru.market.domain.data.enumeration.OperationType;
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -29,7 +30,7 @@ public class OperationConverterTest {
         operation.setId(11L);
         operation.setDate(LocalDate.of(2020, 4, 3));
         operation.setTime(LocalTime.of(14, 31));
-        operation.setAmount("250");
+        operation.setAmount(new BigDecimal(250));
         operation.setDescription("op description");
         operation.setOperationType(OperationType.ENROLLMENT);
 
@@ -57,7 +58,7 @@ public class OperationConverterTest {
         Assert.assertNotNull(operation);
         Assert.assertEquals(LocalDate.of(2020, 4, 3), operation.getDate());
         Assert.assertEquals(LocalTime.of(14, 31), operation.getTime());
-        Assert.assertEquals("250", operation.getAmount());
+        Assert.assertEquals(new BigDecimal(250), operation.getAmount());
         Assert.assertEquals("op description", operation.getDescription());
     }
 }

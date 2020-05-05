@@ -5,6 +5,8 @@ import ru.market.domain.exception.ValidateException;
 import ru.market.domain.service.utils.ServiceUtils;
 import ru.market.domain.validator.CommonValidator;
 
+import java.math.BigDecimal;
+
 public class AccountValidator<E extends BankAccount> implements CommonValidator<E> {
     @Override
     public void validate(E bankAccount) throws ValidateException {
@@ -12,13 +14,13 @@ public class AccountValidator<E extends BankAccount> implements CommonValidator<
     }
 
     void validateBalance(E bankAccount) throws ValidateException {
-        String balance = bankAccount.getBalance();
+        BigDecimal balance = bankAccount.getBalance();
 
-        if(balance == null || balance.isEmpty()){
+        if(balance == null){
             throw new ValidateException("Баланс счета не должен быть пустым.");
         }
 
-        if(ServiceUtils.isMatchMoney(balance)){
+        if(ServiceUtils.isMatchMoney(balance.toString())){
             return;
         }
 

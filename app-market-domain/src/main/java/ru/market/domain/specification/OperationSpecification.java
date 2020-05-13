@@ -21,7 +21,9 @@ public final class OperationSpecification {
             specification = specification.and(specificationByDate(filter.getDateStr()));
         }
         if(StringUtils.isNoneEmpty(filter.getAmount())){
-            specification = specification.and(specificationByAmount(filter.getAmount()));
+            specification = specification.and(
+                    CommonSpecification.specificationByNumber(SpecificationFields.AMOUNT, filter.getAmount())
+            );
         }
         if(StringUtils.isNoneEmpty(filter.getOperationType())){
             OperationType operationType = OperationType.getByName(filter.getOperationType());
@@ -46,11 +48,6 @@ public final class OperationSpecification {
 
         return (Specification<Operation>) (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(SpecificationFields.DATE), date);
-    }
-
-    private static Specification<Operation> specificationByAmount(String amount){
-        return (Specification<Operation>) (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(SpecificationFields.AMOUNT), amount);
     }
 
     private static Specification<Operation> specificationByOperationType(OperationType operationType){

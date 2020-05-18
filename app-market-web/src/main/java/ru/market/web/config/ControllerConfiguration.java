@@ -2,6 +2,8 @@ package ru.market.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
@@ -24,6 +26,7 @@ import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
 import ru.market.web.controller.rest.UserController;
+import ru.market.web.controller.rest.UploadFileController;
 
 @Configuration
 @EnableWebMvc
@@ -82,5 +85,15 @@ public class ControllerConfiguration {
                                                    SessionDataManager sessionDataManager){
 
         return new OperationController(operationService, sessionDataManager);
+    }
+
+    @Bean
+    public UploadFileController uploadFileController(){
+        return new UploadFileController();
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver(){
+        return new CommonsMultipartResolver();
     }
 }

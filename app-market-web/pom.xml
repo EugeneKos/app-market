@@ -59,6 +59,12 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>ru.market</groupId>
             <artifactId>app-market-domain</artifactId>
             <version>${project.version}</version>

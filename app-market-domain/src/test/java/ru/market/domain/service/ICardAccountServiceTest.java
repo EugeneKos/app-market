@@ -30,5 +30,8 @@ public class ICardAccountServiceTest {
 
         Assert.assertNotNull(dto);
         Assert.assertNotNull(dto.getId());
+        Assert.assertNotNull(dto.getDateCreatedStr());
+        Assert.assertEquals("7777-8888-8898-1111", dto.getNumber());
+        Assert.assertEquals("250", dto.getBalance());
     }
 }

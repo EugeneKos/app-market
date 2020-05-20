@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class Operation {
     private LocalTime time;
 
     @Column(name = "amount", nullable = false)
-    private String amount;
+    private BigDecimal amount;
 
     @Column(name = "operation_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -44,10 +45,10 @@ public class Operation {
     private String description;
 
     @Column(name = "new_balance", nullable = false)
-    private String newBalance;
+    private BigDecimal newBalance;
 
     @Column(name = "old_balance", nullable = false)
-    private String oldBalance;
+    private BigDecimal oldBalance;
 
     @ManyToOne
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "operation_account_fk"))
@@ -56,7 +57,7 @@ public class Operation {
     public Operation(){
     }
 
-    private Operation(LocalDate date, LocalTime time, String amount){
+    private Operation(LocalDate date, LocalTime time, BigDecimal amount){
         this.date = date;
         this.time = time;
         this.amount = amount;
@@ -86,11 +87,11 @@ public class Operation {
         this.time = time;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -110,19 +111,19 @@ public class Operation {
         this.description = description;
     }
 
-    public String getNewBalance() {
+    public BigDecimal getNewBalance() {
         return newBalance;
     }
 
-    public void setNewBalance(String newBalance) {
+    public void setNewBalance(BigDecimal newBalance) {
         this.newBalance = newBalance;
     }
 
-    public String getOldBalance() {
+    public BigDecimal getOldBalance() {
         return oldBalance;
     }
 
-    public void setOldBalance(String oldBalance) {
+    public void setOldBalance(BigDecimal oldBalance) {
         this.oldBalance = oldBalance;
     }
 
@@ -151,7 +152,7 @@ public class Operation {
         return new Operation(
                 LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()),
                 LocalTime.of(time.getHour(), time.getMinute()),
-                amount
+                new BigDecimal(amount.doubleValue())
         );
     }
 }

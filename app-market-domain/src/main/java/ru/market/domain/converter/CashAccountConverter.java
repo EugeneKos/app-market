@@ -7,7 +7,7 @@ import ru.market.domain.data.CashAccount;
 import ru.market.dto.cash.CashAccountDTO;
 import ru.market.dto.cash.CashAccountNoIdDTO;
 
-public class CashAccountConverter extends AbstractDefaultConverter<CashAccount, CashAccountNoIdDTO, CashAccountDTO> {
+public class CashAccountConverter extends AbstractAccountConverter<CashAccount, CashAccountNoIdDTO, CashAccountDTO> {
     public CashAccountConverter(DozerBeanMapper mapper) {
         super(mapper, CashAccount.class, CashAccountNoIdDTO.class, CashAccountDTO.class);
     }

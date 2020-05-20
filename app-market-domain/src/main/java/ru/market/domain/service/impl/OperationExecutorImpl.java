@@ -12,6 +12,7 @@ import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
 import ru.market.domain.validator.CommonValidator;
+import ru.market.domain.validator.operation.OperationValidator;
 
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
@@ -28,17 +29,13 @@ public class OperationExecutorImpl implements OperationExecutor {
 
     private IBankAccountService bankAccountService;
 
-    private CommonValidator<Operation> validator;
-
     public OperationExecutorImpl(OperationRepository operationRepository,
                                  OperationConverter operationConverter,
-                                 IBankAccountService bankAccountService,
-                                 CommonValidator<Operation> validator) {
+                                 IBankAccountService bankAccountService) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
         this.bankAccountService = bankAccountService;
-        this.validator = validator;
     }
 
     @Transactional
@@ -46,10 +43,10 @@ public class OperationExecutorImpl implements OperationExecutor {
     public ResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
                              BiFunction<BankAccount, Operation, ResultDTO> function) {
 
-        Operation operation = convertAndValidate(enrollDebitDTO);
-        operation.setOperationType(operationType);
-
         BankAccount bankAccount = bankAccountService.getAccount(enrollDebitDTO.getAccountId());
+
+        Operation operation = convertAndValidate(enrollDebitDTO, bankAccount);
+        operation.setOperationType(operationType);
 
         ResultDTO result = function.apply(bankAccount, operation);
 
@@ -65,12 +62,12 @@ public class OperationExecutorImpl implements OperationExecutor {
     @Transactional
     @Override
     public ResultDTO execute(OperationTransferDTO transferDTO) {
-        Operation operation = convertAndValidate(transferDTO);
-        Operation debitOperation = operation.customClone();
-        Operation enrollOperation = operation.customClone();
-
         BankAccount fromAccount = bankAccountService.getAccount(transferDTO.getFromAccountId());
         BankAccount toAccount = bankAccountService.getAccount(transferDTO.getToAccountId());
+
+        Operation operation = convertAndValidate(transferDTO, fromAccount);
+        Operation debitOperation = operation.customClone();
+        Operation enrollOperation = operation.customClone();
 
         ResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
 
@@ -85,8 +82,9 @@ public class OperationExecutorImpl implements OperationExecutor {
         return new ResultDTO(ResultStatus.SUCCESS, "Перевод выполнен");
     }
 
-    private Operation convertAndValidate(OperationBasedDTO basedDTO){
+    private Operation convertAndValidate(OperationBasedDTO basedDTO, BankAccount bankAccount){
         Operation operation = operationConverter.convertToEntity(basedDTO);
+        CommonValidator<Operation> validator = new OperationValidator(bankAccount);
         validator.validate(operation);
         return operation;
     }

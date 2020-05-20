@@ -44,6 +44,9 @@ public class User {
     @Column(name = "timestamp_status", nullable = false)
     private LocalDateTime timestampStatus;
 
+    @Column(name = "password_attempt_count", nullable = false)
+    private Integer passwordAttemptCount;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "user_person_fk"))
     private Person person;
@@ -86,6 +89,14 @@ public class User {
 
     public void setTimestampStatus(LocalDateTime timestampStatus) {
         this.timestampStatus = timestampStatus;
+    }
+
+    public Integer getPasswordAttemptCount() {
+        return passwordAttemptCount;
+    }
+
+    public void setPasswordAttemptCount(Integer passwordAttemptCount) {
+        this.passwordAttemptCount = passwordAttemptCount;
     }
 
     public Person getPerson() {

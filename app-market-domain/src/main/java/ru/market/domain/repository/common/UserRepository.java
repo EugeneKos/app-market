@@ -19,4 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateUserStatusAndTimestampStatusByUsername(@Param("username") String username,
                                                       @Param("status") UserStatus status,
                                                       @Param("timestampStatus") LocalDateTime timestampStatus);
+
+    @Modifying
+    @Query("update User u set u.passwordAttemptCount = :passwordAttemptCount where u.username = :username")
+    void updatePasswordAttemptCountByUsername(@Param("username") String username,
+                                              @Param("passwordAttemptCount") Integer passwordAttemptCount);
 }

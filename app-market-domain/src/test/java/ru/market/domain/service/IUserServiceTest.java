@@ -52,6 +52,7 @@ public class IUserServiceTest {
         Assert.assertNotNull(userAdditionalDTO.getPassword());
         Assert.assertEquals(UserStatus.ACTIVE, userAdditionalDTO.getStatus());
         Assert.assertNotNull(userAdditionalDTO.getTimestampStatus());
+        Assert.assertEquals(Integer.valueOf(0), userAdditionalDTO.getPasswordAttemptCount());
 
         return userAdditionalDTO;
     }
@@ -60,10 +61,12 @@ public class IUserServiceTest {
         userService.updateUserStatusByUsername(
                 userAdditionalDTO.getUsername(), ru.market.domain.data.enumeration.UserStatus.TEMPORARY_LOCK
         );
+        userService.updatePasswordAttemptCountByUsername(userAdditionalDTO.getUsername(), 2);
 
         userAdditionalDTO = userService.getByUsername(userAdditionalDTO.getUsername());
 
         Assert.assertNotNull(userAdditionalDTO);
         Assert.assertEquals(UserStatus.TEMPORARY_LOCK, userAdditionalDTO.getStatus());
+        Assert.assertEquals(Integer.valueOf(2), userAdditionalDTO.getPasswordAttemptCount());
     }
 }

@@ -16,5 +16,6 @@ public interface IUserService {
     UserDTO getById(Long id);
     UserAdditionalDTO getByUsername(String username);
     void updateUserStatusByUsername(String username, UserStatus status);
+    void updatePasswordAttemptCountByUsername(String username, Integer passwordAttemptCount);
     void deleteById(Long id);
 }

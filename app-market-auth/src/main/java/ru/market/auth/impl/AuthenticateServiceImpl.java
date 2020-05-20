@@ -97,7 +97,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         userData.setPersonId(userAdditionalDTO.getPerson().getId());
         userData.setAuthenticate(true);
         userData.setSecretKey(secretKey);
-        userData.setPasswordAttemptCount(0);
+
+        userService.updatePasswordAttemptCountByUsername(userAdditionalDTO.getUsername(), 0);
 
         sessionManagement.setMaxInactiveInterval(INACTIVE_INTERVAL);
         return new Authenticate(authToken, new ResultDTO(ResultStatus.SUCCESS, "authenticate success"));
@@ -107,22 +108,21 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         UserData userData = sessionDataManager.getUserData();
 
         if(userData.isAuthenticate()){
-            userData.setAuthenticate(false);
-            userData.setSecretKey(null);
+            sessionManagement.invalidateSession();
         }
 
-        int passwordAttemptCount = userData.getPasswordAttemptCount() + 1;
+        int passwordAttemptCount = userAdditionalDTO.getPasswordAttemptCount() + 1;
 
         if(passwordAttemptCount == ALLOWED_PASSWORD_ATTEMPTS){
             userService.updateUserStatusByUsername(
                     userAdditionalDTO.getUsername(), ru.market.domain.data.enumeration.UserStatus.TEMPORARY_LOCK
             );
 
-            userData.setPasswordAttemptCount(0);
+            userService.updatePasswordAttemptCountByUsername(userAdditionalDTO.getUsername(), 0);
             return failed("Превышено число попыток ввода пароля. Установлена временная блокировка");
         }
 
-        userData.setPasswordAttemptCount(passwordAttemptCount);
+        userService.updatePasswordAttemptCountByUsername(userAdditionalDTO.getUsername(), passwordAttemptCount);
 
         return failed(String.format(
                 "Пароль не совпадает. Осталось попыток (%d)", ALLOWED_PASSWORD_ATTEMPTS - passwordAttemptCount

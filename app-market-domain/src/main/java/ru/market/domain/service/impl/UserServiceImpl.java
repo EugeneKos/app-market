@@ -77,6 +77,7 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         user.setTimestampStatus(LocalDateTime.now());
+        user.setPasswordAttemptCount(0);
 
         user = userRepository.saveAndFlush(user);
         return userConverter.convertToBasedDTO(user);
@@ -146,6 +147,12 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUserStatusByUsername(String username, UserStatus status) {
         userRepository.updateUserStatusAndTimestampStatusByUsername(username, status, LocalDateTime.now());
+    }
+
+    @Transactional
+    @Override
+    public void updatePasswordAttemptCountByUsername(String username, Integer passwordAttemptCount) {
+        userRepository.updatePasswordAttemptCountByUsername(username, passwordAttemptCount);
     }
 
     @Transactional

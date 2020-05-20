@@ -6,6 +6,7 @@ public class UserAdditionalDTO extends UserDTO {
     private String password;
     private UserStatus status;
     private LocalDateTime timestampStatus;
+    private Integer passwordAttemptCount;
 
     public String getPassword() {
         return password;
@@ -29,5 +30,13 @@ public class UserAdditionalDTO extends UserDTO {
 
     public void setTimestampStatus(LocalDateTime timestampStatus) {
         this.timestampStatus = timestampStatus;
+    }
+
+    public Integer getPasswordAttemptCount() {
+        return passwordAttemptCount;
+    }
+
+    public void setPasswordAttemptCount(Integer passwordAttemptCount) {
+        this.passwordAttemptCount = passwordAttemptCount;
     }
 }

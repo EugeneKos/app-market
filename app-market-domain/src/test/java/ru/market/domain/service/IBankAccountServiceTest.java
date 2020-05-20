@@ -30,5 +30,8 @@ public class IBankAccountServiceTest {
 
         Assert.assertNotNull(bankAccountDTO);
         Assert.assertNotNull(bankAccountDTO.getId());
+        Assert.assertNotNull(bankAccountDTO.getDateCreatedStr());
+        Assert.assertEquals("bank account test", bankAccountDTO.getDescription());
+        Assert.assertEquals("30000", bankAccountDTO.getBalance());
     }
 }

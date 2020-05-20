@@ -1,7 +1,5 @@
 package ru.market.dto.cash;
 
-import ru.market.dto.card.CardAccountDTO;
-
 import java.util.Objects;
 
 public class CashAccountDTO extends CashAccountNoIdDTO {

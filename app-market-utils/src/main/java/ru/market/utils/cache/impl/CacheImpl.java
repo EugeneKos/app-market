@@ -9,6 +9,8 @@ import java.util.Map;
 public class CacheImpl<T> implements Cache<T> {
     private final int cacheSize;
     private final int timeToLiveSeconds;
+
+    private final Object lock = new Object();
     
     private Map<String, T> cacheData = new HashMap<>();
     private Map<String, Long> valueAddedTimeMap = new HashMap<>();
@@ -20,12 +22,14 @@ public class CacheImpl<T> implements Cache<T> {
 
     @Override
     public void put(String key, T value) {
-        if(cacheData.size() == cacheSize){
-            clearCache();
+        synchronized (lock){
+            if(cacheData.size() == cacheSize){
+                clearCache();
+            }
+
+            valueAddedTimeMap.put(key, currentTimeSeconds());
+            cacheData.put(key, value);
         }
-        
-        valueAddedTimeMap.put(key, currentTimeSeconds());
-        cacheData.put(key, value);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class CacheImpl<T> implements Cache<T> {
 
         return value;
     }
-    
+
     private long currentTimeSeconds(){
         return System.currentTimeMillis() / 1000;
     }

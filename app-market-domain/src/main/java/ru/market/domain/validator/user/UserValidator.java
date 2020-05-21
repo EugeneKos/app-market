@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 import ru.market.domain.data.User;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.exception.ValidateException;
-import ru.market.domain.repository.common.UserRepository;
+import ru.market.domain.repository.UserRepository;
 import ru.market.domain.validator.CommonValidator;
 
 public class UserValidator implements CommonValidator<User> {

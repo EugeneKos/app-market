@@ -7,7 +7,7 @@ import ru.market.domain.data.BankAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.enumeration.OperationType;
-import ru.market.domain.repository.common.OperationRepository;
+import ru.market.domain.repository.OperationRepository;
 import ru.market.domain.service.IBankAccountService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;

@@ -6,7 +6,7 @@ import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.data.Person;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.validator.CommonValidator;
-import ru.market.domain.repository.common.PersonRepository;
+import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.service.IPersonService;
 
 import ru.market.dto.person.PersonDTO;

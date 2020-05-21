@@ -6,21 +6,18 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import ru.market.domain.repository.config.AccountRepositoryConfiguration;
-import ru.market.domain.repository.config.CommonRepositoryConfiguration;
-
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@Import({CommonRepositoryConfiguration.class, AccountRepositoryConfiguration.class})
+@EnableJpaRepositories(basePackages = {"ru.market.domain.repository"})
 @EnableTransactionManagement
 @PropertySource("classpath:data-config.properties")
 public class DataConfiguration {

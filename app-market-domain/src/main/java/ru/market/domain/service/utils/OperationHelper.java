@@ -1,6 +1,6 @@
 package ru.market.domain.service.utils;
 
-import ru.market.domain.data.BankAccount;
+import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 
 import ru.market.dto.result.ResultDTO;
@@ -11,17 +11,17 @@ import java.math.BigDecimal;
 public final class OperationHelper {
     private OperationHelper(){}
 
-    public static ResultDTO enrollment(BankAccount bankAccount, Operation operation){
-        BigDecimal oldBalance = bankAccount.getBalance();
+    public static ResultDTO enrollment(MoneyAccount moneyAccount, Operation operation){
+        BigDecimal oldBalance = moneyAccount.getBalance();
         operation.setOldBalance(oldBalance);
         BigDecimal newBalance = oldBalance.add(operation.getAmount());
-        bankAccount.setBalance(newBalance);
+        moneyAccount.setBalance(newBalance);
         operation.setNewBalance(newBalance);
         return new ResultDTO(ResultStatus.SUCCESS, "Зачисление выполнено");
     }
 
-    public static ResultDTO debit(BankAccount bankAccount, Operation operation){
-        BigDecimal oldBalance = bankAccount.getBalance();
+    public static ResultDTO debit(MoneyAccount moneyAccount, Operation operation){
+        BigDecimal oldBalance = moneyAccount.getBalance();
         operation.setOldBalance(oldBalance);
         BigDecimal newBalance = oldBalance.subtract(operation.getAmount());
 
@@ -29,7 +29,7 @@ public final class OperationHelper {
             return new ResultDTO(ResultStatus.FAILED, "Недостаточно средств");
         }
 
-        bankAccount.setBalance(newBalance);
+        moneyAccount.setBalance(newBalance);
         operation.setNewBalance(newBalance);
         return new ResultDTO(ResultStatus.SUCCESS, "Списание выполнено");
     }

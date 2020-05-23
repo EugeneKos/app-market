@@ -3,12 +3,12 @@ package ru.market.domain.service.impl;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.OperationConverter;
-import ru.market.domain.data.BankAccount;
+import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.enumeration.OperationType;
 import ru.market.domain.repository.OperationRepository;
-import ru.market.domain.service.IBankAccountService;
+import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.OperationExecutor;
 import ru.market.domain.service.utils.OperationHelper;
 import ru.market.domain.validator.CommonValidator;
@@ -27,34 +27,34 @@ public class OperationExecutorImpl implements OperationExecutor {
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
-    private IBankAccountService bankAccountService;
+    private IMoneyAccountService moneyAccountService;
 
     public OperationExecutorImpl(OperationRepository operationRepository,
                                  OperationConverter operationConverter,
-                                 IBankAccountService bankAccountService) {
+                                 IMoneyAccountService moneyAccountService) {
 
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;
-        this.bankAccountService = bankAccountService;
+        this.moneyAccountService = moneyAccountService;
     }
 
     @Transactional
     @Override
     public ResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
-                             BiFunction<BankAccount, Operation, ResultDTO> function) {
+                             BiFunction<MoneyAccount, Operation, ResultDTO> function) {
 
-        BankAccount bankAccount = bankAccountService.getAccount(enrollDebitDTO.getAccountId());
+        MoneyAccount moneyAccount = moneyAccountService.getMoneyAccountById(enrollDebitDTO.getMoneyAccountId());
 
-        Operation operation = convertAndValidate(enrollDebitDTO, bankAccount);
+        Operation operation = convertAndValidate(enrollDebitDTO, moneyAccount);
         operation.setOperationType(operationType);
 
-        ResultDTO result = function.apply(bankAccount, operation);
+        ResultDTO result = function.apply(moneyAccount, operation);
 
         if(result.getStatus() != ResultStatus.SUCCESS){
             return result;
         }
 
-        saveAndUpdate(bankAccount, operation);
+        saveAndUpdate(moneyAccount, operation);
 
         return result;
     }
@@ -62,60 +62,60 @@ public class OperationExecutorImpl implements OperationExecutor {
     @Transactional
     @Override
     public ResultDTO execute(OperationTransferDTO transferDTO) {
-        BankAccount fromAccount = bankAccountService.getAccount(transferDTO.getFromAccountId());
-        BankAccount toAccount = bankAccountService.getAccount(transferDTO.getToAccountId());
+        MoneyAccount fromMoneyAccount = moneyAccountService.getMoneyAccountById(transferDTO.getFromMoneyAccountId());
+        MoneyAccount toMoneyAccount = moneyAccountService.getMoneyAccountById(transferDTO.getToMoneyAccountId());
 
-        Operation operation = convertAndValidate(transferDTO, fromAccount);
+        Operation operation = convertAndValidate(transferDTO, fromMoneyAccount);
         Operation debitOperation = operation.customClone();
         Operation enrollOperation = operation.customClone();
 
-        ResultDTO result = OperationHelper.debit(fromAccount, debitOperation);
+        ResultDTO result = OperationHelper.debit(fromMoneyAccount, debitOperation);
 
         if(result.getStatus() != ResultStatus.SUCCESS){
             return result;
         }
 
-        OperationHelper.enrollment(toAccount, enrollOperation);
+        OperationHelper.enrollment(toMoneyAccount, enrollOperation);
 
-        prepareToSave(debitOperation, enrollOperation, fromAccount, toAccount);
+        prepareToSave(debitOperation, enrollOperation, fromMoneyAccount, toMoneyAccount);
 
         return new ResultDTO(ResultStatus.SUCCESS, "Перевод выполнен");
     }
 
-    private Operation convertAndValidate(OperationBasedDTO basedDTO, BankAccount bankAccount){
+    private Operation convertAndValidate(OperationBasedDTO basedDTO, MoneyAccount moneyAccount){
         Operation operation = operationConverter.convertToEntity(basedDTO);
-        CommonValidator<Operation> validator = new OperationValidator(bankAccount);
+        CommonValidator<Operation> validator = new OperationValidator(moneyAccount);
         validator.validate(operation);
         return operation;
     }
 
     private void prepareToSave(Operation debitOperation, Operation enrollOperation,
-                               BankAccount fromAccount, BankAccount toAccount) {
+                               MoneyAccount fromMoneyAccount, MoneyAccount toMoneyAccount) {
 
-        Person fromAccountPerson = fromAccount.getPerson();
-        Person toAccountPerson = toAccount.getPerson();
+        Person fromAccountPerson = fromMoneyAccount.getPerson();
+        Person toAccountPerson = toMoneyAccount.getPerson();
 
         debitOperation.setOperationType(OperationType.DEBIT);
         debitOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
-                () -> "Перевод средств на счет ID: " + toAccount.getId(),
+                () -> "Перевод средств на счет ID: " + toMoneyAccount.getId(),
                 () -> String.format("Перевод средств (%s %s %s)",
                         toAccountPerson.getLastName(),
                         toAccountPerson.getFirstName(),
                         toAccountPerson.getMiddleName())
         ));
 
-        saveAndUpdate(fromAccount, debitOperation);
+        saveAndUpdate(fromMoneyAccount, debitOperation);
 
         enrollOperation.setOperationType(OperationType.ENROLLMENT);
         enrollOperation.setDescription(transferDescription(fromAccountPerson, toAccountPerson,
-                () -> "Зачисление средств со счета ID: " + fromAccount.getId(),
+                () -> "Зачисление средств со счета ID: " + fromMoneyAccount.getId(),
                 () -> String.format("Зачисление средств от (%s %s %s)",
                         fromAccountPerson.getLastName(),
                         fromAccountPerson.getFirstName(),
                         fromAccountPerson.getMiddleName())
         ));
 
-        saveAndUpdate(toAccount, enrollOperation);
+        saveAndUpdate(toMoneyAccount, enrollOperation);
     }
 
     private String transferDescription(Person fromAccountPerson, Person toAccountPerson,
@@ -129,9 +129,9 @@ public class OperationExecutorImpl implements OperationExecutor {
         return supplierWithNotEqualPerson.get();
     }
 
-    private void saveAndUpdate(BankAccount bankAccount, Operation operation){
-        bankAccountService.save(bankAccount);
-        operation.setBankAccount(bankAccount);
+    private void saveAndUpdate(MoneyAccount moneyAccount, Operation operation){
+        moneyAccountService.update(moneyAccount);
+        operation.setMoneyAccount(moneyAccount);
         operationRepository.saveAndFlush(operation);
     }
 }

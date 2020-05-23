@@ -1,15 +1,15 @@
 package ru.market.dto.operation;
 
 public class OperationEnrollDebitDTO extends OperationBasedDTO {
-    private Long accountId;
+    private Long moneyAccountId;
     private String description;
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getMoneyAccountId() {
+        return moneyAccountId;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setMoneyAccountId(Long moneyAccountId) {
+        this.moneyAccountId = moneyAccountId;
     }
 
     public String getDescription() {

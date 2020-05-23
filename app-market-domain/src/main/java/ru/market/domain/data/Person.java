@@ -30,8 +30,8 @@ public class Person {
     @Column(name = "middle_name")
     private String middleName;
 
-    @OneToMany(targetEntity = BankAccount.class, cascade = {CascadeType.REMOVE}, mappedBy = "person")
-    private Set<BankAccount> accounts;
+    @OneToMany(targetEntity = MoneyAccount.class, cascade = {CascadeType.REMOVE}, mappedBy = "person")
+    private Set<MoneyAccount> moneyAccounts;
 
     public Long getId() {
         return id;
@@ -65,12 +65,12 @@ public class Person {
         this.middleName = middleName;
     }
 
-    public Set<BankAccount> getAccounts() {
-        return accounts;
+    public Set<MoneyAccount> getMoneyAccounts() {
+        return moneyAccounts;
     }
 
-    public void setAccounts(Set<BankAccount> accounts) {
-        this.accounts = accounts;
+    public void setMoneyAccounts(Set<MoneyAccount> moneyAccounts) {
+        this.moneyAccounts = moneyAccounts;
     }
 
     @Override

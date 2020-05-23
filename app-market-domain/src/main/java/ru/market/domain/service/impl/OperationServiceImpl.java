@@ -17,7 +17,7 @@ import ru.market.dto.operation.OperationFilterDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 import ru.market.dto.result.ResultDTO;
 
-import ru.market.utils.AccountLockHolder;
+import ru.market.utils.MoneyAccountLockHolder;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,32 +39,32 @@ public class OperationServiceImpl implements IOperationService {
 
     @Override
     public ResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
-        synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
+        synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.ENROLLMENT, OperationHelper::enrollment);
         }
     }
 
     @Override
     public ResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
-        synchronized (AccountLockHolder.getAccountLockById(enrollDebitDTO.getAccountId())){
+        synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.DEBIT, OperationHelper::debit);
         }
     }
 
     @Override
     public ResultDTO transfer(OperationTransferDTO transferDTO) {
-        Long fromAccountId = transferDTO.getFromAccountId();
-        Long toAccountId = transferDTO.getToAccountId();
+        Long fromMoneyAccountId = transferDTO.getFromMoneyAccountId();
+        Long toMoneyAccountId = transferDTO.getToMoneyAccountId();
 
-        if(fromAccountId < toAccountId){
-            synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
-                synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
+        if(fromMoneyAccountId < toMoneyAccountId){
+            synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(fromMoneyAccountId)){
+                synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(toMoneyAccountId)){
                     return operationExecutor.execute(transferDTO);
                 }
             }
         } else {
-            synchronized (AccountLockHolder.getAccountLockById(toAccountId)){
-                synchronized (AccountLockHolder.getAccountLockById(fromAccountId)){
+            synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(toMoneyAccountId)){
+                synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(fromMoneyAccountId)){
                     return operationExecutor.execute(transferDTO);
                 }
             }
@@ -72,16 +72,16 @@ public class OperationServiceImpl implements IOperationService {
     }
 
     @Override
-    public Set<OperationDTO> getAllByAccountId(Long accountId) {
-        return operationRepository.findAllByAccountId(accountId)
+    public Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId) {
+        return operationRepository.findAllByMoneyAccountId(moneyAccountId)
                 .stream()
                 .map(operationConverter::convertToDTO)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public Set<OperationDTO> getAllByAccountIdAndFilter(Long accountId, OperationFilterDTO filterDTO) {
-        Specification<Operation> specification = OperationSpecification.createSpecification(accountId, filterDTO);
+    public Set<OperationDTO> getAllByMoneyAccountIdAndFilter(Long moneyAccountId, OperationFilterDTO filterDTO) {
+        Specification<Operation> specification = OperationSpecification.createSpecification(moneyAccountId, filterDTO);
 
         return operationRepository.findAll(specification)
                 .stream()

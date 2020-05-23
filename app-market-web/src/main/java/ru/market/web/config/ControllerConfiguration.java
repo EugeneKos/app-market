@@ -8,8 +8,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 import ru.market.data.session.api.SessionDataManager;
 
-import ru.market.domain.service.ICardAccountService;
-import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
@@ -17,9 +16,8 @@ import ru.market.domain.service.IUserService;
 import ru.market.auth.api.AuthenticateService;
 
 import ru.market.web.controller.MainController;
-import ru.market.web.controller.rest.CardAccountController;
-import ru.market.web.controller.rest.CashAccountController;
 import ru.market.web.controller.rest.AuthenticateController;
+import ru.market.web.controller.rest.MoneyAccountController;
 import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
@@ -68,13 +66,8 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public CardAccountController cardController(ICardAccountService cardAccountService){
-        return new CardAccountController(cardAccountService);
-    }
-
-    @Bean
-    public CashAccountController cashController(ICashAccountService cashAccountService){
-        return new CashAccountController(cashAccountService);
+    public MoneyAccountController moneyAccountController(IMoneyAccountService moneyAccountService){
+        return new MoneyAccountController(moneyAccountService);
     }
 
     @Bean

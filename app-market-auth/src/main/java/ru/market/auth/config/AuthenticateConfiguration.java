@@ -9,8 +9,7 @@ import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
 import ru.market.auth.filter.AuthTokenFilter;
 import ru.market.auth.filter.AuthenticateFilter;
-import ru.market.auth.filter.CardAccountRequestFilter;
-import ru.market.auth.filter.CashAccountRequestFilter;
+import ru.market.auth.filter.MoneyAccountRequestFilter;
 import ru.market.auth.filter.OperationRequestFilter;
 import ru.market.auth.filter.PersonRequestFilter;
 import ru.market.auth.impl.AuthFilterChainImpl;
@@ -21,9 +20,7 @@ import ru.market.auth.impl.AuthenticateServiceImpl;
 import ru.market.data.session.api.SessionDataManager;
 import ru.market.data.session.api.SessionManagement;
 
-import ru.market.domain.service.IBankAccountService;
-import ru.market.domain.service.ICardAccountService;
-import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IUserService;
 
 import java.util.Arrays;
@@ -50,9 +47,7 @@ public class AuthenticateConfiguration {
                                            AuthenticateService authenticateService,
                                            SessionDataManager sessionDataManager,
                                            PasswordEncoder passwordEncoder,
-                                           ICardAccountService cardAccountService,
-                                           ICashAccountService cashAccountService,
-                                           IBankAccountService bankAccountService){
+                                           IMoneyAccountService moneyAccountService){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
@@ -60,9 +55,8 @@ public class AuthenticateConfiguration {
                 new AuthenticateFilter(authenticateService),
                 new AuthTokenFilter(sessionDataManager, passwordEncoder),
                 new PersonRequestFilter(sessionDataManager),
-                new CardAccountRequestFilter(sessionDataManager, cardAccountService),
-                new CashAccountRequestFilter(sessionDataManager, cashAccountService),
-                new OperationRequestFilter(sessionDataManager, bankAccountService)
+                new MoneyAccountRequestFilter(sessionDataManager, moneyAccountService),
+                new OperationRequestFilter(sessionDataManager, moneyAccountService)
         ));
 
         return authFilterChain;

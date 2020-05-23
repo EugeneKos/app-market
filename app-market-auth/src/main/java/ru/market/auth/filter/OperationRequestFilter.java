@@ -3,7 +3,7 @@ package ru.market.auth.filter;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.data.session.api.SessionDataManager;
-import ru.market.domain.service.IBankAccountService;
+import ru.market.domain.service.IMoneyAccountService;
 import ru.market.dto.operation.OperationBasedDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationTransferDTO;
@@ -21,12 +21,12 @@ import java.util.Set;
 @UrlFilter(urlPatterns = "/operation*")
 public class OperationRequestFilter implements AuthFilter {
     private SessionDataManager sessionDataManager;
-    private IBankAccountService bankAccountService;
+    private IMoneyAccountService moneyAccountService;
 
-    public OperationRequestFilter(SessionDataManager sessionDataManager, IBankAccountService bankAccountService) {
+    public OperationRequestFilter(SessionDataManager sessionDataManager, IMoneyAccountService moneyAccountService) {
 
         this.sessionDataManager = sessionDataManager;
-        this.bankAccountService = bankAccountService;
+        this.moneyAccountService = moneyAccountService;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class OperationRequestFilter implements AuthFilter {
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
-        Set<Long> allAccountId = bankAccountService.getAllAccountIdByPersonId(personId);
+        Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
 
         String servletPath = request.getServletPath();
         ServletInputStream servletInputStream = request.getInputStream();
@@ -54,7 +54,7 @@ public class OperationRequestFilter implements AuthFilter {
             }
 
             operationBasedDTO = enrollDebitDTO;
-            isWell = allAccountId.contains(enrollDebitDTO.getAccountId());
+            isWell = allMoneyAccountId.contains(enrollDebitDTO.getMoneyAccountId());
 
         } else if(servletPath.contains("transfer")){
             OperationTransferDTO transferDTO = JSONObjectUtil.getJsonObjectFromInputStream(
@@ -66,19 +66,19 @@ public class OperationRequestFilter implements AuthFilter {
                 return;
             }
 
-            Long fromAccountId = transferDTO.getFromAccountId();
-            Long toAccountId = transferDTO.getToAccountId();
+            Long fromMoneyAccountId = transferDTO.getFromMoneyAccountId();
+            Long toMoneyAccountId = transferDTO.getToMoneyAccountId();
 
-            if(fromAccountId.equals(toAccountId)){
+            if(fromMoneyAccountId.equals(toMoneyAccountId)){
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
                 return;
             }
 
             operationBasedDTO = transferDTO;
-            isWell = allAccountId.contains(fromAccountId);
+            isWell = allMoneyAccountId.contains(fromMoneyAccountId);
 
-        } else if(servletPath.contains("account")){
-            isWell = containsAccountId(servletPath, allAccountId);
+        } else if(servletPath.contains("money-account")){
+            isWell = Utils.containsIdInPath(servletPath, "money-account/", allMoneyAccountId);
         }
 
         if(isWell){
@@ -89,21 +89,5 @@ public class OperationRequestFilter implements AuthFilter {
         } else {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
-    }
-
-    private boolean containsAccountId(String servletPath, Set<Long> allAccountId){
-        int lastIndexOfSlash = servletPath.lastIndexOf("operation/account/");
-        if(lastIndexOfSlash == -1){
-            return false;
-        }
-        lastIndexOfSlash = lastIndexOfSlash + 18;
-
-        String possibleAccountId = servletPath.substring(lastIndexOfSlash, servletPath.length());
-
-        if(!possibleAccountId.matches("\\d+")){
-            return false;
-        }
-
-        return allAccountId.contains(Long.parseLong(possibleAccountId));
     }
 }

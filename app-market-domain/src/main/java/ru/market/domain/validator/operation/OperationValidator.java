@@ -1,6 +1,6 @@
 package ru.market.domain.validator.operation;
 
-import ru.market.domain.data.BankAccount;
+import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.ValidateException;
 import ru.market.domain.service.utils.ServiceUtils;
@@ -11,16 +11,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class OperationValidator implements CommonValidator<Operation> {
-    private BankAccount bankAccount;
+    private MoneyAccount moneyAccount;
 
-    public OperationValidator(BankAccount bankAccount){
-        this.bankAccount = bankAccount;
+    public OperationValidator(MoneyAccount moneyAccount){
+        this.moneyAccount = moneyAccount;
     }
 
     @Override
     public void validate(Operation operation) throws ValidateException {
         validateAmount(operation);
-        validateDate(operation, bankAccount.getDateCreated());
+        validateDate(operation, moneyAccount.getDateCreated());
     }
 
     private void validateAmount(Operation operation) throws ValidateException {

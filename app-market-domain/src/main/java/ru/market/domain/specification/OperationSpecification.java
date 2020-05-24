@@ -14,8 +14,8 @@ import java.time.LocalDate;
 public final class OperationSpecification {
     private OperationSpecification() {}
 
-    public static Specification<Operation> createSpecification(Long accountId, OperationFilterDTO filter){
-        Specification<Operation> specification = specificationByAccountId(accountId);
+    public static Specification<Operation> createSpecification(Long moneyAccountId, OperationFilterDTO filter){
+        Specification<Operation> specification = specificationByMoneyAccountId(moneyAccountId);
 
         if(StringUtils.isNoneEmpty(filter.getDateStr())){
             specification = specification.and(specificationByDate(filter.getDateStr()));
@@ -38,9 +38,9 @@ public final class OperationSpecification {
         return specification;
     }
 
-    private static Specification<Operation> specificationByAccountId(Long accountId){
+    private static Specification<Operation> specificationByMoneyAccountId(Long moneyAccountId){
         return (Specification<Operation>) (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(SpecificationFields.BANK_ACCOUNT).get(SpecificationFields.ID), accountId);
+                criteriaBuilder.equal(root.get(SpecificationFields.MONEY_ACCOUNT).get(SpecificationFields.ID), moneyAccountId);
     }
 
     private static Specification<Operation> specificationByDate(String dateStr){

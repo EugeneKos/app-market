@@ -7,13 +7,12 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,16 +20,20 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "bank_account")
-@Inheritance(strategy = InheritanceType.JOINED)
-public class BankAccount {
+@Table(name = "money_account", uniqueConstraints = {
+        @UniqueConstraint(name = "money_account_name_uq", columnNames = {"name", "person_id"})
+})
+public class MoneyAccount {
     @Id
-    @SequenceGenerator(name = "bank_account_id_seq", sequenceName = "bank_account_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_account_id_seq")
+    @SequenceGenerator(name = "money_account_id_seq", sequenceName = "money_account_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "money_account_id_seq")
     private Long id;
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "description")
     private String description;
@@ -39,10 +42,10 @@ public class BankAccount {
     private LocalDate dateCreated;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "bank_person_fk"))
+    @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "money_account_person_fk"))
     private Person person;
 
-    @OneToMany(targetEntity = Operation.class, cascade = {CascadeType.REMOVE}, mappedBy = "bankAccount")
+    @OneToMany(targetEntity = Operation.class, cascade = {CascadeType.REMOVE}, mappedBy = "moneyAccount")
     private List<Operation> operations;
 
     public Long getId() {
@@ -59,6 +62,14 @@ public class BankAccount {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -97,12 +108,13 @@ public class BankAccount {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BankAccount that = (BankAccount) o;
-        return Objects.equals(id, that.id);
+        MoneyAccount that = (MoneyAccount) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name);
     }
 }

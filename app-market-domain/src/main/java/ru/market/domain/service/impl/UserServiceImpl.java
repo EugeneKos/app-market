@@ -11,7 +11,7 @@ import ru.market.domain.data.User;
 import ru.market.domain.data.enumeration.UserStatus;
 import ru.market.domain.exception.BadRequestException;
 import ru.market.domain.exception.NotFoundException;
-import ru.market.domain.repository.common.UserRepository;
+import ru.market.domain.repository.UserRepository;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
 import ru.market.domain.validator.CommonValidator;

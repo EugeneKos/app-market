@@ -51,8 +51,8 @@ public class Operation {
     private BigDecimal oldBalance;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "operation_account_fk"))
-    private BankAccount bankAccount;
+    @JoinColumn(name = "money_account_id", foreignKey = @ForeignKey(name = "operation_money_account_fk"))
+    private MoneyAccount moneyAccount;
 
     public Operation(){
     }
@@ -127,12 +127,12 @@ public class Operation {
         this.oldBalance = oldBalance;
     }
 
-    public BankAccount getBankAccount() {
-        return bankAccount;
+    public MoneyAccount getMoneyAccount() {
+        return moneyAccount;
     }
 
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setMoneyAccount(MoneyAccount moneyAccount) {
+        this.moneyAccount = moneyAccount;
     }
 
     @Override

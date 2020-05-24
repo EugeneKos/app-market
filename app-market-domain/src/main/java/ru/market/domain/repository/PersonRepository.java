@@ -1,4 +1,4 @@
-package ru.market.domain.repository.common;
+package ru.market.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

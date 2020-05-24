@@ -6,33 +6,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.data.session.api.SessionDataManager;
-import ru.market.domain.converter.BankAccountConverter;
-import ru.market.domain.converter.CardAccountConverter;
-import ru.market.domain.converter.CashAccountConverter;
+import ru.market.domain.converter.MoneyAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.converter.UserConverter;
-import ru.market.domain.data.BankAccount;
-import ru.market.domain.data.CardAccount;
-import ru.market.domain.data.CashAccount;
+import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Person;
-import ru.market.domain.repository.account.BankAccountRepository;
-import ru.market.domain.repository.account.CardAccountRepository;
-import ru.market.domain.repository.account.CashAccountRepository;
-import ru.market.domain.repository.common.OperationRepository;
-import ru.market.domain.repository.common.PersonRepository;
-import ru.market.domain.repository.common.UserRepository;
-import ru.market.domain.service.IBankAccountService;
-import ru.market.domain.service.ICardAccountService;
-import ru.market.domain.service.ICashAccountService;
+import ru.market.domain.repository.MoneyAccountRepository;
+import ru.market.domain.repository.OperationRepository;
+import ru.market.domain.repository.PersonRepository;
+import ru.market.domain.repository.UserRepository;
+import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
 import ru.market.domain.service.OperationExecutor;
-import ru.market.domain.service.impl.BankAccountServiceImpl;
-import ru.market.domain.service.impl.CardAccountServiceImpl;
-import ru.market.domain.service.impl.CashAccountServiceImpl;
+import ru.market.domain.service.impl.MoneyAccountServiceImpl;
 import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
 import ru.market.domain.service.impl.PersonServiceImpl;
@@ -68,30 +58,12 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public IBankAccountService bankAccountService(BankAccountRepository bankAccountRepository,
-                                                  BankAccountConverter bankAccountConverter,
-                                                  CommonValidator<BankAccount> validator,
-                                                  IPersonProvider personProvider){
+    public IMoneyAccountService moneyAccountService(MoneyAccountRepository moneyAccountRepository,
+                                                    MoneyAccountConverter moneyAccountConverter,
+                                                    CommonValidator<MoneyAccount> validator,
+                                                    IPersonProvider personProvider){
 
-        return new BankAccountServiceImpl(bankAccountRepository, bankAccountConverter, validator, personProvider);
-    }
-
-    @Bean
-    public ICardAccountService cardAccountService(CardAccountRepository cardAccountRepository,
-                                                  CardAccountConverter cardAccountConverter,
-                                                  CommonValidator<CardAccount> validator,
-                                                  IPersonProvider personProvider){
-
-        return new CardAccountServiceImpl(cardAccountRepository, cardAccountConverter, validator, personProvider);
-    }
-
-    @Bean
-    public ICashAccountService cashAccountService(CashAccountRepository cashAccountRepository,
-                                                  CashAccountConverter cashAccountConverter,
-                                                  CommonValidator<CashAccount> validator,
-                                                  IPersonProvider personProvider){
-
-        return new CashAccountServiceImpl(cashAccountRepository, cashAccountConverter, validator, personProvider);
+        return new MoneyAccountServiceImpl(moneyAccountRepository, moneyAccountConverter, validator, personProvider);
     }
 
     @Bean
@@ -102,9 +74,9 @@ public class ServiceConfiguration {
     @Bean
     public OperationExecutor operationExecutor(OperationRepository operationRepository,
                                                OperationConverter operationConverter,
-                                               IBankAccountService bankAccountService){
+                                               IMoneyAccountService moneyAccountService){
 
-        return new OperationExecutorImpl(operationRepository, operationConverter, bankAccountService);
+        return new OperationExecutorImpl(operationRepository, operationConverter, moneyAccountService);
     }
 
     @Bean

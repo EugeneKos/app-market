@@ -43,16 +43,16 @@ public class OperationController {
         return operationService.transfer(sessionDataManager.getCurrentRequestBody());
     }
 
-    @RequestMapping(path = "/account/{accountId}", method = RequestMethod.GET, produces = "application/json")
-    public Set<OperationDTO> getAllByAccountId(@PathVariable(name = "accountId") Long accountId){
-        return operationService.getAllByAccountId(accountId);
+    @RequestMapping(path = "/money-account/{moneyAccountId}", method = RequestMethod.GET, produces = "application/json")
+    public Set<OperationDTO> getAllByMoneyAccountId(@PathVariable(name = "moneyAccountId") Long moneyAccountId){
+        return operationService.getAllByMoneyAccountId(moneyAccountId);
     }
 
-    @RequestMapping(path = "/account/{accountId}", method = RequestMethod.POST,
+    @RequestMapping(path = "/money-account/{moneyAccountId}", method = RequestMethod.POST,
             consumes = "application/json", produces = "application/json")
-    public Set<OperationDTO> getAllByAccountIdAndFilter(@PathVariable(name = "accountId") Long accountId,
-                                                        @RequestBody OperationFilterDTO filterDTO){
+    public Set<OperationDTO> getAllByMoneyAccountIdAndFilter(@PathVariable(name = "moneyAccountId") Long moneyAccountId,
+                                                             @RequestBody OperationFilterDTO filterDTO){
 
-        return operationService.getAllByAccountIdAndFilter(accountId, filterDTO);
+        return operationService.getAllByMoneyAccountIdAndFilter(moneyAccountId, filterDTO);
     }
 }

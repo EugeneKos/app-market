@@ -1,22 +1,22 @@
 package ru.market.dto.operation;
 
 public class OperationTransferDTO extends OperationBasedDTO {
-    private Long fromAccountId;
-    private Long toAccountId;
+    private Long fromMoneyAccountId;
+    private Long toMoneyAccountId;
 
-    public Long getFromAccountId() {
-        return fromAccountId;
+    public Long getFromMoneyAccountId() {
+        return fromMoneyAccountId;
     }
 
-    public void setFromAccountId(Long fromAccountId) {
-        this.fromAccountId = fromAccountId;
+    public void setFromMoneyAccountId(Long fromMoneyAccountId) {
+        this.fromMoneyAccountId = fromMoneyAccountId;
     }
 
-    public Long getToAccountId() {
-        return toAccountId;
+    public Long getToMoneyAccountId() {
+        return toMoneyAccountId;
     }
 
-    public void setToAccountId(Long toAccountId) {
-        this.toAccountId = toAccountId;
+    public void setToMoneyAccountId(Long toMoneyAccountId) {
+        this.toMoneyAccountId = toMoneyAccountId;
     }
 }

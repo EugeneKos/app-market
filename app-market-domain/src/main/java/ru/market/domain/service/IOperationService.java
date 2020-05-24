@@ -15,7 +15,7 @@ public interface IOperationService {
 
     ResultDTO transfer(OperationTransferDTO transferDTO);
 
-    Set<OperationDTO> getAllByAccountId(Long accountId);
+    Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId);
 
-    Set<OperationDTO> getAllByAccountIdAndFilter(Long accountId, OperationFilterDTO filterDTO);
+    Set<OperationDTO> getAllByMoneyAccountIdAndFilter(Long moneyAccountId, OperationFilterDTO filterDTO);
 }

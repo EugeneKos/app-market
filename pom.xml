@@ -24,6 +24,7 @@
         <module>app-market-data-session</module>
         <module>app-market-auth</module>
         <module>app-market-utils</module>
+        <module>app-market-client</module>
     </modules>
 
     <build>

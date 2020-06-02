@@ -3,6 +3,7 @@ package ru.market.domain.service.impl;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.CostConverter;
+import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.Cost;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.CostExecuteException;
@@ -18,6 +19,7 @@ import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.result.ResultStatus;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CostServiceImpl implements ICostService {
     private CostRepository costRepository;
@@ -50,13 +52,7 @@ public class CostServiceImpl implements ICostService {
         cost.setOperation(createOperation(costNoIdDTO));
 
         cost = costRepository.saveAndFlush(cost);
-
-        CostDTO costDTO = costConverter.convertToDTO(cost);
-
-        costDTO.setCostLimitId(costNoIdDTO.getCostLimitId());
-        costDTO.setMoneyAccountId(costNoIdDTO.getMoneyAccountId());
-
-        return costDTO;
+        return costConverter.convertToDTO(cost);
     }
 
     private Operation createOperation(CostNoIdDTO costNoIdDTO){
@@ -80,7 +76,10 @@ public class CostServiceImpl implements ICostService {
 
     @Override
     public Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, String dateStr) {
-        return null;
+        return costRepository.findAllByCostLimitIdAndDate(costLimitId, DateTimeConverter.convertToLocalDate(dateStr))
+                .stream()
+                .map(costConverter::convertToDTO)
+                .collect(Collectors.toSet());
     }
 
     @Override

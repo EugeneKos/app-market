@@ -25,6 +25,8 @@ public class CostConverter extends AbstractDefaultConverter<Cost, CostNoIdDTO, C
 
         costDTO.setDateStr(DateTimeConverter.convertToDateStr(cost.getDate()));
         costDTO.setTimeStr(DateTimeConverter.convertToTimeStr(cost.getTime()));
+        costDTO.setCostLimitId(cost.getCostLimit().getId());
+        costDTO.setMoneyAccountId(cost.getOperation().getMoneyAccount().getId());
 
         return costDTO;
     }

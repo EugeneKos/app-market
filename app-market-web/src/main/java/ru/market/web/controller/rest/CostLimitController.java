@@ -10,6 +10,8 @@ import ru.market.domain.service.ICostLimitService;
 import ru.market.dto.limit.CostLimitDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
+import java.util.Set;
+
 @RestController
 public class CostLimitController {
     private ICostLimitService costLimitService;
@@ -23,5 +25,10 @@ public class CostLimitController {
             consumes = "application/json", produces = "application/json")
     public CostLimitDTO create(@RequestBody CostLimitNoIdDTO costLimitNoIdDTO){
         return costLimitService.create(costLimitNoIdDTO);
+    }
+
+    @RequestMapping(path = "/cost-limit", method = RequestMethod.GET, produces = "application/json")
+    public Set<CostLimitDTO> getAll(){
+        return costLimitService.getAll();
     }
 }

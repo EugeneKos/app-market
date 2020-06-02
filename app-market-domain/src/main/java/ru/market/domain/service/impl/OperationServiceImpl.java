@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.enumeration.OperationType;
+import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.OperationRepository;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.OperationExecutor;
@@ -69,6 +70,13 @@ public class OperationServiceImpl implements IOperationService {
                 }
             }
         }
+    }
+
+    @Override
+    public Operation getOperationById(Long id) {
+        return operationRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Operation with id %d not found", id))
+        );
     }
 
     @Override

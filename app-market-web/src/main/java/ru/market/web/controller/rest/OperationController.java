@@ -12,7 +12,7 @@ import ru.market.domain.service.IOperationService;
 
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationFilterDTO;
-import ru.market.dto.result.ResultDTO;
+import ru.market.dto.operation.OperationResultDTO;
 
 import java.util.Set;
 
@@ -29,17 +29,17 @@ public class OperationController {
     }
 
     @RequestMapping(path = "/enrollment", method = RequestMethod.PUT, produces = "application/json")
-    public ResultDTO enrollment(){
+    public OperationResultDTO enrollment(){
         return operationService.enrollment(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/debit", method = RequestMethod.PUT, produces = "application/json")
-    public ResultDTO debit(){
+    public OperationResultDTO debit(){
         return operationService.debit(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.PUT, produces = "application/json")
-    public ResultDTO transfer(){
+    public OperationResultDTO transfer(){
         return operationService.transfer(sessionDataManager.getCurrentRequestBody());
     }
 

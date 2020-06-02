@@ -14,8 +14,8 @@ import ru.market.domain.specification.OperationSpecification;
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationFilterDTO;
+import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
-import ru.market.dto.result.ResultDTO;
 
 import ru.market.utils.MoneyAccountLockHolder;
 
@@ -38,21 +38,21 @@ public class OperationServiceImpl implements IOperationService {
     }
 
     @Override
-    public ResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
+    public OperationResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.ENROLLMENT, OperationHelper::enrollment);
         }
     }
 
     @Override
-    public ResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
+    public OperationResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.DEBIT, OperationHelper::debit);
         }
     }
 
     @Override
-    public ResultDTO transfer(OperationTransferDTO transferDTO) {
+    public OperationResultDTO transfer(OperationTransferDTO transferDTO) {
         Long fromMoneyAccountId = transferDTO.getFromMoneyAccountId();
         Long toMoneyAccountId = transferDTO.getToMoneyAccountId();
 

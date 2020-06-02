@@ -6,22 +6,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.data.session.api.SessionDataManager;
+import ru.market.domain.converter.CostConverter;
+import ru.market.domain.converter.CostLimitConverter;
 import ru.market.domain.converter.MoneyAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.converter.UserConverter;
 import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Person;
+import ru.market.domain.repository.CostLimitRepository;
+import ru.market.domain.repository.CostRepository;
 import ru.market.domain.repository.MoneyAccountRepository;
 import ru.market.domain.repository.OperationRepository;
 import ru.market.domain.repository.PersonRepository;
 import ru.market.domain.repository.UserRepository;
+import ru.market.domain.service.ICostLimitService;
+import ru.market.domain.service.ICostService;
 import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.service.IPersonService;
 import ru.market.domain.service.IUserService;
 import ru.market.domain.service.OperationExecutor;
+import ru.market.domain.service.impl.CostLimitServiceImpl;
+import ru.market.domain.service.impl.CostServiceImpl;
 import ru.market.domain.service.impl.MoneyAccountServiceImpl;
 import ru.market.domain.service.impl.OperationServiceImpl;
 import ru.market.domain.service.impl.PersonProviderImpl;
@@ -85,5 +93,20 @@ public class ServiceConfiguration {
                                               OperationExecutor operationExecutor){
 
         return new OperationServiceImpl(operationRepository, operationConverter, operationExecutor);
+    }
+
+    @Bean
+    public ICostLimitService costLimitService(CostLimitRepository costLimitRepository,
+                                              CostLimitConverter costLimitConverter,
+                                              IPersonProvider personProvider){
+
+        return new CostLimitServiceImpl(costLimitRepository, costLimitConverter, personProvider);
+    }
+
+    @Bean
+    public ICostService costService(CostRepository costRepository, CostConverter costConverter,
+                                    ICostLimitService costLimitService, IOperationService operationService){
+
+        return new CostServiceImpl(costRepository, costConverter, costLimitService, operationService);
     }
 }

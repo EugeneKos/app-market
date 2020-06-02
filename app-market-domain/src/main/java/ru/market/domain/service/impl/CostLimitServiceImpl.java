@@ -1,5 +1,7 @@
 package ru.market.domain.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ru.market.domain.converter.CostLimitConverter;
 import ru.market.domain.data.CostLimit;
 import ru.market.domain.exception.NotFoundException;
@@ -28,6 +30,7 @@ public class CostLimitServiceImpl implements ICostLimitService {
         this.personProvider = personProvider;
     }
 
+    @Transactional
     @Override
     public CostLimitDTO create(CostLimitNoIdDTO costLimitNoIdDTO) {
         if(costLimitNoIdDTO == null){
@@ -56,7 +59,7 @@ public class CostLimitServiceImpl implements ICostLimitService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
 
     }
 }

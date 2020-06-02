@@ -11,5 +11,5 @@ public interface ICostLimitService {
     CostLimitDTO create(CostLimitNoIdDTO costLimitNoIdDTO);
     CostLimit getCostLimitById(Long id);
     Set<CostLimitDTO> getAll();
-    void delete(Long id);
+    void deleteById(Long id);
 }

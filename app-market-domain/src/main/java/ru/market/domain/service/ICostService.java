@@ -9,5 +9,5 @@ public interface ICostService {
     CostDTO create(CostNoIdDTO costNoIdDTO);
     CostDTO update(CostDTO costDTO);
     Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, String dateStr);
-    void delete(Long id);
+    void deleteById(Long id);
 }

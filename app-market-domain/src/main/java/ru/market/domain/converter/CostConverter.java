@@ -5,10 +5,14 @@ import org.dozer.DozerBeanMapper;
 import ru.market.domain.data.Cost;
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
+import ru.market.dto.operation.OperationEnrollDebitDTO;
 
 public class CostConverter extends AbstractDefaultConverter<Cost, CostNoIdDTO, CostDTO> {
+    private DozerBeanMapper mapper;
+
     public CostConverter(DozerBeanMapper mapper) {
         super(mapper, Cost.class, CostNoIdDTO.class, CostDTO.class);
+        this.mapper = mapper;
     }
 
     @Override
@@ -37,5 +41,11 @@ public class CostConverter extends AbstractDefaultConverter<Cost, CostNoIdDTO, C
         cost.setTime(DateTimeConverter.convertToLocalTime(costNoIdDTO.getTimeStr()));
 
         return cost;
+    }
+
+    public OperationEnrollDebitDTO convertToOperationEnrollDebitDTO(CostNoIdDTO costNoIdDTO){
+        OperationEnrollDebitDTO enrollDebitDTO = mapper.map(costNoIdDTO, OperationEnrollDebitDTO.class);
+        enrollDebitDTO.setAmount(costNoIdDTO.getSum());
+        return enrollDebitDTO;
     }
 }

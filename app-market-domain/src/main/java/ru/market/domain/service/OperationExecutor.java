@@ -15,4 +15,6 @@ public interface OperationExecutor {
                                BiFunction<MoneyAccount, Operation, OperationResultDTO> function);
 
     OperationResultDTO execute(OperationTransferDTO transferDTO);
+
+    OperationResultDTO rollback(Operation operation);
 }

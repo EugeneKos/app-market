@@ -20,6 +20,8 @@ import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 import ru.market.dto.result.ResultStatus;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -83,6 +85,30 @@ public class OperationExecutorImpl implements OperationExecutor {
         OperationResultDTO operationResultDTO = new OperationResultDTO(ResultStatus.SUCCESS, "Перевод выполнен");
         operationResultDTO.setOperationId(debitOperation.getId());
         return operationResultDTO;
+    }
+
+    @Transactional
+    @Override
+    public OperationResultDTO rollback(Operation operation) {
+        if(operation.getOperationType() != OperationType.DEBIT){
+            return new OperationResultDTO(ResultStatus.FAILED, "Откат возможен только для операций типа DEBIT");
+        }
+
+        MoneyAccount moneyAccount = operation.getMoneyAccount();
+        Long oldOperationId = operation.getId();
+
+        Operation newOperation = operation.customClone();
+
+        newOperation.setOperationType(OperationType.ENROLLMENT);
+        newOperation.setDescription(String.format("Откат операции id: %d возврат средств", oldOperationId));
+        newOperation.setDate(LocalDate.now());
+        newOperation.setTime(LocalTime.now());
+
+        OperationHelper.enrollment(moneyAccount, newOperation);
+
+        saveAndUpdate(moneyAccount, newOperation);
+
+        return new OperationResultDTO(ResultStatus.SUCCESS, "Операция откатана", operation.getId());
     }
 
     private Operation convertAndValidate(OperationBasedDTO basedDTO, MoneyAccount moneyAccount){

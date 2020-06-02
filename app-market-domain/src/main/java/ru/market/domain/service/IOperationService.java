@@ -18,6 +18,8 @@ public interface IOperationService {
 
     Operation getOperationById(Long id);
 
+    OperationResultDTO rollback(Long id);
+
     Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId);
 
     Set<OperationDTO> getAllByMoneyAccountIdAndFilter(Long moneyAccountId, OperationFilterDTO filterDTO);

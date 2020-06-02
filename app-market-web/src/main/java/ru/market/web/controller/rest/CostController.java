@@ -28,10 +28,21 @@ public class CostController {
         return costService.create(costNoIdDTO);
     }
 
+    @RequestMapping(path = "/cost", method = RequestMethod.POST,
+            consumes = "application/json", produces = "application/json")
+    public CostDTO update(@RequestBody CostDTO costDTO){
+        return costService.update(costDTO);
+    }
+
     @RequestMapping(path = "/cost/{costLimitId}/{dateStr}", method = RequestMethod.GET, produces = "application/json")
     public Set<CostDTO> getAllByCostLimitIdAndDate(@PathVariable(name = "costLimitId") Long costLimitId,
                                                    @PathVariable(name = "dateStr") String dateStr){
 
         return costService.getAllByCostLimitIdAndDate(costLimitId, dateStr);
+    }
+
+    @RequestMapping(path = "/cost/{id}", method = RequestMethod.DELETE)
+    public void deleteById(@PathVariable(name = "id") Long id){
+        costService.deleteById(id);
     }
 }

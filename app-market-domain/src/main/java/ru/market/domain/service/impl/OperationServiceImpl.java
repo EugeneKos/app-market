@@ -80,6 +80,14 @@ public class OperationServiceImpl implements IOperationService {
     }
 
     @Override
+    public OperationResultDTO rollback(Long id) {
+        Operation operation = getOperationById(id);
+        synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(operation.getMoneyAccount().getId())){
+            return operationExecutor.rollback(operation);
+        }
+    }
+
+    @Override
     public Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId) {
         return operationRepository.findAllByMoneyAccountId(moneyAccountId)
                 .stream()

@@ -13,6 +13,11 @@ public class OperationResultDTO extends ResultDTO {
         super(status, description);
     }
 
+    public OperationResultDTO(ResultStatus status, String description, Long operationId) {
+        super(status, description);
+        this.operationId = operationId;
+    }
+
     public Long getOperationId() {
         return operationId;
     }

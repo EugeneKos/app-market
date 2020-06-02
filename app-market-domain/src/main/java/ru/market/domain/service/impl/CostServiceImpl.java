@@ -7,6 +7,7 @@ import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.Cost;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.CostExecuteException;
+import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostRepository;
 import ru.market.domain.service.ICostLimitService;
 import ru.market.domain.service.ICostService;
@@ -69,9 +70,47 @@ public class CostServiceImpl implements ICostService {
         return operationService.getOperationById(operationResultDTO.getOperationId());
     }
 
+    @Transactional
     @Override
     public CostDTO update(CostDTO costDTO) {
-        return null;
+        if(costDTO == null){
+            return null;
+        }
+
+        Cost gettingById = getCostById(costDTO.getId());
+
+        if(isRequiredRollback(costDTO, gettingById)){
+            rollbackOperation(gettingById.getOperation().getId());
+            return create(costDTO);
+        }
+
+        Cost cost = costConverter.convertToEntity(costDTO);
+        cost = costRepository.saveAndFlush(cost);
+        return costConverter.convertToDTO(cost);
+    }
+
+    private boolean isRequiredRollback(CostDTO newCost, Cost oldCost){
+        if(!oldCost.getSum().toString().equals(newCost.getSum())){
+            return true;
+        }
+
+        return !oldCost.getOperation().getMoneyAccount().getId().equals(newCost.getMoneyAccountId());
+    }
+
+    private void rollbackOperation(Long operationId){
+        OperationResultDTO operationResultDTO = operationService.rollback(operationId);
+        if(operationResultDTO.getStatus() == ResultStatus.FAILED){
+            throw new CostExecuteException(String.format(
+                    "Ошибка проведения затраты. Статус операции: %s Описание: %s",
+                    operationResultDTO.getStatus(), operationResultDTO.getDescription()
+            ));
+        }
+    }
+
+    private Cost getCostById(Long id){
+        return costRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Cost with id %d not found", id))
+        );
     }
 
     @Override
@@ -82,8 +121,11 @@ public class CostServiceImpl implements ICostService {
                 .collect(Collectors.toSet());
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
-
+        Cost cost = getCostById(id);
+        costRepository.deleteById(id);
+        rollbackOperation(cost.getOperation().getId());
     }
 }

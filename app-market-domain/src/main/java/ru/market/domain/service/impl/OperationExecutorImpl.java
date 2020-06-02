@@ -7,6 +7,7 @@ import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.Person;
 import ru.market.domain.data.enumeration.OperationType;
+import ru.market.domain.exception.OperationExecuteException;
 import ru.market.domain.repository.OperationRepository;
 import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.OperationExecutor;
@@ -15,14 +16,13 @@ import ru.market.domain.validator.CommonValidator;
 import ru.market.domain.validator.operation.OperationValidator;
 
 import ru.market.dto.operation.OperationBasedDTO;
+import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
-import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
-import ru.market.dto.result.ResultStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class OperationExecutorImpl implements OperationExecutor {
@@ -42,29 +42,24 @@ public class OperationExecutorImpl implements OperationExecutor {
 
     @Transactional
     @Override
-    public OperationResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
-                                      BiFunction<MoneyAccount, Operation, OperationResultDTO> function) {
+    public OperationDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
+                                BiConsumer<MoneyAccount, Operation> consumer) {
 
         MoneyAccount moneyAccount = moneyAccountService.getMoneyAccountById(enrollDebitDTO.getMoneyAccountId());
 
         Operation operation = convertAndValidate(enrollDebitDTO, moneyAccount);
         operation.setOperationType(operationType);
 
-        OperationResultDTO result = function.apply(moneyAccount, operation);
-
-        if(result.getStatus() != ResultStatus.SUCCESS){
-            return result;
-        }
+        consumer.accept(moneyAccount, operation);
 
         saveAndUpdate(moneyAccount, operation);
 
-        result.setOperationId(operation.getId());
-        return result;
+        return operationConverter.convertToDTO(operation);
     }
 
     @Transactional
     @Override
-    public OperationResultDTO execute(OperationTransferDTO transferDTO) {
+    public OperationDTO execute(OperationTransferDTO transferDTO) {
         MoneyAccount fromMoneyAccount = moneyAccountService.getMoneyAccountById(transferDTO.getFromMoneyAccountId());
         MoneyAccount toMoneyAccount = moneyAccountService.getMoneyAccountById(transferDTO.getToMoneyAccountId());
 
@@ -72,26 +67,20 @@ public class OperationExecutorImpl implements OperationExecutor {
         Operation debitOperation = operation.customClone();
         Operation enrollOperation = operation.customClone();
 
-        OperationResultDTO result = OperationHelper.debit(fromMoneyAccount, debitOperation);
-
-        if(result.getStatus() != ResultStatus.SUCCESS){
-            return result;
-        }
+        OperationHelper.debit(fromMoneyAccount, debitOperation);
 
         OperationHelper.enrollment(toMoneyAccount, enrollOperation);
 
         prepareToSave(debitOperation, enrollOperation, fromMoneyAccount, toMoneyAccount);
 
-        OperationResultDTO operationResultDTO = new OperationResultDTO(ResultStatus.SUCCESS, "Перевод выполнен");
-        operationResultDTO.setOperationId(debitOperation.getId());
-        return operationResultDTO;
+        return operationConverter.convertToDTO(debitOperation);
     }
 
     @Transactional
     @Override
-    public OperationResultDTO rollback(Operation operation) {
+    public void rollback(Operation operation) {
         if(operation.getOperationType() != OperationType.DEBIT){
-            return new OperationResultDTO(ResultStatus.FAILED, "Откат возможен только для операций типа DEBIT");
+            throw new OperationExecuteException("Откат возможен только для операций типа DEBIT");
         }
 
         MoneyAccount moneyAccount = operation.getMoneyAccount();
@@ -107,8 +96,6 @@ public class OperationExecutorImpl implements OperationExecutor {
         OperationHelper.enrollment(moneyAccount, newOperation);
 
         saveAndUpdate(moneyAccount, newOperation);
-
-        return new OperationResultDTO(ResultStatus.SUCCESS, "Операция откатана", operation.getId());
     }
 
     private Operation convertAndValidate(OperationBasedDTO basedDTO, MoneyAccount moneyAccount){

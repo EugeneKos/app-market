@@ -4,21 +4,22 @@ import ru.market.domain.data.Operation;
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationFilterDTO;
-import ru.market.dto.operation.OperationResultDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 
 import java.util.Set;
 
 public interface IOperationService {
-    OperationResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO);
+    OperationDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO);
 
-    OperationResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO);
+    OperationDTO debit(OperationEnrollDebitDTO enrollDebitDTO);
 
-    OperationResultDTO transfer(OperationTransferDTO transferDTO);
+    OperationDTO transfer(OperationTransferDTO transferDTO);
 
     Operation getOperationById(Long id);
 
-    OperationResultDTO rollback(Long id);
+    void rollback(Operation operation);
+
+    void update(Operation operation);
 
     Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId);
 

@@ -6,7 +6,6 @@ import ru.market.domain.converter.CostConverter;
 import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.Cost;
 import ru.market.domain.data.Operation;
-import ru.market.domain.exception.CostExecuteException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostRepository;
 import ru.market.domain.service.ICostLimitService;
@@ -15,9 +14,8 @@ import ru.market.domain.service.IOperationService;
 
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
+import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
-import ru.market.dto.operation.OperationResultDTO;
-import ru.market.dto.result.ResultStatus;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,15 +57,9 @@ public class CostServiceImpl implements ICostService {
     private Operation createOperation(CostNoIdDTO costNoIdDTO){
         OperationEnrollDebitDTO enrollDebitDTO = costConverter.convertToOperationEnrollDebitDTO(costNoIdDTO);
 
-        OperationResultDTO operationResultDTO = operationService.debit(enrollDebitDTO);
-        if(operationResultDTO.getStatus() == ResultStatus.FAILED){
-            throw new CostExecuteException(String.format(
-                    "Ошибка проведения затраты. Статус операции: %s Описание: %s",
-                    operationResultDTO.getStatus(), operationResultDTO.getDescription()
-            ));
-        }
+        OperationDTO operationDTO = operationService.debit(enrollDebitDTO);
 
-        return operationService.getOperationById(operationResultDTO.getOperationId());
+        return operationService.getOperationById(operationDTO.getId());
     }
 
     @Transactional
@@ -80,31 +72,38 @@ public class CostServiceImpl implements ICostService {
         Cost gettingById = getCostById(costDTO.getId());
 
         if(isRequiredRollback(costDTO, gettingById)){
-            rollbackOperation(gettingById.getOperation().getId());
+            operationService.rollback(gettingById.getOperation());
             return create(costDTO);
         }
 
         Cost cost = costConverter.convertToEntity(costDTO);
-        cost = costRepository.saveAndFlush(cost);
+
+        updateAndSave(cost, gettingById);
+
         return costConverter.convertToDTO(cost);
     }
 
+    private void updateAndSave(Cost newCost, Cost oldCost){
+        Operation operation = oldCost.getOperation();
+
+        operation.setDescription(newCost.getDescription());
+        operation.setDate(newCost.getDate());
+        operation.setTime(newCost.getTime());
+
+        operationService.update(operation);
+
+        newCost.setCostLimit(oldCost.getCostLimit());
+        newCost.setOperation(operation);
+
+        costRepository.saveAndFlush(newCost);
+    }
+
     private boolean isRequiredRollback(CostDTO newCost, Cost oldCost){
-        if(!oldCost.getSum().toString().equals(newCost.getSum())){
+        if(oldCost.getSum().doubleValue() != Double.parseDouble(newCost.getSum())){
             return true;
         }
 
         return !oldCost.getOperation().getMoneyAccount().getId().equals(newCost.getMoneyAccountId());
-    }
-
-    private void rollbackOperation(Long operationId){
-        OperationResultDTO operationResultDTO = operationService.rollback(operationId);
-        if(operationResultDTO.getStatus() == ResultStatus.FAILED){
-            throw new CostExecuteException(String.format(
-                    "Ошибка проведения затраты. Статус операции: %s Описание: %s",
-                    operationResultDTO.getStatus(), operationResultDTO.getDescription()
-            ));
-        }
     }
 
     private Cost getCostById(Long id){
@@ -126,6 +125,6 @@ public class CostServiceImpl implements ICostService {
     public void deleteById(Long id) {
         Cost cost = getCostById(id);
         costRepository.deleteById(id);
-        rollbackOperation(cost.getOperation().getId());
+        operationService.rollback(cost.getOperation());
     }
 }

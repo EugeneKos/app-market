@@ -3,6 +3,7 @@ package ru.market.domain.service.impl;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.CostLimitConverter;
+import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.CostLimit;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostLimitRepository;
@@ -10,8 +11,10 @@ import ru.market.domain.service.ICostLimitService;
 import ru.market.domain.service.IPersonProvider;
 
 import ru.market.dto.limit.CostLimitDTO;
+import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,6 +52,23 @@ public class CostLimitServiceImpl implements ICostLimitService {
         return costLimitRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Cost limit with id %d not found", id))
         );
+    }
+
+    @Override
+    public CostLimitInfoDTO getCostLimitInfoById(Long id, String dateStr) {
+        CostLimit costLimit = getCostLimitById(id);
+
+        CostLimitInfoDTO costLimitInfoDTO = costLimitConverter.convertToCostLimitInfoDTO(costLimit);
+
+        BigDecimal allCostsByCostLimitId = costLimitRepository.findAndSumAllCostsById(id).orElse(new BigDecimal(0));
+        BigDecimal allCostsByCostLimitIdAndDate = costLimitRepository.findAndSumAllCostsByIdAndDate(
+                id, DateTimeConverter.convertToLocalDate(dateStr)).orElse(new BigDecimal(0)
+        );
+
+        costLimitInfoDTO.setRemain(costLimit.getSum().subtract(allCostsByCostLimitId).toString());
+        costLimitInfoDTO.setSpendingPerDay(allCostsByCostLimitIdAndDate.toString());
+
+        return costLimitInfoDTO;
     }
 
     @Override

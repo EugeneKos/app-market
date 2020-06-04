@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -15,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "cost_limit", uniqueConstraints = {
@@ -41,6 +43,9 @@ public class CostLimit {
     @ManyToOne
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "cost_limit_person_fk"))
     private Person person;
+
+    @OneToMany(targetEntity = Cost.class, mappedBy = "costLimit")
+    private Set<Cost> costs;
 
     public Long getId() {
         return id;
@@ -88,6 +93,14 @@ public class CostLimit {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Set<Cost> getCosts() {
+        return costs;
+    }
+
+    public void setCosts(Set<Cost> costs) {
+        this.costs = costs;
     }
 
     @Override

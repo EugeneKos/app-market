@@ -4,11 +4,15 @@ import org.dozer.DozerBeanMapper;
 
 import ru.market.domain.data.CostLimit;
 import ru.market.dto.limit.CostLimitDTO;
+import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
 public class CostLimitConverter extends AbstractDefaultConverter<CostLimit, CostLimitNoIdDTO, CostLimitDTO> {
+    private DozerBeanMapper mapper;
+
     public CostLimitConverter(DozerBeanMapper mapper){
         super(mapper, CostLimit.class, CostLimitNoIdDTO.class, CostLimitDTO.class);
+        this.mapper = mapper;
     }
 
     @Override
@@ -23,6 +27,19 @@ public class CostLimitConverter extends AbstractDefaultConverter<CostLimit, Cost
         costLimitDTO.setEndDateStr(DateTimeConverter.convertToDateStr(costLimit.getEndDate()));
 
         return costLimitDTO;
+    }
+
+    public CostLimitInfoDTO convertToCostLimitInfoDTO(CostLimit costLimit){
+        if(costLimit == null){
+            return null;
+        }
+
+        CostLimitInfoDTO costLimitInfoDTO = mapper.map(costLimit, CostLimitInfoDTO.class);
+
+        costLimitInfoDTO.setBeginDateStr(DateTimeConverter.convertToDateStr(costLimit.getBeginDate()));
+        costLimitInfoDTO.setEndDateStr(DateTimeConverter.convertToDateStr(costLimit.getEndDate()));
+
+        return costLimitInfoDTO;
     }
 
     @Override

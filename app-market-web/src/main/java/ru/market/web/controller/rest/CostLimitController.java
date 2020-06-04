@@ -1,6 +1,7 @@
 package ru.market.web.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.market.domain.service.ICostLimitService;
 import ru.market.dto.limit.CostLimitDTO;
+import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
 import java.util.Set;
@@ -30,5 +32,12 @@ public class CostLimitController {
     @RequestMapping(path = "/cost-limit", method = RequestMethod.GET, produces = "application/json")
     public Set<CostLimitDTO> getAll(){
         return costLimitService.getAll();
+    }
+
+    @RequestMapping(path = "/cost-limit/info/{id}/{dateStr}", method = RequestMethod.GET, produces = "application/json")
+    public CostLimitInfoDTO getCostLimitInfoById(@PathVariable(name = "id") Long id,
+                                                 @PathVariable(name = "dateStr") String dateStr){
+
+        return costLimitService.getCostLimitInfoById(id, dateStr);
     }
 }

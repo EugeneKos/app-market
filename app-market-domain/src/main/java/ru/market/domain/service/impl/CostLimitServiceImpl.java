@@ -15,6 +15,7 @@ import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,19 +57,72 @@ public class CostLimitServiceImpl implements ICostLimitService {
 
     @Override
     public CostLimitInfoDTO getCostLimitInfoById(Long id, String dateStr) {
+        LocalDate date = DateTimeConverter.convertToLocalDate(dateStr);
+
         CostLimit costLimit = getCostLimitById(id);
+
+        BigDecimal sumAllCosts = costLimitRepository.sumAllCosts(id).orElse(new BigDecimal(0));
+        BigDecimal spendingPerDay = costLimitRepository.sumAllCostsByDate(id, date).orElse(new BigDecimal(0));
 
         CostLimitInfoDTO costLimitInfoDTO = costLimitConverter.convertToCostLimitInfoDTO(costLimit);
 
-        BigDecimal allCostsByCostLimitId = costLimitRepository.findAndSumAllCostsById(id).orElse(new BigDecimal(0));
-        BigDecimal allCostsByCostLimitIdAndDate = costLimitRepository.findAndSumAllCostsByIdAndDate(
-                id, DateTimeConverter.convertToLocalDate(dateStr)).orElse(new BigDecimal(0)
-        );
-
-        costLimitInfoDTO.setRemain(costLimit.getSum().subtract(allCostsByCostLimitId).toString());
-        costLimitInfoDTO.setSpendingPerDay(allCostsByCostLimitIdAndDate.toString());
+        costLimitInfoDTO.setRemain(costLimit.getSum().subtract(sumAllCosts).toString());
+        costLimitInfoDTO.setSpendingPerDay(spendingPerDay.toString());
+        costLimitInfoDTO.setAvailableToday(calculateAvailableToday(costLimit, date, spendingPerDay));
 
         return costLimitInfoDTO;
+    }
+
+    private String calculateAvailableToday(CostLimit costLimit, LocalDate date, BigDecimal spendingPerDay){
+        int numRemainDays = getNumRemainDays(costLimit); // число оставшихся дней
+
+        Long costLimitId = costLimit.getId();
+
+        LocalDate beginDate = costLimit.getBeginDate();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        BigDecimal limitSum = costLimit.getSum();
+        BigDecimal pastExpenses; // затраты за прошедшие дни
+
+        if(date.isBefore(LocalDate.now())){
+            numRemainDays ++;
+
+            pastExpenses = costLimitRepository.sumAllCostsByPeriod(costLimitId, beginDate, yesterday)
+                    .orElse(new BigDecimal(0))
+                    .subtract(spendingPerDay);
+        } else {
+
+            pastExpenses = costLimitRepository.sumAllCostsByPeriod(costLimitId, beginDate, yesterday)
+                    .orElse(new BigDecimal(0));
+        }
+
+        return limitSum.subtract(pastExpenses)
+                .divide(new BigDecimal(numRemainDays), 2)
+                .subtract(spendingPerDay)
+                .toString();
+    }
+
+    private int getNumRemainDays(CostLimit costLimit){
+        LocalDate endDate = costLimit.getEndDate();
+        LocalDate beginDate = costLimit.getBeginDate();
+        LocalDate now = LocalDate.now();
+
+        int numRemainDays = 0;
+
+        if(now.isAfter(endDate)){
+            return numRemainDays;
+        }
+
+        LocalDate counterDate = LocalDate.from(endDate);
+
+        while ((now.isBefore(counterDate) || now.isEqual(counterDate))
+                && (counterDate.isAfter(beginDate) || counterDate.isEqual(beginDate))){
+
+            numRemainDays ++;
+            counterDate = counterDate.minusDays(1);
+        }
+
+        return numRemainDays;
     }
 
     @Override

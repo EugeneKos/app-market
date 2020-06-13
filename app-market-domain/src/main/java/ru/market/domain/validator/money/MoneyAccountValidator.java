@@ -4,7 +4,7 @@ import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.exception.NotUniqueException;
 import ru.market.domain.exception.ValidateException;
 import ru.market.domain.repository.MoneyAccountRepository;
-import ru.market.domain.service.utils.ServiceUtils;
+import ru.market.domain.validator.utils.ValidatorUtils;
 import ru.market.domain.validator.CommonValidator;
 
 import java.math.BigDecimal;
@@ -29,7 +29,7 @@ public class MoneyAccountValidator implements CommonValidator<MoneyAccount> {
             throw new ValidateException("Баланс счета не должен быть пустым.");
         }
 
-        if(ServiceUtils.isMatchMoney(balance.toString())){
+        if(ValidatorUtils.isMatchMoney(balance.toString())){
             return;
         }
 

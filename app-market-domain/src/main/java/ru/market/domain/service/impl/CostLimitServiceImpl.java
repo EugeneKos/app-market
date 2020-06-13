@@ -9,6 +9,7 @@ import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostLimitRepository;
 import ru.market.domain.service.ICostLimitService;
 import ru.market.domain.service.IPersonProvider;
+import ru.market.domain.validator.CommonValidator;
 
 import ru.market.dto.limit.CostLimitDTO;
 import ru.market.dto.limit.CostLimitInfoDTO;
@@ -23,14 +24,18 @@ public class CostLimitServiceImpl implements ICostLimitService {
     private CostLimitRepository costLimitRepository;
     private CostLimitConverter costLimitConverter;
 
+    private CommonValidator<CostLimit> validator;
+
     private IPersonProvider personProvider;
 
     public CostLimitServiceImpl(CostLimitRepository costLimitRepository,
                                 CostLimitConverter costLimitConverter,
+                                CommonValidator<CostLimit> validator,
                                 IPersonProvider personProvider) {
 
         this.costLimitRepository = costLimitRepository;
         this.costLimitConverter = costLimitConverter;
+        this.validator = validator;
         this.personProvider = personProvider;
     }
 
@@ -42,6 +47,9 @@ public class CostLimitServiceImpl implements ICostLimitService {
         }
 
         CostLimit costLimit = costLimitConverter.convertToEntity(costLimitNoIdDTO);
+
+        validator.validate(costLimit);
+
         costLimit.setPerson(personProvider.getCurrentPerson());
 
         costLimit = costLimitRepository.saveAndFlush(costLimit);

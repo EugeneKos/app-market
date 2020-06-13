@@ -1,6 +1,6 @@
-package ru.market.domain.service.utils;
+package ru.market.domain.validator.utils;
 
-public final class ServiceUtils {
+public final class ValidatorUtils {
     public static boolean isMatchMoney(String moneyAmount){
         if(moneyAmount.matches("[0-9]+")){
             return true;

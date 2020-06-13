@@ -3,7 +3,7 @@ package ru.market.domain.validator.operation;
 import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.ValidateException;
-import ru.market.domain.service.utils.ServiceUtils;
+import ru.market.domain.validator.utils.ValidatorUtils;
 import ru.market.domain.validator.CommonValidator;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public class OperationValidator implements CommonValidator<Operation> {
             throw new ValidateException("Сумма перевода должна быть заполнена.");
         }
 
-        if(ServiceUtils.isMatchMoney(amount.toString())){
+        if(ValidatorUtils.isMatchMoney(amount.toString())){
             return;
         }
 

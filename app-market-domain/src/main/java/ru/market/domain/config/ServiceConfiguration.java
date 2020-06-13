@@ -12,6 +12,7 @@ import ru.market.domain.converter.MoneyAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
 import ru.market.domain.converter.UserConverter;
+import ru.market.domain.data.CostLimit;
 import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Person;
 import ru.market.domain.repository.CostLimitRepository;
@@ -98,9 +99,10 @@ public class ServiceConfiguration {
     @Bean
     public ICostLimitService costLimitService(CostLimitRepository costLimitRepository,
                                               CostLimitConverter costLimitConverter,
+                                              CommonValidator<CostLimit> validator,
                                               IPersonProvider personProvider){
 
-        return new CostLimitServiceImpl(costLimitRepository, costLimitConverter, personProvider);
+        return new CostLimitServiceImpl(costLimitRepository, costLimitConverter, validator, personProvider);
     }
 
     @Bean

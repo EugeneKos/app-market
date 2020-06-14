@@ -69,6 +69,10 @@ public class CostLimitServiceImpl implements ICostLimitService {
 
         CostLimit costLimit = getCostLimitById(id);
 
+        if(date.isBefore(costLimit.getBeginDate()) || date.isAfter(costLimit.getEndDate())){
+            throw new IllegalArgumentException("Запрашиваемая дата находится вне диапозона запрашиваемого лимита");
+        }
+
         BigDecimal sumAllCosts = costLimitRepository.sumAllCosts(id).orElse(new BigDecimal(0));
         BigDecimal spendingPerDay = costLimitRepository.sumAllCostsByDate(id, date).orElse(new BigDecimal(0));
 

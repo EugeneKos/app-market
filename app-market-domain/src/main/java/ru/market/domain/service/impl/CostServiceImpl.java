@@ -5,12 +5,15 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.market.domain.converter.CostConverter;
 import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.Cost;
+import ru.market.domain.data.CostLimit;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostRepository;
 import ru.market.domain.service.ICostLimitService;
 import ru.market.domain.service.ICostService;
 import ru.market.domain.service.IOperationService;
+import ru.market.domain.validator.CommonValidator;
+import ru.market.domain.validator.limit.CostValidator;
 
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
@@ -47,7 +50,12 @@ public class CostServiceImpl implements ICostService {
 
         Cost cost = costConverter.convertToEntity(costNoIdDTO);
 
-        cost.setCostLimit(costLimitService.getCostLimitById(costNoIdDTO.getCostLimitId()));
+        CostLimit costLimit = costLimitService.getCostLimitById(costNoIdDTO.getCostLimitId());
+
+        CommonValidator<Cost> validator = new CostValidator(costLimit);
+        validator.validate(cost);
+
+        cost.setCostLimit(costLimit);
         cost.setOperation(createOperation(costNoIdDTO));
 
         cost = costRepository.saveAndFlush(cost);
@@ -70,13 +78,15 @@ public class CostServiceImpl implements ICostService {
         }
 
         Cost gettingById = getCostById(costDTO.getId());
+        Cost cost = costConverter.convertToEntity(costDTO);
+
+        CommonValidator<Cost> validator = new CostValidator(gettingById.getCostLimit());
+        validator.validate(cost);
 
         if(isRequiredRollback(costDTO, gettingById)){
             operationService.rollback(gettingById.getOperation());
             return create(costDTO);
         }
-
-        Cost cost = costConverter.convertToEntity(costDTO);
 
         updateAndSave(cost, gettingById);
 

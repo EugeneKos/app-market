@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @UrlFilter(urlPatterns = {
-        "/user", "/change/username", "/change/password", "/person", "/money-account*", "/operation*"
+        "/user", "/change/username", "/change/password", "/person", "/money-account*", "/operation*",
+        "/cost-limit*", "/cost*"
 })
 public class AuthTokenFilter implements AuthFilter {
     private SessionDataManager sessionDataManager;

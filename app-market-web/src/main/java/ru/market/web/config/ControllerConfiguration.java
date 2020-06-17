@@ -87,7 +87,7 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public CostController costController(ICostService costService){
-        return new CostController(costService);
+    public CostController costController(ICostService costService, SessionDataManager sessionDataManager){
+        return new CostController(costService, sessionDataManager);
     }
 }

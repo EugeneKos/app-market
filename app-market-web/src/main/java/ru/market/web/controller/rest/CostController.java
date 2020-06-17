@@ -2,36 +2,35 @@ package ru.market.web.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.service.ICostService;
 import ru.market.dto.cost.CostDTO;
-import ru.market.dto.cost.CostNoIdDTO;
 
 import java.util.Set;
 
 @RestController
 public class CostController {
     private ICostService costService;
+    private SessionDataManager sessionDataManager;
 
     @Autowired
-    public CostController(ICostService costService) {
+    public CostController(ICostService costService, SessionDataManager sessionDataManager) {
         this.costService = costService;
+        this.sessionDataManager = sessionDataManager;
     }
 
-    @RequestMapping(path = "/cost", method = RequestMethod.PUT,
-            consumes = "application/json", produces = "application/json")
-    public CostDTO create(@RequestBody CostNoIdDTO costNoIdDTO){
-        return costService.create(costNoIdDTO);
+    @RequestMapping(path = "/cost", method = RequestMethod.PUT, produces = "application/json")
+    public CostDTO create(){
+        return costService.create(sessionDataManager.getCurrentRequestBody());
     }
 
-    @RequestMapping(path = "/cost", method = RequestMethod.POST,
-            consumes = "application/json", produces = "application/json")
-    public CostDTO update(@RequestBody CostDTO costDTO){
-        return costService.update(costDTO);
+    @RequestMapping(path = "/cost", method = RequestMethod.POST, produces = "application/json")
+    public CostDTO update(){
+        return costService.update(sessionDataManager.getCurrentRequestBody());
     }
 
     @RequestMapping(path = "/cost/{costLimitId}/{dateStr}", method = RequestMethod.GET, produces = "application/json")

@@ -13,5 +13,6 @@ public interface ICostLimitService {
     CostLimit getCostLimitById(Long id);
     CostLimitInfoDTO getCostLimitInfoById(Long id, String dateStr);
     Set<CostLimitDTO> getAll();
+    Set<Long> getAllIdByPersonId(Long personId);
     void deleteById(Long id);
 }

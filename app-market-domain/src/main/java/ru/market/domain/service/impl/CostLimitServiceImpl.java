@@ -145,6 +145,11 @@ public class CostLimitServiceImpl implements ICostLimitService {
     }
 
     @Override
+    public Set<Long> getAllIdByPersonId(Long personId) {
+        return costLimitRepository.findAllIdByPersonId(personId);
+    }
+
+    @Override
     public void deleteById(Long id) {
 
     }

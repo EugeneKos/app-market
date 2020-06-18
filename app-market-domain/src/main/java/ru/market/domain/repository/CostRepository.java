@@ -12,4 +12,7 @@ import java.util.Set;
 public interface CostRepository extends JpaRepository<Cost, Long> {
     @Query("select c from Cost c where c.costLimit.id = :costLimitId and c.date = :date")
     Set<Cost> findAllByCostLimitIdAndDate(@Param("costLimitId") Long costLimitId, @Param("date")LocalDate date);
+
+    @Query("select c.id from Cost c where c.costLimit.id in :costLimitIds")
+    Set<Long> findAllIdByCostLimitIds(@Param("costLimitIds") Set<Long> costLimitIds);
 }

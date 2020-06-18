@@ -130,6 +130,11 @@ public class CostServiceImpl implements ICostService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public Set<Long> getAllIdByCostLimitIds(Set<Long> costLimitIds) {
+        return costRepository.findAllIdByCostLimitIds(costLimitIds);
+    }
+
     @Transactional
     @Override
     public void deleteById(Long id) {

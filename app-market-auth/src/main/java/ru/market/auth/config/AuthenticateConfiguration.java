@@ -23,6 +23,7 @@ import ru.market.data.session.api.SessionDataManager;
 import ru.market.data.session.api.SessionManagement;
 
 import ru.market.domain.service.ICostLimitService;
+import ru.market.domain.service.ICostService;
 import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IUserService;
 
@@ -51,7 +52,8 @@ public class AuthenticateConfiguration {
                                            SessionDataManager sessionDataManager,
                                            PasswordEncoder passwordEncoder,
                                            IMoneyAccountService moneyAccountService,
-                                           ICostLimitService costLimitService){
+                                           ICostLimitService costLimitService,
+                                           ICostService costService){
 
         AuthFilterChainImpl authFilterChain = new AuthFilterChainImpl(authFilterHandler);
 
@@ -62,7 +64,7 @@ public class AuthenticateConfiguration {
                 new MoneyAccountRequestFilter(sessionDataManager, moneyAccountService),
                 new OperationRequestFilter(sessionDataManager, moneyAccountService),
                 new CostLimitRequestFilter(sessionDataManager, costLimitService),
-                new CostRequestFilter(sessionDataManager, costLimitService, moneyAccountService)
+                new CostRequestFilter(sessionDataManager, costLimitService, costService, moneyAccountService)
         ));
 
         return authFilterChain;

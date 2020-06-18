@@ -4,6 +4,7 @@ import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.data.session.api.SessionDataManager;
 import ru.market.domain.service.ICostLimitService;
+import ru.market.domain.service.ICostService;
 import ru.market.domain.service.IMoneyAccountService;
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
@@ -21,15 +22,18 @@ import java.util.Set;
 @UrlFilter(urlPatterns = {"/cost", "/cost/*"})
 public class CostRequestFilter implements AuthFilter {
     private SessionDataManager sessionDataManager;
+    private ICostService costService;
     private ICostLimitService costLimitService;
     private IMoneyAccountService moneyAccountService;
 
     public CostRequestFilter(SessionDataManager sessionDataManager,
                              ICostLimitService costLimitService,
+                             ICostService costService,
                              IMoneyAccountService moneyAccountService) {
 
         this.sessionDataManager = sessionDataManager;
         this.costLimitService = costLimitService;
+        this.costService = costService;
         this.moneyAccountService = moneyAccountService;
     }
 
@@ -39,6 +43,7 @@ public class CostRequestFilter implements AuthFilter {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allCostLimitId = costLimitService.getAllIdByPersonId(personId);
+        Set<Long> allIdByCostLimitIds = costService.getAllIdByCostLimitIds(allCostLimitId);
         Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
 
         String requestMethod = request.getMethod();
@@ -63,7 +68,7 @@ public class CostRequestFilter implements AuthFilter {
                 break;
             }
             case "DELETE":{
-                isWell = Utils.checkIdInServletPath(request.getServletPath(), "cost/(\\S+)", allCostLimitId);
+                isWell = Utils.checkIdInServletPath(request.getServletPath(), "cost/(\\S+)", allIdByCostLimitIds);
                 break;
             }
         }

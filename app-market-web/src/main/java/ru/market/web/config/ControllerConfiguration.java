@@ -8,6 +8,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 import ru.market.data.session.api.SessionDataManager;
 
+import ru.market.domain.service.ICostLimitService;
+import ru.market.domain.service.ICostService;
 import ru.market.domain.service.IMoneyAccountService;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonService;
@@ -17,6 +19,8 @@ import ru.market.auth.api.AuthenticateService;
 
 import ru.market.web.controller.MainController;
 import ru.market.web.controller.rest.AuthenticateController;
+import ru.market.web.controller.rest.CostController;
+import ru.market.web.controller.rest.CostLimitController;
 import ru.market.web.controller.rest.MoneyAccountController;
 import ru.market.web.controller.rest.MyController;
 import ru.market.web.controller.rest.OperationController;
@@ -75,5 +79,15 @@ public class ControllerConfiguration {
                                                    SessionDataManager sessionDataManager){
 
         return new OperationController(operationService, sessionDataManager);
+    }
+
+    @Bean
+    public CostLimitController costLimitController(ICostLimitService costLimitService){
+        return new CostLimitController(costLimitService);
+    }
+
+    @Bean
+    public CostController costController(ICostService costService, SessionDataManager sessionDataManager){
+        return new CostController(costService, sessionDataManager);
     }
 }

@@ -78,7 +78,7 @@ public class OperationRequestFilter implements AuthFilter {
             isWell = allMoneyAccountId.contains(fromMoneyAccountId);
 
         } else if(servletPath.contains("money-account")){
-            isWell = Utils.containsIdInPath(servletPath, "money-account/", allMoneyAccountId);
+            isWell = Utils.checkIdInServletPath(servletPath, "money-account/(\\S+)", allMoneyAccountId);
         }
 
         if(isWell){

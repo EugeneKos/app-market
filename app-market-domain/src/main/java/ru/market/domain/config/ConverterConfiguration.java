@@ -5,6 +5,8 @@ import org.dozer.DozerBeanMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import ru.market.domain.converter.CostConverter;
+import ru.market.domain.converter.CostLimitConverter;
 import ru.market.domain.converter.MoneyAccountConverter;
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.converter.PersonConverter;
@@ -35,5 +37,15 @@ public class ConverterConfiguration {
     @Bean
     public OperationConverter operationConverter(DozerBeanMapper dozerBeanMapper){
         return new OperationConverter(dozerBeanMapper);
+    }
+
+    @Bean
+    public CostLimitConverter costLimitConverter(DozerBeanMapper dozerBeanMapper){
+        return new CostLimitConverter(dozerBeanMapper);
+    }
+
+    @Bean
+    public CostConverter costConverter(DozerBeanMapper dozerBeanMapper){
+        return new CostConverter(dozerBeanMapper);
     }
 }

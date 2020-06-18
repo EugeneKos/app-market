@@ -4,7 +4,7 @@ import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.data.session.api.SessionDataManager;
-import ru.market.domain.service.IMoneyAccountService;
+import ru.market.domain.service.ICostLimitService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,17 +14,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
-@UrlFilter(urlPatterns = "/money-account*",
-        excludeRequestMethods = {@ExcludeRequestMethod(url = "/money-account",
+@UrlFilter(urlPatterns = "/cost-limit*",
+        excludeRequestMethods = {@ExcludeRequestMethod(url = "/cost-limit",
                 methods = {ExcludeRequestMethod.Method.PUT, ExcludeRequestMethod.Method.GET})}
 )
-public class MoneyAccountRequestFilter implements AuthFilter {
+public class CostLimitRequestFilter implements AuthFilter {
     private SessionDataManager sessionDataManager;
-    private IMoneyAccountService moneyAccountService;
+    private ICostLimitService costLimitService;
 
-    public MoneyAccountRequestFilter(SessionDataManager sessionDataManager, IMoneyAccountService moneyAccountService) {
+    public CostLimitRequestFilter(SessionDataManager sessionDataManager, ICostLimitService costLimitService) {
         this.sessionDataManager = sessionDataManager;
-        this.moneyAccountService = moneyAccountService;
+        this.costLimitService = costLimitService;
     }
 
     @Override
@@ -32,20 +32,20 @@ public class MoneyAccountRequestFilter implements AuthFilter {
                          AuthFilterChain authChain, FilterChain filterChain) throws IOException, ServletException {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
-        Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
+        Set<Long> allCostLimitId = costLimitService.getAllIdByPersonId(personId);
 
         boolean isWell;
 
         switch (request.getMethod()){
             case "GET":{
                 isWell = Utils.checkIdInServletPath(
-                        request.getServletPath(), "money-account/(\\S+)", allMoneyAccountId
+                        request.getServletPath(), "cost-limit/info/(\\S+)/.+", allCostLimitId
                 );
                 break;
             }
             case "DELETE":{
                 isWell = Utils.checkIdInServletPath(
-                        request.getServletPath(), "money-account/(\\S+)", allMoneyAccountId
+                        request.getServletPath(), "cost-limit/(\\S+)", allCostLimitId
                 );
                 break;
             }

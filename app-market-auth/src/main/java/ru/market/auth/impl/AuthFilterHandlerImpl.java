@@ -40,7 +40,7 @@ public class AuthFilterHandlerImpl implements AuthFilterHandler {
         String regexp;
 
         if(urlPattern.endsWith("*")){
-            regexp = urlPattern + ".*";
+            regexp = urlPattern.replace("*", ".*");
         } else {
             regexp = urlPattern;
         }

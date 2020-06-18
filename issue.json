@@ -45,6 +45,6 @@
     "type":"TASK",
     "code":"MARKET-9",
     "summary":"Реализовать затраты и лимиты по затратам",
-    "status":"OPEN"
+    "status":"CLOSED"
   }
 ]

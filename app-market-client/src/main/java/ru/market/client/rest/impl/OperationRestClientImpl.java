@@ -2,7 +2,6 @@ package ru.market.client.rest.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpResponse;
@@ -27,95 +26,70 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
 
     @Override
     public ResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) throws RestClientException {
-        try {
-            TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
+        TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
-            HttpResponse<ResultDTO> httpResponse = httpConnection.put(
-                    new HttpRequestWithBodyImpl<>(createUrl("/operation/enrollment"), typeReference, enrollDebitDTO)
-            );
+        HttpResponse<ResultDTO> httpResponse = httpConnection.put(
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/enrollment"), typeReference, enrollDebitDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public ResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) throws RestClientException {
-        try {
-            TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
+        TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
-            HttpResponse<ResultDTO> httpResponse = httpConnection.put(
-                    new HttpRequestWithBodyImpl<>(createUrl("/operation/debit"), typeReference, enrollDebitDTO)
-            );
+        HttpResponse<ResultDTO> httpResponse = httpConnection.put(
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/debit"), typeReference, enrollDebitDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public ResultDTO transfer(OperationTransferDTO transferDTO) throws RestClientException {
-        try {
-            TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
+        TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
-            HttpResponse<ResultDTO> httpResponse = httpConnection.put(
-                    new HttpRequestWithBodyImpl<>(createUrl("/operation/transfer"), typeReference, transferDTO)
-            );
+        HttpResponse<ResultDTO> httpResponse = httpConnection.put(
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/transfer"), typeReference, transferDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId) throws RestClientException {
-        try {
-            TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
+        TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
 
-            HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.get(
-                    new HttpRequestImpl<>(createUrl("/operation/money-account/" + moneyAccountId), typeReference)
-            );
+        HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.get(
+                new HttpRequestImpl<>(createUrl("/operation/money-account/" + moneyAccountId), typeReference)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public Set<OperationDTO> getAllByMoneyAccountIdAndFilter(Long moneyAccountId, OperationFilterDTO filterDTO)
             throws RestClientException {
 
-        try {
-            TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
+        TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
 
-            HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.post(
-                    new HttpRequestWithBodyImpl<>(
-                            createUrl("/operation/money-account/" + moneyAccountId), typeReference, filterDTO
-                    )
-            );
+        HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.post(
+                new HttpRequestWithBodyImpl<>(
+                        createUrl("/operation/money-account/" + moneyAccountId), typeReference, filterDTO
+                )
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 }

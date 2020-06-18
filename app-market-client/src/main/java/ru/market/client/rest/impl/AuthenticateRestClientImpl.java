@@ -2,7 +2,6 @@ package ru.market.client.rest.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpResponse;
@@ -22,35 +21,25 @@ public class AuthenticateRestClientImpl extends AbstractRestClient implements Au
 
     @Override
     public ResultDTO authenticate(UsernamePasswordDTO usernamePasswordDTO) throws RestClientException {
-        try {
-            TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
+        TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
-            HttpResponse<ResultDTO> httpResponse = httpConnection.post(
-                    new HttpRequestWithBodyImpl<>(createUrl("/auth"), typeReference, usernamePasswordDTO)
-            );
+        HttpResponse<ResultDTO> httpResponse = httpConnection.post(
+                new HttpRequestWithBodyImpl<>(createUrl("/auth"), typeReference, usernamePasswordDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public void logout() throws RestClientException {
-        try {
-            TypeReference<Void> typeReference = new TypeReference<Void>() {};
+        TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
-            HttpResponse<Void> httpResponse = httpConnection.get(
-                    new HttpRequestImpl<>(createUrl("/logout"), typeReference)
-            );
+        HttpResponse<Void> httpResponse = httpConnection.get(
+                new HttpRequestImpl<>(createUrl("/logout"), typeReference)
+        );
 
-            checkResponse(httpResponse);
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        checkResponse(httpResponse);
     }
 }

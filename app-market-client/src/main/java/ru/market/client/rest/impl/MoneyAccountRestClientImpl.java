@@ -2,7 +2,6 @@ package ru.market.client.rest.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpResponse;
@@ -24,71 +23,51 @@ public class MoneyAccountRestClientImpl extends AbstractRestClient implements Mo
 
     @Override
     public MoneyAccountDTO create(MoneyAccountNoIdDTO moneyAccountNoIdDTO) throws RestClientException {
-        try {
-            TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
+        TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
 
-            HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.put(
-                    new HttpRequestWithBodyImpl<>(createUrl("/money-account"), typeReference, moneyAccountNoIdDTO)
-            );
+        HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.put(
+                new HttpRequestWithBodyImpl<>(createUrl("/money-account"), typeReference, moneyAccountNoIdDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e) {
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public MoneyAccountDTO getById(Long id) throws RestClientException {
-        try {
-            TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
+        TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
 
-            HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.get(
-                    new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
-            );
+        HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.get(
+                new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e) {
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public void deleteById(Long id) throws RestClientException {
-        try {
-            TypeReference<Void> typeReference = new TypeReference<Void>() {};
+        TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
-            HttpResponse<Void> httpResponse = httpConnection.delete(
-                    new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
-            );
+        HttpResponse<Void> httpResponse = httpConnection.delete(
+                new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
+        );
 
-            checkResponse(httpResponse);
-
-        } catch (HttpConnectionException e) {
-            throw new RestClientException(e.getMessage());
-        }
+        checkResponse(httpResponse);
     }
 
     @Override
     public Set<MoneyAccountDTO> getAll() throws RestClientException {
-        try {
-            TypeReference<Set<MoneyAccountDTO>> typeReference = new TypeReference<Set<MoneyAccountDTO>>() {};
+        TypeReference<Set<MoneyAccountDTO>> typeReference = new TypeReference<Set<MoneyAccountDTO>>() {};
 
-            HttpResponse<Set<MoneyAccountDTO>> httpResponse = httpConnection.get(
-                    new HttpRequestImpl<>(createUrl("/money-account"), typeReference)
-            );
+        HttpResponse<Set<MoneyAccountDTO>> httpResponse = httpConnection.get(
+                new HttpRequestImpl<>(createUrl("/money-account"), typeReference)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e) {
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 }

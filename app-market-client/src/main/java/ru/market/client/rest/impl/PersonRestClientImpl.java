@@ -2,7 +2,6 @@ package ru.market.client.rest.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpResponse;
@@ -21,37 +20,27 @@ public class PersonRestClientImpl extends AbstractRestClient implements PersonRe
 
     @Override
     public PersonDTO getCurrent() throws RestClientException {
-        try {
-            TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
+        TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
 
-            HttpResponse<PersonDTO> httpResponse = httpConnection.get(
-                    new HttpRequestImpl<>(createUrl("/person"), typeReference)
-            );
+        HttpResponse<PersonDTO> httpResponse = httpConnection.get(
+                new HttpRequestImpl<>(createUrl("/person"), typeReference)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 
     @Override
     public PersonDTO update(PersonDTO personDTO) throws RestClientException {
-        try {
-            TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
+        TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
 
-            HttpResponse<PersonDTO> httpResponse = httpConnection.post(
-                    new HttpRequestWithBodyImpl<>(createUrl("/person"), typeReference, personDTO)
-            );
+        HttpResponse<PersonDTO> httpResponse = httpConnection.post(
+                new HttpRequestWithBodyImpl<>(createUrl("/person"), typeReference, personDTO)
+        );
 
-            checkResponse(httpResponse);
+        checkResponse(httpResponse);
 
-            return httpResponse.getResponseBody();
-
-        } catch (HttpConnectionException e){
-            throw new RestClientException(e.getMessage());
-        }
+        return httpResponse.getResponseBody();
     }
 }

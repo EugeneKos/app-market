@@ -1,6 +1,6 @@
 package ru.market.client.exception;
 
-public class RestClientException extends Exception {
+public class RestClientException extends RuntimeException {
     private static final long serialVersionUID = 6681322945113396035L;
 
     public RestClientException(String message) {

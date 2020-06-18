@@ -99,10 +99,11 @@ public class ServiceConfiguration {
     @Bean
     public ICostLimitService costLimitService(CostLimitRepository costLimitRepository,
                                               CostLimitConverter costLimitConverter,
+                                              IOperationService operationService,
                                               CommonValidator<CostLimit> validator,
                                               IPersonProvider personProvider){
 
-        return new CostLimitServiceImpl(costLimitRepository, costLimitConverter, validator, personProvider);
+        return new CostLimitServiceImpl(costLimitRepository, costLimitConverter, operationService, validator, personProvider);
     }
 
     @Bean

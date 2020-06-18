@@ -4,10 +4,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.CostLimitConverter;
 import ru.market.domain.converter.DateTimeConverter;
+import ru.market.domain.data.Cost;
 import ru.market.domain.data.CostLimit;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostLimitRepository;
 import ru.market.domain.service.ICostLimitService;
+import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.IPersonProvider;
 import ru.market.domain.validator.CommonValidator;
 
@@ -26,15 +28,19 @@ public class CostLimitServiceImpl implements ICostLimitService {
 
     private CommonValidator<CostLimit> validator;
 
+    private IOperationService operationService;
+
     private IPersonProvider personProvider;
 
     public CostLimitServiceImpl(CostLimitRepository costLimitRepository,
                                 CostLimitConverter costLimitConverter,
+                                IOperationService operationService,
                                 CommonValidator<CostLimit> validator,
                                 IPersonProvider personProvider) {
 
         this.costLimitRepository = costLimitRepository;
         this.costLimitConverter = costLimitConverter;
+        this.operationService = operationService;
         this.validator = validator;
         this.personProvider = personProvider;
     }
@@ -149,8 +155,23 @@ public class CostLimitServiceImpl implements ICostLimitService {
         return costLimitRepository.findAllIdByPersonId(personId);
     }
 
+    @Transactional
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Boolean rollbackOperations) {
+        if(rollbackOperations){
+            rollbackOperations(costLimitRepository.findByIdWithCosts(id));
+        }
 
+        costLimitRepository.deleteById(id);
+    }
+
+    private void rollbackOperations(CostLimit costLimit){
+        if(costLimit == null){
+            return;
+        }
+
+        for (Cost cost : costLimit.getCosts()){
+            operationService.rollback(cost.getOperation());
+        }
     }
 }

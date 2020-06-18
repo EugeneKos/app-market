@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.market.domain.service.ICostLimitService;
@@ -39,5 +40,12 @@ public class CostLimitController {
                                                  @PathVariable(name = "dateStr") String dateStr){
 
         return costLimitService.getCostLimitInfoById(id, dateStr);
+    }
+
+    @RequestMapping(path = "/cost-limit/{id}", method = RequestMethod.DELETE)
+    public void deleteById(@PathVariable(name = "id") Long id,
+                           @RequestParam("rollbackOperations") Boolean rollbackOperations){
+
+        costLimitService.deleteById(id, rollbackOperations);
     }
 }

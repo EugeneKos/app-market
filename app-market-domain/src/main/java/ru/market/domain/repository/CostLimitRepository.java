@@ -16,6 +16,9 @@ public interface CostLimitRepository extends JpaRepository<CostLimit, Long> {
     @Query("select cl from CostLimit cl where cl.person = :person")
     Set<CostLimit> findAllByPerson(@Param("person")Person person);
 
+    @Query("select cl from CostLimit cl join fetch cl.costs where cl.id = :id")
+    CostLimit findByIdWithCosts(@Param("id") Long id);
+
     @Query("select cl from CostLimit cl where cl.sum = :sumL and cl.beginDate = :beginDate and cl.endDate = :endDate")
     CostLimit findBySumAndPeriod(@Param("sumL") BigDecimal sum,
                                  @Param("beginDate") LocalDate beginDate,

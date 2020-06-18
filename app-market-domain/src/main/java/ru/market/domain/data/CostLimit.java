@@ -1,5 +1,6 @@
 package ru.market.domain.data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -44,7 +45,7 @@ public class CostLimit {
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "cost_limit_person_fk"))
     private Person person;
 
-    @OneToMany(targetEntity = Cost.class, mappedBy = "costLimit")
+    @OneToMany(targetEntity = Cost.class, cascade = {CascadeType.REMOVE}, mappedBy = "costLimit")
     private Set<Cost> costs;
 
     public Long getId() {

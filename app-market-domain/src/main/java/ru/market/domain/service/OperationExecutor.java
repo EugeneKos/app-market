@@ -5,14 +5,16 @@ import ru.market.domain.data.Operation;
 import ru.market.domain.data.enumeration.OperationType;
 
 import ru.market.dto.operation.OperationEnrollDebitDTO;
+import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationTransferDTO;
-import ru.market.dto.result.ResultDTO;
 
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 
 public interface OperationExecutor {
-    ResultDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
-                      BiFunction<MoneyAccount, Operation, ResultDTO> function);
+    OperationDTO execute(OperationEnrollDebitDTO enrollDebitDTO, OperationType operationType,
+                         BiConsumer<MoneyAccount, Operation> consumer);
 
-    ResultDTO execute(OperationTransferDTO transferDTO);
+    OperationDTO execute(OperationTransferDTO transferDTO);
+
+    void rollback(Operation operation);
 }

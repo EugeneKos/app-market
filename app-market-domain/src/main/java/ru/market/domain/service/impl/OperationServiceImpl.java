@@ -1,10 +1,12 @@
 package ru.market.domain.service.impl;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.OperationConverter;
 import ru.market.domain.data.Operation;
 import ru.market.domain.data.enumeration.OperationType;
+import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.OperationRepository;
 import ru.market.domain.service.IOperationService;
 import ru.market.domain.service.OperationExecutor;
@@ -15,7 +17,6 @@ import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationFilterDTO;
 import ru.market.dto.operation.OperationTransferDTO;
-import ru.market.dto.result.ResultDTO;
 
 import ru.market.utils.MoneyAccountLockHolder;
 
@@ -38,21 +39,21 @@ public class OperationServiceImpl implements IOperationService {
     }
 
     @Override
-    public ResultDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
+    public OperationDTO enrollment(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.ENROLLMENT, OperationHelper::enrollment);
         }
     }
 
     @Override
-    public ResultDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
+    public OperationDTO debit(OperationEnrollDebitDTO enrollDebitDTO) {
         synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(enrollDebitDTO.getMoneyAccountId())){
             return operationExecutor.execute(enrollDebitDTO, OperationType.DEBIT, OperationHelper::debit);
         }
     }
 
     @Override
-    public ResultDTO transfer(OperationTransferDTO transferDTO) {
+    public OperationDTO transfer(OperationTransferDTO transferDTO) {
         Long fromMoneyAccountId = transferDTO.getFromMoneyAccountId();
         Long toMoneyAccountId = transferDTO.getToMoneyAccountId();
 
@@ -69,6 +70,26 @@ public class OperationServiceImpl implements IOperationService {
                 }
             }
         }
+    }
+
+    @Override
+    public Operation getOperationById(Long id) {
+        return operationRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Operation with id %d not found", id))
+        );
+    }
+
+    @Override
+    public void rollback(Operation operation) {
+        synchronized (MoneyAccountLockHolder.getMoneyAccountLockById(operation.getMoneyAccount().getId())){
+            operationExecutor.rollback(operation);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void update(Operation operation) {
+        operationRepository.saveAndFlush(operation);
     }
 
     @Override

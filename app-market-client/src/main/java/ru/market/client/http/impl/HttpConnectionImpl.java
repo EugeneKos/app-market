@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.http.HttpConnection;
+import ru.market.client.http.HttpHeadersService;
 import ru.market.client.http.HttpRequest;
 import ru.market.client.http.HttpRequestWithBody;
 import ru.market.client.http.HttpResponse;
@@ -20,14 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HttpConnectionImpl implements HttpConnection {
-    private static final String AUTH_TOKEN_HEADER = "Auth-Token";
-    private static final String SET_COOKIE_HEADER = "Set-Cookie";
-    private static final String COOKIE_HEADER = "Cookie";
+    private HttpHeadersService httpHeadersService;
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private String cookieHeader;
-    private String authTokenHeader;
+    public HttpConnectionImpl(HttpHeadersService httpHeadersService) {
+        this.httpHeadersService = httpHeadersService;
+    }
 
     @Override
     public <ResponseBody> HttpResponse<ResponseBody> get(HttpRequest<ResponseBody> request) throws HttpConnectionException {
@@ -69,12 +69,7 @@ public class HttpConnectionImpl implements HttpConnection {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Accept-Charset", "utf-8");
 
-            if(cookieHeader != null){
-                urlConnection.setRequestProperty(COOKIE_HEADER, cookieHeader);
-            }
-            if(authTokenHeader != null){
-                urlConnection.setRequestProperty(AUTH_TOKEN_HEADER, authTokenHeader);
-            }
+            httpHeadersService.setHeaders(urlConnection);
 
             customizer.customize(urlConnection);
 
@@ -84,20 +79,11 @@ public class HttpConnectionImpl implements HttpConnection {
             HttpResponseImpl<ResponseBody> response = new HttpResponseImpl<>(responseCode, responseMessage);
 
             if (responseCode != 200) {
-                cookieHeader = null;
-                authTokenHeader = null;
+                httpHeadersService.clearHeaders();
                 return response;
             }
 
-            String cookie = urlConnection.getHeaderField(SET_COOKIE_HEADER);
-            if(cookie != null){
-                cookieHeader = cookie;
-            }
-
-            String authToken = urlConnection.getHeaderField(AUTH_TOKEN_HEADER);
-            if(authToken != null){
-                authTokenHeader = authToken;
-            }
+            httpHeadersService.saveHeaders(urlConnection);
 
             InputStream inputStream = urlConnection.getInputStream();
 

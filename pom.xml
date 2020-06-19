@@ -25,6 +25,7 @@
         <module>app-market-auth</module>
         <module>app-market-utils</module>
         <module>app-market-client</module>
+        <module>app-market-cli</module>
     </modules>
 
     <build>

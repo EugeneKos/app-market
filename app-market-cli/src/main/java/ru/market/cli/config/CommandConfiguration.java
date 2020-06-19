@@ -8,12 +8,15 @@ import ru.ed.microlib.command.Command;
 
 import ru.market.cli.command.auth.AuthenticateCommand;
 import ru.market.cli.command.auth.LogoutCommand;
+import ru.market.cli.command.money.CreateMoneyAccountCommand;
+import ru.market.cli.command.money.GetAllMoneyAccountCommand;
 import ru.market.cli.command.person.CurrentPersonCommand;
 import ru.market.cli.command.person.UpdatePersonCommand;
 import ru.market.cli.command.user.RegistrationUserCommand;
 import ru.market.cli.printer.Printer;
 import ru.market.client.config.ClientConfiguration;
 import ru.market.client.rest.AuthenticateRestClient;
+import ru.market.client.rest.MoneyAccountRestClient;
 import ru.market.client.rest.PersonRestClient;
 import ru.market.client.rest.UserRestClient;
 
@@ -43,5 +46,15 @@ public class CommandConfiguration {
     @Bean
     public Command updatePersonCommand(PersonRestClient personRestClient, Printer printer){
         return new UpdatePersonCommand(personRestClient, printer);
+    }
+
+    @Bean
+    public Command createMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer){
+        return new CreateMoneyAccountCommand(moneyAccountRestClient, printer);
+    }
+
+    @Bean
+    public Command getAllMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer){
+        return new GetAllMoneyAccountCommand(moneyAccountRestClient, printer);
     }
 }

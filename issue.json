@@ -46,5 +46,11 @@
     "code":"MARKET-9",
     "summary":"Реализовать затраты и лимиты по затратам",
     "status":"CLOSED"
+  },
+  {
+    "type":"TASK",
+    "code":"MARKET-10",
+    "summary":"Реализовать cli утилиту в качестве клиентского приложения",
+    "status":"OPEN"
   }
 ]

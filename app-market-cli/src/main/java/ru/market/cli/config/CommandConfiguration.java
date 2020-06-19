@@ -9,6 +9,7 @@ import ru.ed.microlib.command.Command;
 import ru.market.cli.command.auth.AuthenticateCommand;
 import ru.market.cli.command.auth.LogoutCommand;
 import ru.market.cli.command.person.CurrentPersonCommand;
+import ru.market.cli.command.person.UpdatePersonCommand;
 import ru.market.cli.command.user.RegistrationUserCommand;
 import ru.market.cli.printer.Printer;
 import ru.market.client.config.ClientConfiguration;
@@ -25,8 +26,8 @@ public class CommandConfiguration {
     }
 
     @Bean
-    public Command logoutCommand(AuthenticateRestClient authenticateRestClient, Printer printer){
-        return new LogoutCommand(authenticateRestClient, printer);
+    public Command logoutCommand(AuthenticateRestClient authenticateRestClient){
+        return new LogoutCommand(authenticateRestClient);
     }
 
     @Bean
@@ -37,5 +38,10 @@ public class CommandConfiguration {
     @Bean
     public Command currentPersonCommand(PersonRestClient personRestClient, Printer printer){
         return new CurrentPersonCommand(personRestClient, printer);
+    }
+
+    @Bean
+    public Command updatePersonCommand(PersonRestClient personRestClient, Printer printer){
+        return new UpdatePersonCommand(personRestClient, printer);
     }
 }

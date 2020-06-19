@@ -38,11 +38,7 @@ public class AuthenticateCommand implements Command {
         usernamePasswordDTO.setUsername(arguments.get(USERNAME_ARG));
         usernamePasswordDTO.setPassword(arguments.get(PASSWORD_ARG));
 
-        try {
-            ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
-            printer.print(result);
-        } catch (Exception e){
-            printer.print(e);
-        }
+        ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
+        printer.print(result);
     }
 }

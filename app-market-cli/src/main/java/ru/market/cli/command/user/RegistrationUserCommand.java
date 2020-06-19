@@ -44,11 +44,7 @@ public class RegistrationUserCommand implements Command {
         registrationDTO.setUsername(arguments.get(USERNAME_ARG));
         registrationDTO.setPassword(arguments.get(PASSWORD_ARG));
 
-        try {
-            UserDTO registration = userRestClient.registration(registrationDTO);
-            printer.print(registration);
-        } catch (Exception e){
-            printer.print(e);
-        }
+        UserDTO registration = userRestClient.registration(registrationDTO);
+        printer.print(registration);
     }
 }

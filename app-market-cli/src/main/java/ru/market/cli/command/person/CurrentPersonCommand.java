@@ -20,7 +20,7 @@ public class CurrentPersonCommand implements Command {
 
     @Override
     public String getName() {
-        return "person";
+        return "person-get";
     }
 
     @Override
@@ -30,11 +30,7 @@ public class CurrentPersonCommand implements Command {
 
     @Override
     public void perform(Map<Argument, String> map) {
-        try {
-            PersonDTO person = personRestClient.getCurrent();
-            printer.print(person);
-        } catch (Exception e){
-            printer.print(e);
-        }
+        PersonDTO person = personRestClient.getCurrent();
+        printer.print(person);
     }
 }

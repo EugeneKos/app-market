@@ -10,11 +10,11 @@ import ru.market.dto.money.MoneyAccountNoIdDTO;
 
 import java.util.Map;
 
-public class CreateMoneyAccountCommand implements Command {
-    private static final Argument BALANCE_ARG = new Argument("-b", "--balance", true);
-    private static final Argument NAME_ARG = new Argument("-n", "--name", true);
-    private static final Argument DESCRIPTION_ARG = new Argument("-d", "--description", true);
+import static ru.market.cli.command.CommandArguments.BALANCE_ARG;
+import static ru.market.cli.command.CommandArguments.DESCRIPTION_ARG;
+import static ru.market.cli.command.CommandArguments.NAME_ARG;
 
+public class CreateMoneyAccountCommand implements Command {
     private MoneyAccountRestClient moneyAccountRestClient;
     private Printer printer;
 

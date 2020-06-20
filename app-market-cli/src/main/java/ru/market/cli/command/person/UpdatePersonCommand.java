@@ -9,12 +9,12 @@ import ru.market.dto.person.PersonDTO;
 
 import java.util.Map;
 
-public class UpdatePersonCommand implements Command {
-    private static final Argument ID_ARG = new Argument("-i", "--id", true);
-    private static final Argument FIRST_NAME_ARG = new Argument("-f", "--firstName", true);
-    private static final Argument LAST_NAME_ARG = new Argument("-l", "--lastName", true);
-    private static final Argument MIDDLE_NAME_ARG = new Argument("-m", "--middleName", true);
+import static ru.market.cli.command.CommandArguments.FIRST_NAME_ARG;
+import static ru.market.cli.command.CommandArguments.ID_ARG;
+import static ru.market.cli.command.CommandArguments.LAST_NAME_ARG;
+import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
 
+public class UpdatePersonCommand implements Command {
     private PersonRestClient personRestClient;
     private Printer printer;
 

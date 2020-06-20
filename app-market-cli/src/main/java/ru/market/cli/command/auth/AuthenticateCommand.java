@@ -10,10 +10,10 @@ import ru.market.dto.result.ResultDTO;
 
 import java.util.Map;
 
-public class AuthenticateCommand implements Command {
-    private static final Argument USERNAME_ARG = new Argument("-u", "--username", true);
-    private static final Argument PASSWORD_ARG = new Argument("-p", "--password", true);
+import static ru.market.cli.command.CommandArguments.PASSWORD_ARG;
+import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 
+public class AuthenticateCommand implements Command {
     private AuthenticateRestClient authenticateRestClient;
     private Printer printer;
 

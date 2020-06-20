@@ -10,13 +10,13 @@ import ru.market.dto.user.UserDTO;
 
 import java.util.Map;
 
-public class RegistrationUserCommand implements Command {
-    private static final Argument FIRST_NAME_ARG = new Argument("-f", "--firstName", true);
-    private static final Argument LAST_NAME_ARG = new Argument("-l", "--lastName", true);
-    private static final Argument MIDDLE_NAME_ARG = new Argument("-m", "--middleName", true);
-    private static final Argument USERNAME_ARG = new Argument("-u", "--username", true);
-    private static final Argument PASSWORD_ARG = new Argument("-p", "--password", true);
+import static ru.market.cli.command.CommandArguments.FIRST_NAME_ARG;
+import static ru.market.cli.command.CommandArguments.LAST_NAME_ARG;
+import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
+import static ru.market.cli.command.CommandArguments.PASSWORD_ARG;
+import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 
+public class RegistrationUserCommand implements Command {
     private UserRestClient userRestClient;
     private Printer printer;
 

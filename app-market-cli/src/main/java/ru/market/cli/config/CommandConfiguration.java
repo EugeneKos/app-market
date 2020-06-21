@@ -15,7 +15,6 @@ import ru.market.cli.command.money.GetMoneyAccountCommand;
 import ru.market.cli.command.person.CurrentPersonCommand;
 import ru.market.cli.command.person.UpdatePersonCommand;
 import ru.market.cli.command.user.RegistrationUserCommand;
-import ru.market.cli.printer.Printer;
 import ru.market.client.config.ClientConfiguration;
 import ru.market.client.rest.AuthenticateRestClient;
 import ru.market.client.rest.MoneyAccountRestClient;
@@ -26,8 +25,8 @@ import ru.market.client.rest.UserRestClient;
 @Import(ClientConfiguration.class)
 public class CommandConfiguration {
     @Bean
-    public Command authenticateCommand(AuthenticateRestClient authenticateRestClient, Printer printer){
-        return new AuthenticateCommand(authenticateRestClient, printer);
+    public Command authenticateCommand(AuthenticateRestClient authenticateRestClient){
+        return new AuthenticateCommand(authenticateRestClient);
     }
 
     @Bean
@@ -36,33 +35,33 @@ public class CommandConfiguration {
     }
 
     @Bean
-    public Command registrationUserCommand(UserRestClient userRestClient, Printer printer){
-        return new RegistrationUserCommand(userRestClient, printer);
+    public Command registrationUserCommand(UserRestClient userRestClient){
+        return new RegistrationUserCommand(userRestClient);
     }
 
     @Bean
-    public Command currentPersonCommand(PersonRestClient personRestClient, Printer printer){
-        return new CurrentPersonCommand(personRestClient, printer);
+    public Command currentPersonCommand(PersonRestClient personRestClient){
+        return new CurrentPersonCommand(personRestClient);
     }
 
     @Bean
-    public Command updatePersonCommand(PersonRestClient personRestClient, Printer printer){
-        return new UpdatePersonCommand(personRestClient, printer);
+    public Command updatePersonCommand(PersonRestClient personRestClient){
+        return new UpdatePersonCommand(personRestClient);
     }
 
     @Bean
-    public Command createMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer){
-        return new CreateMoneyAccountCommand(moneyAccountRestClient, printer);
+    public Command createMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient){
+        return new CreateMoneyAccountCommand(moneyAccountRestClient);
     }
 
     @Bean
-    public Command getMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer){
-        return new GetMoneyAccountCommand(moneyAccountRestClient, printer);
+    public Command getMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient){
+        return new GetMoneyAccountCommand(moneyAccountRestClient);
     }
 
     @Bean
-    public Command getAllMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer){
-        return new GetAllMoneyAccountCommand(moneyAccountRestClient, printer);
+    public Command getAllMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient){
+        return new GetAllMoneyAccountCommand(moneyAccountRestClient);
     }
 
     @Bean

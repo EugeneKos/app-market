@@ -3,7 +3,7 @@ package ru.market.cli.command.money;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.printer.Printer;
+import ru.market.cli.utils.Printer;
 import ru.market.client.rest.MoneyAccountRestClient;
 import ru.market.dto.money.MoneyAccountDTO;
 import ru.market.dto.money.MoneyAccountNoIdDTO;
@@ -16,11 +16,9 @@ import static ru.market.cli.command.CommandArguments.NAME_ARG;
 
 public class CreateMoneyAccountCommand implements Command {
     private MoneyAccountRestClient moneyAccountRestClient;
-    private Printer printer;
 
-    public CreateMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, Printer printer) {
+    public CreateMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient) {
         this.moneyAccountRestClient = moneyAccountRestClient;
-        this.printer = printer;
     }
 
     @Override
@@ -42,6 +40,6 @@ public class CreateMoneyAccountCommand implements Command {
                 .build();
 
         MoneyAccountDTO moneyAccountDTO = moneyAccountRestClient.create(moneyAccountNoIdDTO);
-        printer.print(moneyAccountDTO);
+        Printer.print(moneyAccountDTO);
     }
 }

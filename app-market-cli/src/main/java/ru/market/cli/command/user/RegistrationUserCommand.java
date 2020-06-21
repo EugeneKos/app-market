@@ -3,7 +3,7 @@ package ru.market.cli.command.user;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.printer.Printer;
+import ru.market.cli.utils.Printer;
 import ru.market.client.rest.UserRestClient;
 import ru.market.dto.user.RegistrationDTO;
 import ru.market.dto.user.UserDTO;
@@ -18,11 +18,9 @@ import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 
 public class RegistrationUserCommand implements Command {
     private UserRestClient userRestClient;
-    private Printer printer;
 
-    public RegistrationUserCommand(UserRestClient userRestClient, Printer printer) {
+    public RegistrationUserCommand(UserRestClient userRestClient) {
         this.userRestClient = userRestClient;
-        this.printer = printer;
     }
 
     @Override
@@ -46,6 +44,6 @@ public class RegistrationUserCommand implements Command {
                 .build();
 
         UserDTO registration = userRestClient.registration(registrationDTO);
-        printer.print(registration);
+        Printer.print(registration);
     }
 }

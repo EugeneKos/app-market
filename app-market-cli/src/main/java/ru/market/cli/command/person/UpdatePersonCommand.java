@@ -3,7 +3,7 @@ package ru.market.cli.command.person;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.printer.Printer;
+import ru.market.cli.utils.Printer;
 import ru.market.client.rest.PersonRestClient;
 import ru.market.dto.person.PersonDTO;
 
@@ -16,11 +16,9 @@ import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
 
 public class UpdatePersonCommand implements Command {
     private PersonRestClient personRestClient;
-    private Printer printer;
 
-    public UpdatePersonCommand(PersonRestClient personRestClient, Printer printer) {
+    public UpdatePersonCommand(PersonRestClient personRestClient) {
         this.personRestClient = personRestClient;
-        this.printer = printer;
     }
 
     @Override
@@ -44,6 +42,6 @@ public class UpdatePersonCommand implements Command {
         personDTO.setMiddleName(arguments.get(MIDDLE_NAME_ARG));
 
         PersonDTO updated = personRestClient.update(personDTO);
-        printer.print(updated);
+        Printer.print(updated);
     }
 }

@@ -1,26 +1,21 @@
 package ru.market.dto.money;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(builderMethodName = "moneyAccountBuilder")
 public class MoneyAccountDTO extends MoneyAccountNoIdDTO {
     private Long id;
     private String dateCreatedStr;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDateCreatedStr() {
-        return dateCreatedStr;
-    }
-
-    public void setDateCreatedStr(String dateCreatedStr) {
-        this.dateCreatedStr = dateCreatedStr;
-    }
 
     @Override
     public boolean equals(Object o) {

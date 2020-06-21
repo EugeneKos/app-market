@@ -1,22 +1,17 @@
 package ru.market.dto.operation;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(builderMethodName = "operationEnrollBuilder")
 public class OperationEnrollDebitDTO extends OperationBasedDTO {
     private Long moneyAccountId;
     private String description;
-
-    public Long getMoneyAccountId() {
-        return moneyAccountId;
-    }
-
-    public void setMoneyAccountId(Long moneyAccountId) {
-        this.moneyAccountId = moneyAccountId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

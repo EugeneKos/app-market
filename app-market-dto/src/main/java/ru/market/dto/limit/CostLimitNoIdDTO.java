@@ -1,44 +1,23 @@
 package ru.market.dto.limit;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CostLimitNoIdDTO {
     private String sum;
     private String description;
     private String beginDateStr;
     private String endDateStr;
-
-    public String getSum() {
-        return sum;
-    }
-
-    public void setSum(String sum) {
-        this.sum = sum;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getBeginDateStr() {
-        return beginDateStr;
-    }
-
-    public void setBeginDateStr(String beginDateStr) {
-        this.beginDateStr = beginDateStr;
-    }
-
-    public String getEndDateStr() {
-        return endDateStr;
-    }
-
-    public void setEndDateStr(String endDateStr) {
-        this.endDateStr = endDateStr;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -35,10 +35,11 @@ public class CreateMoneyAccountCommand implements Command {
 
     @Override
     public void perform(Map<Argument, String> arguments) {
-        MoneyAccountNoIdDTO moneyAccountNoIdDTO = new MoneyAccountNoIdDTO();
-        moneyAccountNoIdDTO.setBalance(arguments.get(BALANCE_ARG));
-        moneyAccountNoIdDTO.setName(arguments.get(NAME_ARG));
-        moneyAccountNoIdDTO.setDescription(arguments.get(DESCRIPTION_ARG));
+        MoneyAccountNoIdDTO moneyAccountNoIdDTO = MoneyAccountNoIdDTO.builder()
+                .balance(arguments.get(BALANCE_ARG))
+                .name(arguments.get(NAME_ARG))
+                .description(arguments.get(DESCRIPTION_ARG))
+                .build();
 
         MoneyAccountDTO moneyAccountDTO = moneyAccountRestClient.create(moneyAccountNoIdDTO);
         printer.print(moneyAccountDTO);

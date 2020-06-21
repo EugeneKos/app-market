@@ -35,8 +35,10 @@ public class UpdatePersonCommand implements Command {
 
     @Override
     public void perform(Map<Argument, String> arguments) {
-        PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(Long.parseLong(arguments.get(ID_ARG)));
+        PersonDTO personDTO = PersonDTO.personBuilder()
+                .id(Long.parseLong(arguments.get(ID_ARG)))
+                .build();
+
         personDTO.setFirstName(arguments.get(FIRST_NAME_ARG));
         personDTO.setLastName(arguments.get(LAST_NAME_ARG));
         personDTO.setMiddleName(arguments.get(MIDDLE_NAME_ARG));

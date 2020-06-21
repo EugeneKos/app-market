@@ -37,12 +37,13 @@ public class RegistrationUserCommand implements Command {
 
     @Override
     public void perform(Map<Argument, String> arguments) {
-        RegistrationDTO registrationDTO = new RegistrationDTO();
-        registrationDTO.setFirstName(arguments.get(FIRST_NAME_ARG));
-        registrationDTO.setLastName(arguments.get(LAST_NAME_ARG));
-        registrationDTO.setMiddleName(arguments.get(MIDDLE_NAME_ARG));
-        registrationDTO.setUsername(arguments.get(USERNAME_ARG));
-        registrationDTO.setPassword(arguments.get(PASSWORD_ARG));
+        RegistrationDTO registrationDTO = RegistrationDTO.builder()
+                .firstName(arguments.get(FIRST_NAME_ARG))
+                .lastName(arguments.get(LAST_NAME_ARG))
+                .middleName(arguments.get(MIDDLE_NAME_ARG))
+                .username(arguments.get(USERNAME_ARG))
+                .password(arguments.get(PASSWORD_ARG))
+                .build();
 
         UserDTO registration = userRestClient.registration(registrationDTO);
         printer.print(registration);

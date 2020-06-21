@@ -34,9 +34,10 @@ public class AuthenticateCommand implements Command {
 
     @Override
     public void perform(Map<Argument, String> arguments) {
-        UsernamePasswordDTO usernamePasswordDTO = new UsernamePasswordDTO();
-        usernamePasswordDTO.setUsername(arguments.get(USERNAME_ARG));
-        usernamePasswordDTO.setPassword(arguments.get(PASSWORD_ARG));
+        UsernamePasswordDTO usernamePasswordDTO = UsernamePasswordDTO.builder()
+                .username(arguments.get(USERNAME_ARG))
+                .password(arguments.get(PASSWORD_ARG))
+                .build();
 
         ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
         printer.print(result);

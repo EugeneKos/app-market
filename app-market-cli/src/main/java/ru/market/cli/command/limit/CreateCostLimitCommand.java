@@ -1,28 +1,30 @@
 package ru.market.cli.command.limit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
 import ru.market.cli.utils.Printer;
-import ru.market.client.rest.CostRestClient;
-import ru.market.dto.cost.CostDTO;
-import ru.market.dto.cost.CostNoIdDTO;
+import ru.market.client.rest.CostLimitRestClient;
+import ru.market.dto.limit.CostLimitDTO;
+import ru.market.dto.limit.CostLimitNoIdDTO;
 
 import java.util.Map;
 
-import static ru.market.cli.command.CommandArguments.CATEGORY_ARG;
-import static ru.market.cli.command.CommandArguments.COST_LIMIT_ID_ARG;
-import static ru.market.cli.command.CommandArguments.DATE_ARG;
-import static ru.market.cli.command.CommandArguments.DESCRIPTION_ARG;
-import static ru.market.cli.command.CommandArguments.MONEY_ACCOUNT_ID_ARG;
+import static ru.market.cli.command.CommandArguments.BEGIN_DATE_ARG;
+import static ru.market.cli.command.CommandArguments.MANDATORY_DESCRIPTION_ARG;
+import static ru.market.cli.command.CommandArguments.END_DATE_ARG;
 import static ru.market.cli.command.CommandArguments.SUM_ARG;
-import static ru.market.cli.command.CommandArguments.TIME_ARG;
 
+@Service
 public class CreateCostLimitCommand implements Command {
-    private CostRestClient costRestClient;
+    private CostLimitRestClient costLimitRestClient;
 
-    public CreateCostLimitCommand(CostRestClient costRestClient) {
-        this.costRestClient = costRestClient;
+    @Autowired
+    public CreateCostLimitCommand(CostLimitRestClient costLimitRestClient) {
+        this.costLimitRestClient = costLimitRestClient;
     }
 
     @Override
@@ -32,23 +34,19 @@ public class CreateCostLimitCommand implements Command {
 
     @Override
     public Argument[] getArguments() {
-        return new Argument[]{SUM_ARG, DESCRIPTION_ARG, CATEGORY_ARG, DATE_ARG, TIME_ARG,
-                COST_LIMIT_ID_ARG, MONEY_ACCOUNT_ID_ARG};
+        return new Argument[]{SUM_ARG, MANDATORY_DESCRIPTION_ARG, BEGIN_DATE_ARG, END_DATE_ARG};
     }
 
     @Override
     public void perform(Map<Argument, String> arguments) {
-        CostNoIdDTO costNoIdDTO = CostNoIdDTO.builder()
+        CostLimitNoIdDTO costLimitNoIdDTO = CostLimitNoIdDTO.builder()
                 .sum(arguments.get(SUM_ARG))
-                .description(arguments.get(DESCRIPTION_ARG))
-                .category(arguments.get(CATEGORY_ARG))
-                .dateStr(arguments.get(DATE_ARG))
-                .timeStr(arguments.get(TIME_ARG))
-                .costLimitId(Long.parseLong(arguments.get(COST_LIMIT_ID_ARG)))
-                .moneyAccountId(Long.parseLong(arguments.get(MONEY_ACCOUNT_ID_ARG)))
+                .description(arguments.get(MANDATORY_DESCRIPTION_ARG))
+                .beginDateStr(arguments.get(BEGIN_DATE_ARG))
+                .endDateStr(arguments.get(END_DATE_ARG))
                 .build();
 
-        CostDTO costDTO = costRestClient.create(costNoIdDTO);
-        Printer.print(costDTO);
+        CostLimitDTO costLimitDTO = costLimitRestClient.create(costLimitNoIdDTO);
+        Printer.print(costLimitDTO);
     }
 }

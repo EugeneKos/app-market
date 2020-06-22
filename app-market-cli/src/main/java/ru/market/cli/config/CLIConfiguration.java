@@ -1,11 +1,14 @@
 package ru.market.cli.config;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ru.ed.microlib.context.CliManagerApplicationContext;
+import ru.market.client.config.ClientConfiguration;
 
 @Configuration
-@Import({CommandConfiguration.class, CliManagerApplicationContext.class})
+@Import({ClientConfiguration.class, CliManagerApplicationContext.class})
+@ComponentScan(basePackages = {"ru.market.cli.command"})
 public class CLIConfiguration {
 }

@@ -1,5 +1,8 @@
 package ru.market.cli.command.person;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
@@ -14,9 +17,11 @@ import static ru.market.cli.command.CommandArguments.ID_ARG;
 import static ru.market.cli.command.CommandArguments.LAST_NAME_ARG;
 import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
 
+@Service
 public class UpdatePersonCommand implements Command {
     private PersonRestClient personRestClient;
 
+    @Autowired
     public UpdatePersonCommand(PersonRestClient personRestClient) {
         this.personRestClient = personRestClient;
     }

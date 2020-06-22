@@ -1,5 +1,8 @@
 package ru.market.cli.command.money;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
@@ -11,9 +14,11 @@ import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.ID_ARG;
 
+@Service
 public class GetMoneyAccountCommand implements Command {
     private MoneyAccountRestClient moneyAccountRestClient;
 
+    @Autowired
     public GetMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient) {
         this.moneyAccountRestClient = moneyAccountRestClient;
     }

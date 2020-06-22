@@ -1,5 +1,8 @@
 package ru.market.cli.command.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
@@ -13,9 +16,11 @@ import java.util.Map;
 import static ru.market.cli.command.CommandArguments.PASSWORD_ARG;
 import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 
+@Service
 public class AuthenticateCommand implements Command {
     private AuthenticateRestClient authenticateRestClient;
 
+    @Autowired
     public AuthenticateCommand(AuthenticateRestClient authenticateRestClient) {
         this.authenticateRestClient = authenticateRestClient;
     }

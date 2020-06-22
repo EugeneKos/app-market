@@ -1,5 +1,8 @@
 package ru.market.cli.command.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
@@ -16,16 +19,18 @@ import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
 import static ru.market.cli.command.CommandArguments.PASSWORD_ARG;
 import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 
+@Service
 public class RegistrationUserCommand implements Command {
     private UserRestClient userRestClient;
 
+    @Autowired
     public RegistrationUserCommand(UserRestClient userRestClient) {
         this.userRestClient = userRestClient;
     }
 
     @Override
     public String getName() {
-        return "registration";
+        return "user-reg";
     }
 
     @Override

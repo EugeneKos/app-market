@@ -1,5 +1,8 @@
 package ru.market.cli.command.money;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
@@ -10,9 +13,11 @@ import ru.market.dto.money.MoneyAccountDTO;
 import java.util.Map;
 import java.util.Set;
 
+@Service
 public class GetAllMoneyAccountCommand implements Command {
     private MoneyAccountRestClient moneyAccountRestClient;
 
+    @Autowired
     public GetAllMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient) {
         this.moneyAccountRestClient = moneyAccountRestClient;
     }
@@ -28,7 +33,7 @@ public class GetAllMoneyAccountCommand implements Command {
     }
 
     @Override
-    public void perform(Map<Argument, String> map) {
+    public void perform(Map<Argument, String> arguments) {
         Set<MoneyAccountDTO> moneyAccounts = moneyAccountRestClient.getAll();
         Printer.print(moneyAccounts);
     }

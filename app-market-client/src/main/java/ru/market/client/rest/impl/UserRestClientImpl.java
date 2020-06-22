@@ -39,7 +39,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
     public UserDTO changeUsername(UserUsernameDTO usernameDTO) throws RestClientException {
         TypeReference<UserDTO> typeReference = new TypeReference<UserDTO>() {};
 
-        HttpResponse<UserDTO> httpResponse = httpConnection.put(
+        HttpResponse<UserDTO> httpResponse = httpConnection.post(
                 new HttpRequestWithBodyImpl<>(createUrl("/change/username"), typeReference, usernameDTO)
         );
 
@@ -52,7 +52,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
     public ResultDTO changePassword(UserPasswordDTO userPasswordDTO) throws RestClientException {
         TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
-        HttpResponse<ResultDTO> httpResponse = httpConnection.put(
+        HttpResponse<ResultDTO> httpResponse = httpConnection.post(
                 new HttpRequestWithBodyImpl<>(createUrl("/change/password"), typeReference, userPasswordDTO)
         );
 

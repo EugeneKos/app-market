@@ -12,8 +12,6 @@ import ru.market.client.rest.CostRestClient;
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class CostRestClientImpl extends AbstractRestClient implements CostRestClient {
@@ -50,10 +48,10 @@ public class CostRestClientImpl extends AbstractRestClient implements CostRestCl
     }
 
     @Override
-    public Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, LocalDate date) throws RestClientException {
+    public Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, String dateStr) throws RestClientException {
         TypeReference<Set<CostDTO>> typeReference = new TypeReference<Set<CostDTO>>() {};
 
-        String path = String.format("/cost/%d/%s", costLimitId, date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        String path = String.format("/cost/%d/%s", costLimitId, dateStr);
 
         HttpResponse<Set<CostDTO>> httpResponse = httpConnection.get(new HttpRequestImpl<>(createUrl(path), typeReference));
 

@@ -34,5 +34,5 @@ public interface CommandArguments {
     Argument FROM_MONEY_ACCOUNT_ID_ARG = new Argument("-fmai", "--fromMoneyAccountId", true);
     Argument TO_MONEY_ACCOUNT_ID_ARG = new Argument("-tmai", "--toMoneyAccountId", true);
     Argument COST_LIMIT_ROLLBACK_OP_ARG = new Argument("-rop", "--rollbackOperation", true);
-    Argument OPERATION_TYPE_ARG = new Argument("-opt", "--rollbackOperation", true);
+    Argument OPERATION_TYPE_ARG = new Argument("-opt", "--operationType", false);
 }

@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.MoneyAccountRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.money.MoneyAccountDTO;
 import ru.market.dto.money.MoneyAccountNoIdDTO;
@@ -17,7 +18,8 @@ import java.util.Set;
 public class MoneyAccountRestClientImpl extends AbstractRestClient implements MoneyAccountRestClient {
     private HttpConnection httpConnection;
 
-    public MoneyAccountRestClientImpl(HttpConnection httpConnection) {
+    public MoneyAccountRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

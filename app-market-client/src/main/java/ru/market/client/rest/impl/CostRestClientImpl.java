@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.CostRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
@@ -17,7 +18,8 @@ import java.util.Set;
 public class CostRestClientImpl extends AbstractRestClient implements CostRestClient {
     private HttpConnection httpConnection;
 
-    public CostRestClientImpl(HttpConnection httpConnection) {
+    public CostRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

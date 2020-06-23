@@ -2,15 +2,19 @@ package ru.market.client.rest.impl;
 
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpResponse;
+import ru.market.client.url.UrlProvider;
 
 abstract class AbstractRestClient {
-    private static final String SCHEMA = "http";
-    private static final String IP_ADDRESS = "localhost";
-    private static final String PORT = "8080";
-    private static final String ROOT = "app-market-web";
+    private UrlProvider urlProvider;
+
+    AbstractRestClient(UrlProvider urlProvider) {
+        this.urlProvider = urlProvider;
+    }
 
     String createUrl(String path){
-        return String.format("%s://%s:%s/%s%s", SCHEMA, IP_ADDRESS, PORT, ROOT, path);
+        return String.format("%s://%s:%s/%s%s", urlProvider.schema(), urlProvider.ipAddress(),
+                urlProvider.port(), urlProvider.root(), path
+        );
     }
 
     <ResponseBody> void checkResponse(HttpResponse<ResponseBody> response) throws RestClientException {

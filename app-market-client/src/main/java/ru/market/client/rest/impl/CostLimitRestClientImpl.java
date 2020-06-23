@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.CostLimitRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.limit.CostLimitDTO;
 import ru.market.dto.limit.CostLimitInfoDTO;
@@ -18,7 +19,8 @@ import java.util.Set;
 public class CostLimitRestClientImpl extends AbstractRestClient implements CostLimitRestClient {
     private HttpConnection httpConnection;
 
-    public CostLimitRestClientImpl(HttpConnection httpConnection) {
+    public CostLimitRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

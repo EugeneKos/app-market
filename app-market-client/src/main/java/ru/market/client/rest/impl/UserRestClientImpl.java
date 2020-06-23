@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.UserRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.result.ResultDTO;
 import ru.market.dto.user.RegistrationDTO;
@@ -18,7 +19,8 @@ import ru.market.dto.user.UserUsernameDTO;
 public class UserRestClientImpl extends AbstractRestClient implements UserRestClient {
     private HttpConnection httpConnection;
 
-    public UserRestClientImpl(HttpConnection httpConnection) {
+    public UserRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

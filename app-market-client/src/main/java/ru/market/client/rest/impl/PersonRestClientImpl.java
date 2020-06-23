@@ -8,13 +8,15 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.PersonRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.person.PersonDTO;
 
 public class PersonRestClientImpl extends AbstractRestClient implements PersonRestClient {
     private HttpConnection httpConnection;
 
-    public PersonRestClientImpl(HttpConnection httpConnection) {
+    public PersonRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

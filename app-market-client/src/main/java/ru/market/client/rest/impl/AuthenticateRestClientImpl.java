@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.AuthenticateRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
@@ -15,7 +16,8 @@ import ru.market.dto.result.ResultDTO;
 public class AuthenticateRestClientImpl extends AbstractRestClient implements AuthenticateRestClient {
     private HttpConnection httpConnection;
 
-    public AuthenticateRestClientImpl(HttpConnection httpConnection) {
+    public AuthenticateRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

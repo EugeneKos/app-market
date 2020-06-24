@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.CostLimitRestClient;
 import ru.market.dto.limit.CostLimitDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.BEGIN_DATE_ARG;
@@ -21,10 +23,12 @@ import static ru.market.cli.command.CommandArguments.SUM_ARG;
 @Service
 public class CreateCostLimitCommand implements Command {
     private CostLimitRestClient costLimitRestClient;
+    private Printer printer;
 
     @Autowired
-    public CreateCostLimitCommand(CostLimitRestClient costLimitRestClient) {
+    public CreateCostLimitCommand(CostLimitRestClient costLimitRestClient, Printer printer) {
         this.costLimitRestClient = costLimitRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -47,6 +51,6 @@ public class CreateCostLimitCommand implements Command {
                 .build();
 
         CostLimitDTO costLimitDTO = costLimitRestClient.create(costLimitNoIdDTO);
-        Printer.print(costLimitDTO);
+        printer.printTable(CommandUtils.createCostLimitsTableToPrint(Collections.singletonList(costLimitDTO)));
     }
 }

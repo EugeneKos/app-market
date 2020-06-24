@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.CostRestClient;
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.CATEGORY_ARG;
@@ -24,10 +26,12 @@ import static ru.market.cli.command.CommandArguments.TIME_ARG;
 @Service
 public class CreateCostCommand implements Command {
     private CostRestClient costRestClient;
+    private Printer printer;
 
     @Autowired
-    public CreateCostCommand(CostRestClient costRestClient) {
+    public CreateCostCommand(CostRestClient costRestClient, Printer printer) {
         this.costRestClient = costRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -54,6 +58,6 @@ public class CreateCostCommand implements Command {
                 .build();
 
         CostDTO costDTO = costRestClient.create(costNoIdDTO);
-        Printer.print(costDTO);
+        printer.printTable(CommandUtils.createCostsTableToPrint(Collections.singletonList(costDTO)));
     }
 }

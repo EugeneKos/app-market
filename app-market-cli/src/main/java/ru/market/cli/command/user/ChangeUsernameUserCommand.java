@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.UserRestClient;
 import ru.market.dto.user.UserDTO;
 import ru.market.dto.user.UserUsernameDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
@@ -18,10 +20,12 @@ import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 @Service
 public class ChangeUsernameUserCommand implements Command {
     private UserRestClient userRestClient;
+    private Printer printer;
 
     @Autowired
-    public ChangeUsernameUserCommand(UserRestClient userRestClient) {
+    public ChangeUsernameUserCommand(UserRestClient userRestClient, Printer printer) {
         this.userRestClient = userRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class ChangeUsernameUserCommand implements Command {
                 .username(arguments.get(USERNAME_ARG))
                 .build();
 
-        UserDTO userDTO = userRestClient.changeUsername(userUsernameDTO);
-        Printer.print(userDTO);
+        UserDTO user = userRestClient.changeUsername(userUsernameDTO);
+        printer.printTable(CommandUtils.createUsersTableToPrint(Collections.singletonList(user)));
     }
 }

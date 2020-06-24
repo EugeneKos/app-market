@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.AuthenticateRestClient;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.PASSWORD_ARG;
@@ -19,10 +21,12 @@ import static ru.market.cli.command.CommandArguments.USERNAME_ARG;
 @Service
 public class AuthenticateCommand implements Command {
     private AuthenticateRestClient authenticateRestClient;
+    private Printer printer;
 
     @Autowired
-    public AuthenticateCommand(AuthenticateRestClient authenticateRestClient) {
+    public AuthenticateCommand(AuthenticateRestClient authenticateRestClient, Printer printer) {
         this.authenticateRestClient = authenticateRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -43,6 +47,6 @@ public class AuthenticateCommand implements Command {
                 .build();
 
         ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
-        Printer.print(result);
+        printer.printTable(CommandUtils.createResultsTableToPrint(Collections.singletonList(result)));
     }
 }

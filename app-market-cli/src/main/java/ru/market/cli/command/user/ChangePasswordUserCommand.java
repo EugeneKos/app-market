@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.UserRestClient;
 import ru.market.dto.result.ResultDTO;
 import ru.market.dto.user.UserPasswordDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.NEW_PASSWORD_ARG;
@@ -19,10 +21,12 @@ import static ru.market.cli.command.CommandArguments.OLD_PASSWORD_ARG;
 @Service
 public class ChangePasswordUserCommand implements Command {
     private UserRestClient userRestClient;
+    private Printer printer;
 
     @Autowired
-    public ChangePasswordUserCommand(UserRestClient userRestClient) {
+    public ChangePasswordUserCommand(UserRestClient userRestClient, Printer printer) {
         this.userRestClient = userRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -43,6 +47,6 @@ public class ChangePasswordUserCommand implements Command {
                 .build();
 
         ResultDTO result = userRestClient.changePassword(userPasswordDTO);
-        Printer.print(result);
+        printer.printTable(CommandUtils.createResultsTableToPrint(Collections.singletonList(result)));
     }
 }

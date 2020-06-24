@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.OperationRestClient;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.result.ResultDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.DATE_ARG;
@@ -22,10 +24,12 @@ import static ru.market.cli.command.CommandArguments.TIME_ARG;
 @Service
 public class EnrollOperationCommand implements Command {
     private OperationRestClient operationRestClient;
+    private Printer printer;
 
     @Autowired
-    public EnrollOperationCommand(OperationRestClient operationRestClient) {
+    public EnrollOperationCommand(OperationRestClient operationRestClient, Printer printer) {
         this.operationRestClient = operationRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -43,6 +47,6 @@ public class EnrollOperationCommand implements Command {
         OperationEnrollDebitDTO enrollDebitDTO = EnrollDebitOperationUtil.createEnrollDebitDTO(arguments);
 
         ResultDTO result = operationRestClient.enrollment(enrollDebitDTO);
-        Printer.print(result);
+        printer.printTable(CommandUtils.createResultsTableToPrint(Collections.singletonList(result)));
     }
 }

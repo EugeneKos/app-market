@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.OperationRestClient;
 import ru.market.dto.operation.OperationDTO;
 
@@ -18,10 +19,12 @@ import static ru.market.cli.command.CommandArguments.MONEY_ACCOUNT_ID_ARG;
 @Service
 public class GetAllOperationCommand implements Command {
     private OperationRestClient operationRestClient;
+    private Printer printer;
 
     @Autowired
-    public GetAllOperationCommand(OperationRestClient operationRestClient) {
+    public GetAllOperationCommand(OperationRestClient operationRestClient, Printer printer) {
         this.operationRestClient = operationRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -40,6 +43,6 @@ public class GetAllOperationCommand implements Command {
                 Long.parseLong(arguments.get(MONEY_ACCOUNT_ID_ARG))
         );
 
-        Printer.print(operations);
+        printer.printTable(CommandUtils.createOperationsTableToPrint(operations));
     }
 }

@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.PersonRestClient;
 import ru.market.dto.person.PersonDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.FIRST_NAME_ARG;
@@ -20,10 +22,12 @@ import static ru.market.cli.command.CommandArguments.MIDDLE_NAME_ARG;
 @Service
 public class UpdatePersonCommand implements Command {
     private PersonRestClient personRestClient;
+    private Printer printer;
 
     @Autowired
-    public UpdatePersonCommand(PersonRestClient personRestClient) {
+    public UpdatePersonCommand(PersonRestClient personRestClient, Printer printer) {
         this.personRestClient = personRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -47,6 +51,6 @@ public class UpdatePersonCommand implements Command {
         personDTO.setMiddleName(arguments.get(MIDDLE_NAME_ARG));
 
         PersonDTO updated = personRestClient.update(personDTO);
-        Printer.print(updated);
+        printer.printTable(CommandUtils.createPersonsTableToPrint(Collections.singletonList(updated)));
     }
 }

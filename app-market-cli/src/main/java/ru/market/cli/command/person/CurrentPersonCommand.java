@@ -6,19 +6,23 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.PersonRestClient;
 import ru.market.dto.person.PersonDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Service
 public class CurrentPersonCommand implements Command {
     private PersonRestClient personRestClient;
+    private Printer printer;
 
     @Autowired
-    public CurrentPersonCommand(PersonRestClient personRestClient) {
+    public CurrentPersonCommand(PersonRestClient personRestClient, Printer printer) {
         this.personRestClient = personRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -34,6 +38,6 @@ public class CurrentPersonCommand implements Command {
     @Override
     public void perform(Map<Argument, String> arguments) {
         PersonDTO person = personRestClient.getCurrent();
-        Printer.print(person);
+        printer.printTable(CommandUtils.createPersonsTableToPrint(Collections.singletonList(person)));
     }
 }

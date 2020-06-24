@@ -10,6 +10,6 @@ import ru.market.client.config.ClientConfiguration;
 
 @Configuration
 @Import({ClientConfiguration.class, CliManagerApplicationContext.class, UrlProviderConfiguration.class})
-@ComponentScan(basePackages = {"ru.market.cli.command"})
+@ComponentScan(basePackages = {"ru.market.cli.command", "ru.market.cli.printer"})
 public class CLIConfiguration {
 }

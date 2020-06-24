@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.CostLimitRestClient;
 import ru.market.dto.limit.CostLimitDTO;
 
@@ -16,10 +17,12 @@ import java.util.Set;
 @Service
 public class GetAllCostLimitCommand implements Command {
     private CostLimitRestClient costLimitRestClient;
+    private Printer printer;
 
     @Autowired
-    public GetAllCostLimitCommand(CostLimitRestClient costLimitRestClient) {
+    public GetAllCostLimitCommand(CostLimitRestClient costLimitRestClient, Printer printer) {
         this.costLimitRestClient = costLimitRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -35,6 +38,6 @@ public class GetAllCostLimitCommand implements Command {
     @Override
     public void perform(Map<Argument, String> arguments) {
         Set<CostLimitDTO> costLimits = costLimitRestClient.getAll();
-        Printer.print(costLimits);
+        printer.printTable(CommandUtils.createCostLimitsTableToPrint(costLimits));
     }
 }

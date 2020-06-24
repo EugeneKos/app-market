@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import ru.ed.microlib.command.Argument;
 import ru.ed.microlib.command.Command;
 
-import ru.market.cli.utils.Printer;
+import ru.market.cli.command.CommandUtils;
+import ru.market.cli.printer.Printer;
 import ru.market.client.rest.CostLimitRestClient;
 import ru.market.dto.limit.CostLimitInfoDTO;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static ru.market.cli.command.CommandArguments.ID_ARG;
@@ -18,10 +20,12 @@ import static ru.market.cli.command.CommandArguments.MANDATORY_DATE_ARG;
 @Service
 public class GetCostLimitInfoCommand implements Command {
     private CostLimitRestClient costLimitRestClient;
+    private Printer printer;
 
     @Autowired
-    public GetCostLimitInfoCommand(CostLimitRestClient costLimitRestClient) {
+    public GetCostLimitInfoCommand(CostLimitRestClient costLimitRestClient, Printer printer) {
         this.costLimitRestClient = costLimitRestClient;
+        this.printer = printer;
     }
 
     @Override
@@ -39,6 +43,6 @@ public class GetCostLimitInfoCommand implements Command {
         CostLimitInfoDTO costLimitInfo = costLimitRestClient.getCostLimitInfoById(
                 Long.parseLong(arguments.get(ID_ARG)), arguments.get(MANDATORY_DATE_ARG)
         );
-        Printer.print(costLimitInfo);
+        printer.printTable(CommandUtils.createCostLimitInfosTableToPrint(Collections.singletonList(costLimitInfo)));
     }
 }

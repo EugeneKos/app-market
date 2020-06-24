@@ -14,7 +14,10 @@ public class PrinterImpl implements Printer {
     @Override
     public void printTable(LinkedHashMap<String, List<String>> table) {
         Collection<List<String>> columns = table.values();
-        List<Integer> maxLengthColumns = getMaxLengthColumns(columns);
+        Set<String> tableHeader = table.keySet();
+
+        Collection<List<String>> convertedTable = convertTableFromMap(table);
+        List<Integer> maxLengthColumns = getMaxLengthColumns(convertedTable);
 
         int delimiterLength = getDelimiterLength(maxLengthColumns);
         String formatForTablePrint = createFormatForTablePrint(maxLengthColumns);
@@ -23,7 +26,6 @@ public class PrinterImpl implements Printer {
 
         System.out.println(delimiter);
 
-        Set<String> tableHeader = table.keySet();
         printTableRow(formatForTablePrint, tableHeader.toArray());
 
         System.out.println(delimiter);
@@ -68,6 +70,22 @@ public class PrinterImpl implements Printer {
             builder.append("-");
         }
         return builder.toString();
+    }
+
+    private Collection<List<String>> convertTableFromMap(LinkedHashMap<String, List<String>> table){
+        List<List<String>> convertedTable = new ArrayList<>();
+
+        for (Map.Entry<String, List<String>> entry : table.entrySet()){
+            String columnName = entry.getKey();
+            List<String> column = entry.getValue();
+
+            List<String> columnWithColumnName = new ArrayList<>(column);
+            columnWithColumnName.add(columnName);
+
+            convertedTable.add(columnWithColumnName);
+        }
+
+        return convertedTable;
     }
 
     private List<Integer> getMaxLengthColumns(Collection<List<String>> columns){

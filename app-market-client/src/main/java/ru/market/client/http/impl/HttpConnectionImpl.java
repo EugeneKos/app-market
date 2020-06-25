@@ -79,7 +79,6 @@ public class HttpConnectionImpl implements HttpConnection {
             HttpResponseImpl<ResponseBody> response = new HttpResponseImpl<>(responseCode, responseMessage);
 
             if (responseCode != 200) {
-                httpHeadersService.clearHeaders();
                 return response;
             }
 

@@ -21,6 +21,7 @@ import ru.market.client.rest.impl.MoneyAccountRestClientImpl;
 import ru.market.client.rest.impl.OperationRestClientImpl;
 import ru.market.client.rest.impl.PersonRestClientImpl;
 import ru.market.client.rest.impl.UserRestClientImpl;
+import ru.market.client.url.UrlProvider;
 
 @Configuration
 public class ClientConfiguration {
@@ -35,37 +36,37 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public AuthenticateRestClient authenticateRestClient(HttpConnection httpConnection){
-        return new AuthenticateRestClientImpl(httpConnection);
+    public AuthenticateRestClient authenticateRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new AuthenticateRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public UserRestClient userRestClient(HttpConnection httpConnection){
-        return new UserRestClientImpl(httpConnection);
+    public UserRestClient userRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new UserRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public PersonRestClient personRestClient(HttpConnection httpConnection){
-        return new PersonRestClientImpl(httpConnection);
+    public PersonRestClient personRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new PersonRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public MoneyAccountRestClient moneyAccountRestClient(HttpConnection httpConnection){
-        return new MoneyAccountRestClientImpl(httpConnection);
+    public MoneyAccountRestClient moneyAccountRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new MoneyAccountRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public OperationRestClient operationRestClient(HttpConnection httpConnection){
-        return new OperationRestClientImpl(httpConnection);
+    public OperationRestClient operationRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new OperationRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public CostLimitRestClient costLimitRestClient(HttpConnection httpConnection){
-        return new CostLimitRestClientImpl(httpConnection);
+    public CostLimitRestClient costLimitRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new CostLimitRestClientImpl(httpConnection, urlProvider);
     }
 
     @Bean
-    public CostRestClient costRestClient(HttpConnection httpConnection){
-        return new CostRestClientImpl(httpConnection);
+    public CostRestClient costRestClient(HttpConnection httpConnection, UrlProvider urlProvider){
+        return new CostRestClientImpl(httpConnection, urlProvider);
     }
 }

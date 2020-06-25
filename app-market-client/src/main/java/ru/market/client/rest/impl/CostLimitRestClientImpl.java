@@ -8,19 +8,19 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.CostLimitRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.limit.CostLimitDTO;
 import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class CostLimitRestClientImpl extends AbstractRestClient implements CostLimitRestClient {
     private HttpConnection httpConnection;
 
-    public CostLimitRestClientImpl(HttpConnection httpConnection) {
+    public CostLimitRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 
@@ -51,10 +51,10 @@ public class CostLimitRestClientImpl extends AbstractRestClient implements CostL
     }
 
     @Override
-    public CostLimitInfoDTO getCostLimitInfoById(Long id, LocalDate date) throws RestClientException {
+    public CostLimitInfoDTO getCostLimitInfoById(Long id, String dateStr) throws RestClientException {
         TypeReference<CostLimitInfoDTO> typeReference = new TypeReference<CostLimitInfoDTO>() {};
 
-        String path = String.format("/cost-limit/info/%d/%s", id, date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        String path = String.format("/cost-limit/info/%d/%s", id, dateStr);
 
         HttpResponse<CostLimitInfoDTO> httpResponse = httpConnection.get(
                 new HttpRequestImpl<>(createUrl(path), typeReference)

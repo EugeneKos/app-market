@@ -8,6 +8,7 @@ import ru.market.client.http.HttpResponse;
 import ru.market.client.http.impl.HttpRequestImpl;
 import ru.market.client.http.impl.HttpRequestWithBodyImpl;
 import ru.market.client.rest.OperationRestClient;
+import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
@@ -20,7 +21,8 @@ import java.util.Set;
 public class OperationRestClientImpl extends AbstractRestClient implements OperationRestClient {
     private HttpConnection httpConnection;
 
-    public OperationRestClientImpl(HttpConnection httpConnection) {
+    public OperationRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
+        super(urlProvider);
         this.httpConnection = httpConnection;
     }
 

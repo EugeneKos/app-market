@@ -33,6 +33,11 @@ public class GetAllOperationCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение всех операций";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{MONEY_ACCOUNT_ID_ARG};
     }

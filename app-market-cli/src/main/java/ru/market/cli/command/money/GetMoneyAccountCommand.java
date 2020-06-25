@@ -33,6 +33,11 @@ public class GetMoneyAccountCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение денежного счета";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG};
     }

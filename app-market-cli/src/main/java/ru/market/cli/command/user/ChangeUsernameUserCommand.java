@@ -34,6 +34,11 @@ public class ChangeUsernameUserCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на изменение логина пользователя";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{USERNAME_ARG};
     }

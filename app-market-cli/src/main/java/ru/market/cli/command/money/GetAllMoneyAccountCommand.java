@@ -31,6 +31,11 @@ public class GetAllMoneyAccountCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение всех денежных счетов";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

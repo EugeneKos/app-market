@@ -36,6 +36,11 @@ public class CreateMoneyAccountCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на создание денежного счета";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{BALANCE_ARG, NAME_ARG, MANDATORY_DESCRIPTION_ARG};
     }

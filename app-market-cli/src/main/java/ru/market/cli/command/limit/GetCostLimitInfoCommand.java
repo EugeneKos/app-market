@@ -34,6 +34,11 @@ public class GetCostLimitInfoCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение расширенной информации по лимиту";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG, MANDATORY_DATE_ARG};
     }

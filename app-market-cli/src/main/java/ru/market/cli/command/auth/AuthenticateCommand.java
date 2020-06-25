@@ -35,6 +35,11 @@ public class AuthenticateCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда аутентификации пользователя";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{USERNAME_ARG, PASSWORD_ARG};
     }

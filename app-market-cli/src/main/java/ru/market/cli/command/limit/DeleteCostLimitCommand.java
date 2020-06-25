@@ -28,6 +28,11 @@ public class DeleteCostLimitCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на удаление лимита";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG, COST_LIMIT_ROLLBACK_OP_ARG};
     }

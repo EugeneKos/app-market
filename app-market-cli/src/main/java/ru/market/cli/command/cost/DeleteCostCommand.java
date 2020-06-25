@@ -27,6 +27,11 @@ public class DeleteCostCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на удаление затраты";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG};
     }

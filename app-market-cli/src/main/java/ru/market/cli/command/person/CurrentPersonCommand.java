@@ -31,6 +31,11 @@ public class CurrentPersonCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение информации о пользователе";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

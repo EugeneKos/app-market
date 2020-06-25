@@ -38,6 +38,11 @@ public class GetAllOperationByFilterCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение всех операций по фильтру";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{MONEY_ACCOUNT_ID_ARG, AMOUNT_ARG, DATE_ARG, DESCRIPTION_ARG, OPERATION_TYPE_ARG};
     }

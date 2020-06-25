@@ -31,6 +31,11 @@ public class GetAllCostLimitCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение всех лимитов";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

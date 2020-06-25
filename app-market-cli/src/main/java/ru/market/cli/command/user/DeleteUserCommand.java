@@ -25,6 +25,11 @@ public class DeleteUserCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на удаление пользователя";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

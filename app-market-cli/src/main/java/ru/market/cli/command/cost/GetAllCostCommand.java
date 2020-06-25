@@ -34,6 +34,11 @@ public class GetAllCostCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение всех затрат";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{COST_LIMIT_ID_ARG, MANDATORY_DATE_ARG};
     }

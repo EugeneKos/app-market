@@ -40,6 +40,11 @@ public class UpdateCostCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на изменение затраты";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG, SUM_ARG, MANDATORY_DESCRIPTION_ARG, CATEGORY_ARG, DATE_ARG, TIME_ARG,
                 COST_LIMIT_ID_ARG, MONEY_ACCOUNT_ID_ARG};

@@ -38,6 +38,11 @@ public class DebitOperationCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на операцию списания";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{MANDATORY_AMOUNT_ARG, MANDATORY_DESCRIPTION_ARG, MONEY_ACCOUNT_ID_ARG, DATE_ARG, TIME_ARG};
     }

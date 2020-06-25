@@ -25,6 +25,11 @@ public class LogoutCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда выхода пользователя из системы";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

@@ -36,6 +36,11 @@ public class UpdatePersonCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на изменение информации о пользователе";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG, FIRST_NAME_ARG, LAST_NAME_ARG, MIDDLE_NAME_ARG};
     }

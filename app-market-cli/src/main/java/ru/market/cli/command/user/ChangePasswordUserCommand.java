@@ -35,6 +35,11 @@ public class ChangePasswordUserCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на изменение пароля пользователя";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{OLD_PASSWORD_ARG, NEW_PASSWORD_ARG};
     }

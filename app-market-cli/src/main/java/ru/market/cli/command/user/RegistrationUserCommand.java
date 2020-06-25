@@ -38,6 +38,11 @@ public class RegistrationUserCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на регистрацию нового пользователя";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{FIRST_NAME_ARG, LAST_NAME_ARG, MIDDLE_NAME_ARG, USERNAME_ARG, PASSWORD_ARG};
     }

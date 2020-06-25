@@ -31,6 +31,11 @@ public class GetUserCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на получение расширенной информации о пользователе";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[0];
     }

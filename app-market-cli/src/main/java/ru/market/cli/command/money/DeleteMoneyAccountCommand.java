@@ -27,6 +27,11 @@ public class DeleteMoneyAccountCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на удаление денежного счета";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{ID_ARG};
     }

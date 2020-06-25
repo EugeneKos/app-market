@@ -38,6 +38,11 @@ public class TransferOperationCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на операцию перевода";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{FROM_MONEY_ACCOUNT_ID_ARG, TO_MONEY_ACCOUNT_ID_ARG, MANDATORY_AMOUNT_ARG, DATE_ARG, TIME_ARG};
     }

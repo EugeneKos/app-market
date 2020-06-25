@@ -37,6 +37,11 @@ public class CreateCostLimitCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Команда на создание лимита";
+    }
+
+    @Override
     public Argument[] getArguments() {
         return new Argument[]{SUM_ARG, MANDATORY_DESCRIPTION_ARG, BEGIN_DATE_ARG, END_DATE_ARG};
     }

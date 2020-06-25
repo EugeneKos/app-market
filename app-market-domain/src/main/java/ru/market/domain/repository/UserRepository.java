@@ -11,7 +11,7 @@ import ru.market.domain.data.enumeration.UserStatus;
 import java.time.LocalDateTime;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("select u from User u where u.username = :username")
+    @Query("select u from User u join fetch u.person where u.username = :username")
     User findByUsername(@Param("username") String username);
 
     @Modifying

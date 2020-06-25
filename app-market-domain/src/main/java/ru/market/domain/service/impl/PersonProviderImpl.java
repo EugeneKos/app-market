@@ -20,4 +20,9 @@ public class PersonProviderImpl implements IPersonProvider {
         Long personId = sessionDataManager.getUserData().getPersonId();
         return personService.getPersonById(personId);
     }
+
+    @Override
+    public Long getCurrentPersonId() {
+        return sessionDataManager.getUserData().getPersonId();
+    }
 }

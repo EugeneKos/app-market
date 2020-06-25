@@ -74,7 +74,7 @@ public class MoneyAccountServiceImpl implements IMoneyAccountService {
 
     @Override
     public Set<MoneyAccountDTO> getAll() {
-        return moneyAccountRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
+        return moneyAccountRepository.findAllByPersonId(personProvider.getCurrentPersonId()).stream()
                 .map(moneyAccountConverter::convertToDTO)
                 .collect(Collectors.toSet());
     }

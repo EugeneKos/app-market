@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ru.market.domain.data.CostLimit;
-import ru.market.domain.data.Person;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,8 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface CostLimitRepository extends JpaRepository<CostLimit, Long> {
-    @Query("select cl from CostLimit cl where cl.person = :person")
-    Set<CostLimit> findAllByPerson(@Param("person")Person person);
+    @Query("select cl from CostLimit cl where cl.person.id = :personId")
+    Set<CostLimit> findAllByPersonId(@Param("personId") Long personId);
 
     @Query("select cl from CostLimit cl join fetch cl.costs where cl.id = :id")
     CostLimit findByIdWithCosts(@Param("id") Long id);

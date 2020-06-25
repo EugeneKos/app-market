@@ -145,7 +145,7 @@ public class CostLimitServiceImpl implements ICostLimitService {
 
     @Override
     public Set<CostLimitDTO> getAll() {
-        return costLimitRepository.findAllByPerson(personProvider.getCurrentPerson()).stream()
+        return costLimitRepository.findAllByPersonId(personProvider.getCurrentPersonId()).stream()
                 .map(costLimitConverter::convertToDTO)
                 .collect(Collectors.toSet());
     }

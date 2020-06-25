@@ -51,6 +51,6 @@
     "type":"TASK",
     "code":"MARKET-10",
     "summary":"Реализовать cli утилиту в качестве клиентского приложения",
-    "status":"OPEN"
+    "status":"CLOSED"
   }
 ]

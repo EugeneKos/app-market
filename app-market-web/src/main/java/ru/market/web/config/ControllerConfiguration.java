@@ -22,7 +22,7 @@ import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.CostController;
 import ru.market.web.controller.rest.CostLimitController;
 import ru.market.web.controller.rest.MoneyAccountController;
-import ru.market.web.controller.rest.MyController;
+import ru.market.web.controller.rest.HealthCheckController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
 import ru.market.web.controller.rest.UserController;
@@ -65,8 +65,8 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public MyController myController(){
-        return new MyController();
+    public HealthCheckController healthCheckController(){
+        return new HealthCheckController();
     }
 
     @Bean

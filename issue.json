@@ -52,5 +52,11 @@
     "code":"MARKET-10",
     "summary":"Реализовать cli утилиту в качестве клиентского приложения",
     "status":"CLOSED"
+  },
+  {
+    "type":"TASK",
+    "code":"MARKET-11",
+    "summary":"Покрыть тестами domain модуль",
+    "status":"OPEN"
   }
 ]

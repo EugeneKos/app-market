@@ -58,5 +58,11 @@
     "code":"MARKET-11",
     "summary":"Покрыть тестами domain модуль",
     "status":"OPEN"
+  },
+  {
+    "type":"BAG",
+    "code":"MARKET-12",
+    "summary":"Исправить баг в клиентском модули связанный с сервисом операций",
+    "status":"CLOSED"
   }
 ]

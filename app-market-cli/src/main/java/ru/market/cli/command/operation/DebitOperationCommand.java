@@ -9,8 +9,8 @@ import ru.ed.microlib.command.Command;
 import ru.market.cli.command.CommandUtils;
 import ru.market.cli.printer.Printer;
 import ru.market.client.rest.OperationRestClient;
+import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
-import ru.market.dto.result.ResultDTO;
 
 import java.util.Collections;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class DebitOperationCommand implements Command {
     public void perform(Map<Argument, String> arguments) {
         OperationEnrollDebitDTO enrollDebitDTO = EnrollDebitOperationUtil.createEnrollDebitDTO(arguments);
 
-        ResultDTO result = operationRestClient.debit(enrollDebitDTO);
-        printer.printTable(CommandUtils.createResultsTableToPrint(Collections.singletonList(result)));
+        OperationDTO operation = operationRestClient.debit(enrollDebitDTO);
+        printer.printTable(CommandUtils.createOperationsTableToPrint(Collections.singletonList(operation)));
     }
 }

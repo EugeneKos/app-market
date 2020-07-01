@@ -16,6 +16,20 @@ public class CostLimitConverter extends AbstractDefaultConverter<CostLimit, Cost
     }
 
     @Override
+    public CostLimitNoIdDTO convertToBasedDTO(CostLimit costLimit) {
+        if(costLimit == null){
+            return null;
+        }
+
+        CostLimitNoIdDTO costLimitNoIdDTO = super.convertToBasedDTO(costLimit);
+
+        costLimitNoIdDTO.setBeginDateStr(DateTimeConverter.convertToDateStr(costLimit.getBeginDate()));
+        costLimitNoIdDTO.setEndDateStr(DateTimeConverter.convertToDateStr(costLimit.getEndDate()));
+
+        return costLimitNoIdDTO;
+    }
+
+    @Override
     public CostLimitDTO convertToDTO(CostLimit costLimit) {
         if(costLimit == null){
             return null;

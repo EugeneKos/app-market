@@ -19,7 +19,22 @@ public class PersonConverterTest {
     private PersonConverter personConverter;
 
     @Test
-    public void convertToPersonTest(){
+    public void convertToBasedDTOTest(){
+        Person person = new Person();
+        person.setFirstName("Иван");
+        person.setLastName("Иванов");
+        person.setMiddleName("Иванович");
+
+        PersonNoIdDTO personNoIdDTO = personConverter.convertToBasedDTO(person);
+
+        Assert.assertNotNull(personNoIdDTO);
+        Assert.assertEquals("Иван", personNoIdDTO.getFirstName());
+        Assert.assertEquals("Иванов", personNoIdDTO.getLastName());
+        Assert.assertEquals("Иванович", personNoIdDTO.getMiddleName());
+    }
+
+    @Test
+    public void convertToEntityTest(){
         PersonNoIdDTO personDTO = new PersonNoIdDTO();
         personDTO.setFirstName("Иван");
         personDTO.setLastName("Иванов");
@@ -34,7 +49,7 @@ public class PersonConverterTest {
     }
 
     @Test
-    public void convertToPersonDTOTest(){
+    public void convertToDTOTest(){
         Person person = new Person();
         person.setFirstName("Иван");
         person.setLastName("Иванов");

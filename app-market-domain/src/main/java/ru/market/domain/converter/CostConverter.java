@@ -16,6 +16,19 @@ public class CostConverter extends AbstractDefaultConverter<Cost, CostNoIdDTO, C
     }
 
     @Override
+    public CostNoIdDTO convertToBasedDTO(Cost cost) {
+        if(cost == null){
+            return null;
+        }
+
+        CostNoIdDTO costNoIdDTO = super.convertToBasedDTO(cost);
+
+        convertAdditionalField(cost, costNoIdDTO);
+
+        return costNoIdDTO;
+    }
+
+    @Override
     public CostDTO convertToDTO(Cost cost) {
         if(cost == null){
             return null;
@@ -23,12 +36,19 @@ public class CostConverter extends AbstractDefaultConverter<Cost, CostNoIdDTO, C
 
         CostDTO costDTO =  super.convertToDTO(cost);
 
-        costDTO.setDateStr(DateTimeConverter.convertToDateStr(cost.getDate()));
-        costDTO.setTimeStr(DateTimeConverter.convertToTimeStr(cost.getTime()));
-        costDTO.setCostLimitId(cost.getCostLimit().getId());
-        costDTO.setMoneyAccountId(cost.getOperation().getMoneyAccount().getId());
+        convertAdditionalField(cost, costDTO);
 
         return costDTO;
+    }
+
+    private void convertAdditionalField(Cost cost, CostNoIdDTO dto){
+        dto.setDateStr(DateTimeConverter.convertToDateStr(cost.getDate()));
+        dto.setTimeStr(DateTimeConverter.convertToTimeStr(cost.getTime()));
+        dto.setCostLimitId(cost.getCostLimit() != null ? cost.getCostLimit().getId() : null);
+
+        if(cost.getOperation() != null && cost.getOperation().getMoneyAccount() != null){
+            dto.setMoneyAccountId(cost.getOperation().getMoneyAccount().getId());
+        }
     }
 
     @Override

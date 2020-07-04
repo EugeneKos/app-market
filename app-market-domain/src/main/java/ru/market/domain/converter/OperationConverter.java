@@ -13,6 +13,11 @@ public class OperationConverter extends AbstractDefaultConverter<Operation, Oper
     }
 
     @Override
+    public OperationBasedDTO convertToBasedDTO(Operation operation) {
+        throw new UnsupportedOperationException("OperationBasedDTO is abstract class");
+    }
+
+    @Override
     public OperationDTO convertToDTO(Operation operation) {
         if(operation == null){
             return null;

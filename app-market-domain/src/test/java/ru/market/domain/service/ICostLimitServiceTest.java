@@ -9,27 +9,87 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.market.domain.config.DomainTestConfiguration;
+import ru.market.domain.data.CostLimit;
 import ru.market.dto.limit.CostLimitDTO;
+import ru.market.dto.limit.CostLimitInfoDTO;
 import ru.market.dto.limit.CostLimitNoIdDTO;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
-@TestPropertySource(locations = "classpath:data-test-config.properties")
+@TestPropertySource(locations = "classpath:database-test-config.properties")
 public class ICostLimitServiceTest {
     @Autowired
     private ICostLimitService costLimitService;
 
+    @Autowired
+    private IPersonProvider personProvider;
+
     @Test
-    public void createTest(){
+    public void costLimitServiceTest(){
+        CostLimitDTO costLimitDTO = createTest();
+        getCostLimitByIdTest(costLimitDTO);
+        getCostLimitInfoByIdTest(costLimitDTO);
+        getAllTest();
+        getAllIdByPersonIdTest();
+        deleteByIdTest(costLimitDTO);
+    }
+
+    private CostLimitDTO createTest(){
         CostLimitNoIdDTO costLimitNoIdDTO = new CostLimitNoIdDTO();
         costLimitNoIdDTO.setSum("25000");
-        //costLimitNoIdDTO.setBeginDateStr("01-06-2020");
-        //costLimitNoIdDTO.setEndDateStr("25-06-2020");
         costLimitNoIdDTO.setDescription("Тестовый лимит");
 
+        System.out.println("---------- create ----------");
         CostLimitDTO costLimitDTO = costLimitService.create(costLimitNoIdDTO);
+        System.out.println("----------------------------");
 
         Assert.assertNotNull(costLimitDTO);
         Assert.assertNotNull(costLimitDTO.getId());
+
+        return costLimitDTO;
+    }
+
+    private void getCostLimitByIdTest(CostLimitDTO dto){
+        System.out.println("---------- getCostLimitById ----------");
+        CostLimit costLimit = costLimitService.getCostLimitById(dto.getId());
+        System.out.println("--------------------------------------");
+
+        Assert.assertNotNull(costLimit);
+    }
+
+    private void getCostLimitInfoByIdTest(CostLimitDTO dto){
+        String nowStr = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(LocalDate.now());
+
+        System.out.println("---------- getCostLimitInfoById ----------");
+        CostLimitInfoDTO costLimitInfo = costLimitService.getCostLimitInfoById(dto.getId(), nowStr);
+        System.out.println("------------------------------------------");
+
+        Assert.assertNotNull(costLimitInfo);
+    }
+
+    private void getAllTest(){
+        System.out.println("---------- getAll ----------");
+        Set<CostLimitDTO> costLimits = costLimitService.getAll();
+        System.out.println("----------------------------");
+
+        Assert.assertNotNull(costLimits);
+    }
+
+    private void getAllIdByPersonIdTest(){
+        System.out.println("---------- getAllIdByPersonId ----------");
+        Set<Long> ids = costLimitService.getAllIdByPersonId(personProvider.getCurrentPersonId());
+        System.out.println("----------------------------------------");
+
+        Assert.assertNotNull(ids);
+    }
+
+    private void deleteByIdTest(CostLimitDTO dto){
+        System.out.println("---------- deleteById ----------");
+        costLimitService.deleteById(dto.getId(), false);
+        System.out.println("--------------------------------");
     }
 }

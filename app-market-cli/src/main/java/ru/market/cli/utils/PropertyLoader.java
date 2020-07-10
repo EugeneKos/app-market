@@ -1,5 +1,7 @@
 package ru.market.cli.utils;
 
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +23,8 @@ public final class PropertyLoader {
         }
     }
 
-    public static String getProperty(String name){
-        return properties.getProperty(name);
+    public static String getProperty(String name, String defaultValue){
+        String property = properties.getProperty(name);
+        return StringUtils.isEmpty(property) ? defaultValue : property;
     }
 }

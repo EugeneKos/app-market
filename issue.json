@@ -69,6 +69,6 @@
     "type":"TASK",
     "code":"MARKET-14",
     "summary":"Произвести рефактор PropertyLoader. Произвести преобразование печати в UTF-8",
-    "status":"OPEN"
+    "status":"CLOSED"
   }
 ]

@@ -64,5 +64,11 @@
     "code":"MARKET-12",
     "summary":"Исправить баг в клиентском модули связанный с сервисом операций",
     "status":"CLOSED"
+  },
+  {
+    "type":"TASK",
+    "code":"MARKET-14",
+    "summary":"Произвести рефактор PropertyLoader. Произвести преобразование печати в UTF-8",
+    "status":"OPEN"
   }
 ]

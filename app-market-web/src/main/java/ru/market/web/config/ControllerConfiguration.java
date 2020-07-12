@@ -26,6 +26,7 @@ import ru.market.web.controller.rest.HealthCheckController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
 import ru.market.web.controller.rest.UserController;
+import ru.market.web.controller.rest.ExceptionHandlerController;
 
 @Configuration
 @EnableWebMvc
@@ -89,5 +90,10 @@ public class ControllerConfiguration {
     @Bean
     public CostController costController(ICostService costService, SessionDataManager sessionDataManager){
         return new CostController(costService, sessionDataManager);
+    }
+
+    @Bean
+    public ExceptionHandlerController exceptionHandlerController(){
+        return new ExceptionHandlerController();
     }
 }

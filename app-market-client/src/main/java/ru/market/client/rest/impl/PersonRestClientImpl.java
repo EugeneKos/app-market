@@ -25,7 +25,7 @@ public class PersonRestClientImpl extends AbstractRestClient implements PersonRe
         TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
 
         HttpResponse<PersonDTO> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/person"), typeReference)
+                new HttpRequestImpl(createUrl("/person")), typeReference
         );
 
         checkResponse(httpResponse);
@@ -38,7 +38,7 @@ public class PersonRestClientImpl extends AbstractRestClient implements PersonRe
         TypeReference<PersonDTO> typeReference = new TypeReference<PersonDTO>() {};
 
         HttpResponse<PersonDTO> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(createUrl("/person"), typeReference, personDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/person"), personDTO), typeReference
         );
 
         checkResponse(httpResponse);

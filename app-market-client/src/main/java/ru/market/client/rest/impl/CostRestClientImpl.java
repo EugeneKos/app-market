@@ -28,7 +28,7 @@ public class CostRestClientImpl extends AbstractRestClient implements CostRestCl
         TypeReference<CostDTO> typeReference = new TypeReference<CostDTO>() {};
 
         HttpResponse<CostDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/cost"), typeReference, costNoIdDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/cost"), costNoIdDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -41,7 +41,7 @@ public class CostRestClientImpl extends AbstractRestClient implements CostRestCl
         TypeReference<CostDTO> typeReference = new TypeReference<CostDTO>() {};
 
         HttpResponse<CostDTO> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(createUrl("/cost"), typeReference, costDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/cost"), costDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -55,7 +55,7 @@ public class CostRestClientImpl extends AbstractRestClient implements CostRestCl
 
         String path = String.format("/cost/%d/%s", costLimitId, dateStr);
 
-        HttpResponse<Set<CostDTO>> httpResponse = httpConnection.get(new HttpRequestImpl<>(createUrl(path), typeReference));
+        HttpResponse<Set<CostDTO>> httpResponse = httpConnection.get(new HttpRequestImpl(createUrl(path)), typeReference);
 
         checkResponse(httpResponse);
 
@@ -67,7 +67,7 @@ public class CostRestClientImpl extends AbstractRestClient implements CostRestCl
         TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
         HttpResponse<Void> httpResponse = httpConnection.delete(
-                new HttpRequestImpl<>(createUrl("/cost/" + id), typeReference)
+                new HttpRequestImpl(createUrl("/cost/" + id)), typeReference
         );
 
         checkResponse(httpResponse);

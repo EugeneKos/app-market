@@ -30,7 +30,7 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
         TypeReference<OperationDTO> typeReference = new TypeReference<OperationDTO>() {};
 
         HttpResponse<OperationDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/operation/enrollment"), typeReference, enrollDebitDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/enrollment"), enrollDebitDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -43,7 +43,7 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
         TypeReference<OperationDTO> typeReference = new TypeReference<OperationDTO>() {};
 
         HttpResponse<OperationDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/operation/debit"), typeReference, enrollDebitDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/debit"), enrollDebitDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -56,7 +56,7 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
         TypeReference<OperationDTO> typeReference = new TypeReference<OperationDTO>() {};
 
         HttpResponse<OperationDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/operation/transfer"), typeReference, transferDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/transfer"), transferDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -69,7 +69,7 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
         TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
 
         HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/operation/money-account/" + moneyAccountId), typeReference)
+                new HttpRequestImpl(createUrl("/operation/money-account/" + moneyAccountId)), typeReference
         );
 
         checkResponse(httpResponse);
@@ -84,9 +84,8 @@ public class OperationRestClientImpl extends AbstractRestClient implements Opera
         TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
 
         HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(
-                        createUrl("/operation/money-account/" + moneyAccountId), typeReference, filterDTO
-                )
+                new HttpRequestWithBodyImpl<>(createUrl("/operation/money-account/" + moneyAccountId), filterDTO),
+                typeReference
         );
 
         checkResponse(httpResponse);

@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.market.client.exception.HttpConnectionException;
+import ru.market.client.exception.JsonMapperException;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpHeadersService;
 import ru.market.client.http.HttpRequest;
 import ru.market.client.http.HttpRequestWithBody;
 import ru.market.client.http.HttpResponse;
+import ru.market.dto.error.ErrorDTO;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,31 +32,37 @@ public class HttpConnectionImpl implements HttpConnection {
     }
 
     @Override
-    public <ResponseBody> HttpResponse<ResponseBody> get(HttpRequest<ResponseBody> request) throws HttpConnectionException {
-        return sendRequest(request.getUrl(), request.getTypeReference(), urlConnection -> {});
+    public <ResponseBody> HttpResponse<ResponseBody> get(HttpRequest request, TypeReference<ResponseBody> typeReference)
+            throws HttpConnectionException {
+
+        return sendRequest(request.getUrl(), typeReference, urlConnection -> {});
     }
 
     @Override
-    public <RequestBody, ResponseBody> HttpResponse<ResponseBody> put(HttpRequestWithBody<RequestBody, ResponseBody> request)
-            throws HttpConnectionException {
+    public <RequestBody, ResponseBody> HttpResponse<ResponseBody> put(
+            HttpRequestWithBody<RequestBody> request, TypeReference<ResponseBody> typeReference
+    ) throws HttpConnectionException {
 
-        return sendRequest(request.getUrl(), request.getTypeReference(),
+        return sendRequest(request.getUrl(), typeReference,
                 new HttpURLConnectionWithBodyCustomizer<>(request.getRequestBody(), "PUT")
         );
     }
 
     @Override
-    public <RequestBody, ResponseBody> HttpResponse<ResponseBody> post(HttpRequestWithBody<RequestBody, ResponseBody> request)
-            throws HttpConnectionException {
+    public <RequestBody, ResponseBody> HttpResponse<ResponseBody> post(
+            HttpRequestWithBody<RequestBody> request, TypeReference<ResponseBody> typeReference
+    ) throws HttpConnectionException {
 
-        return sendRequest(request.getUrl(), request.getTypeReference(),
+        return sendRequest(request.getUrl(), typeReference,
                 new HttpURLConnectionWithBodyCustomizer<>(request.getRequestBody(), "POST")
         );
     }
 
     @Override
-    public <ResponseBody> HttpResponse<ResponseBody> delete(HttpRequest<ResponseBody> request) throws HttpConnectionException {
-        return sendRequest(request.getUrl(), request.getTypeReference(),
+    public <ResponseBody> HttpResponse<ResponseBody> delete(HttpRequest request, TypeReference<ResponseBody> typeReference)
+            throws HttpConnectionException {
+
+        return sendRequest(request.getUrl(), typeReference,
                 urlConnection -> urlConnection.setRequestMethod("DELETE")
         );
     }
@@ -67,7 +75,7 @@ public class HttpConnectionImpl implements HttpConnection {
             URL url = new URL(urlStr);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Accept-Charset", "utf-8");
+            setRequestProperty(urlConnection, RequestProperty.ACCEPT_CHARSET_UTF_8);
 
             httpHeadersService.setHeaders(urlConnection);
 
@@ -79,31 +87,45 @@ public class HttpConnectionImpl implements HttpConnection {
             HttpResponseImpl<ResponseBody> response = new HttpResponseImpl<>(responseCode, responseMessage);
 
             if (responseCode != 200) {
+                response.setError(getResponseBody(urlConnection.getErrorStream(), new TypeReference<ErrorDTO>() {}));
                 return response;
             }
 
             httpHeadersService.saveHeaders(urlConnection);
 
-            InputStream inputStream = urlConnection.getInputStream();
-
-            byte[] buffer = new byte[128];
-            StringBuilder builder = new StringBuilder();
-
-            while (inputStream.read(buffer) != -1) {
-                builder.append(new String(createNewBuffer(buffer)));
-            }
-
-            String responseBodyJson = builder.toString();
-            if(responseBodyJson.isEmpty()){
-                return response;
-            }
-
-            fillResponseBody(responseBodyJson, typeReference, response);
+            response.setResponseBody(getResponseBody(urlConnection.getInputStream(), typeReference));
 
             return response;
 
         } catch (IOException e) {
-            throw new HttpConnectionException("Ошибка соединения", e);
+            throw new HttpConnectionException("Ошибка отправки/полуения запроса/ответа", e);
+        }
+    }
+
+    private <ResponseBody> ResponseBody getResponseBody(
+            InputStream inputStream, TypeReference<ResponseBody> typeReference) throws IOException {
+
+        if(inputStream.available() == 0){
+            return null;
+        }
+
+        byte[] buffer = new byte[128];
+        StringBuilder builder = new StringBuilder();
+
+        while (inputStream.read(buffer) != -1) {
+            builder.append(new String(createNewBuffer(buffer)));
+        }
+
+        String responseBodyStr = new String(builder.toString().getBytes(), StandardCharsets.UTF_8);
+
+        if(isHtmlPage(responseBodyStr)){
+            return null;
+        }
+
+        try {
+            return mapper.readValue(responseBodyStr, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new JsonMapperException("Ошибка преобразования Json", e);
         }
     }
 
@@ -124,12 +146,13 @@ public class HttpConnectionImpl implements HttpConnection {
         return newBuffer;
     }
 
-    private <ResponseBody> void fillResponseBody(String responseBodyJson, TypeReference<ResponseBody> typeReference,
-                                                 HttpResponseImpl<ResponseBody> response) throws JsonProcessingException {
+    private boolean isHtmlPage(String body){
+        String htmlPagePattern = "^<html>.+</html>$";
+        return body.matches(htmlPagePattern);
+    }
 
-        ResponseBody responseBody = mapper.readValue(responseBodyJson, typeReference);
-
-        response.setResponseBody(responseBody);
+    private void setRequestProperty(HttpURLConnection urlConnection, RequestProperty requestProperty){
+        urlConnection.setRequestProperty(requestProperty.getName(), requestProperty.getValue());
     }
 
     interface HttpURLConnectionCustomizer {
@@ -147,7 +170,7 @@ public class HttpConnectionImpl implements HttpConnection {
 
         @Override
         public void customize(HttpURLConnection urlConnection) throws IOException {
-            urlConnection.setRequestProperty("Content-Type", "application/json");
+            setRequestProperty(urlConnection, RequestProperty.CONTENT_TYPE_JSON);
             urlConnection.setRequestMethod(method);
             urlConnection.setDoOutput(true);
 
@@ -155,6 +178,27 @@ public class HttpConnectionImpl implements HttpConnection {
 
             OutputStream outputStream = urlConnection.getOutputStream();
             outputStream.write(requestBodyJson.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private enum RequestProperty {
+        ACCEPT_CHARSET_UTF_8("Accept-Charset", "utf-8"),
+        CONTENT_TYPE_JSON("Content-Type", "application/json");
+
+        private String name;
+        private String value;
+
+        RequestProperty(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 }

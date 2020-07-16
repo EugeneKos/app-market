@@ -1,8 +1,5 @@
 package ru.market.client.http;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-public interface HttpRequest<ResponseBody> {
+public interface HttpRequest {
     String getUrl();
-    TypeReference<ResponseBody> getTypeReference();
 }

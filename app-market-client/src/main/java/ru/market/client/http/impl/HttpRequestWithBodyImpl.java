@@ -1,16 +1,14 @@
 package ru.market.client.http.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
 import ru.market.client.http.HttpRequestWithBody;
 
-public class HttpRequestWithBodyImpl<RequestBody, ResponseBody> extends HttpRequestImpl<ResponseBody>
-        implements HttpRequestWithBody<RequestBody, ResponseBody> {
+public class HttpRequestWithBodyImpl<RequestBody> extends HttpRequestImpl
+        implements HttpRequestWithBody<RequestBody> {
 
     private RequestBody requestBody;
 
-    public HttpRequestWithBodyImpl(String url, TypeReference<ResponseBody> typeReference, RequestBody requestBody) {
-        super(url, typeReference);
+    public HttpRequestWithBodyImpl(String url, RequestBody requestBody) {
+        super(url);
         this.requestBody = requestBody;
     }
 

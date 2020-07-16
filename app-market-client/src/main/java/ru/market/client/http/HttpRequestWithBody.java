@@ -1,5 +1,5 @@
 package ru.market.client.http;
 
-public interface HttpRequestWithBody<RequestBody, ResponseBody> extends HttpRequest<ResponseBody> {
+public interface HttpRequestWithBody<RequestBody> extends HttpRequest {
     RequestBody getRequestBody();
 }

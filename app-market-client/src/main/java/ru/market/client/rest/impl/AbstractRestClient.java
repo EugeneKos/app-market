@@ -3,6 +3,7 @@ package ru.market.client.rest.impl;
 import ru.market.client.exception.RestClientException;
 import ru.market.client.http.HttpResponse;
 import ru.market.client.url.UrlProvider;
+import ru.market.dto.error.ErrorDTO;
 
 abstract class AbstractRestClient {
     private UrlProvider urlProvider;
@@ -19,9 +20,17 @@ abstract class AbstractRestClient {
 
     <ResponseBody> void checkResponse(HttpResponse<ResponseBody> response) throws RestClientException {
         if(response.getCode() != 200){
-            throw new RestClientException(String.format(
-                    "Http status: %s message %s", response.getCode(), response.getMessage()
-            ));
+            ErrorDTO error = response.getError();
+            if(error != null){
+                throw new RestClientException(String.format(
+                        "Http status: [%s] message [%s] error [%s]",
+                        response.getCode(), response.getMessage(), error.getError()
+                ));
+            } else {
+                throw new RestClientException(String.format(
+                        "Http status: [%s] message [%s]", response.getCode(), response.getMessage()
+                ));
+            }
         }
     }
 }

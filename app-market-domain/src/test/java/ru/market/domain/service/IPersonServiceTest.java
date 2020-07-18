@@ -15,7 +15,7 @@ import ru.market.dto.person.PersonNoIdDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
-@TestPropertySource(locations = "classpath:database-test-config.properties")
+@TestPropertySource(locations = "classpath:app-market-test.properties")
 public class IPersonServiceTest {
     @Autowired
     private IPersonService personService;

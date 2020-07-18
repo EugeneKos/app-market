@@ -18,7 +18,7 @@ import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
-@TestPropertySource(locations = "classpath:database-test-config.properties")
+@TestPropertySource(locations = "classpath:app-market-test.properties")
 public class IMoneyAccountServiceTest {
     @Autowired
     private IMoneyAccountService moneyAccountService;

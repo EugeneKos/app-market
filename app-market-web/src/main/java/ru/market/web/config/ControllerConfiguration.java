@@ -17,6 +17,7 @@ import ru.market.domain.service.IUserService;
 
 import ru.market.auth.api.AuthenticateService;
 
+import ru.market.web.controller.DownloadController;
 import ru.market.web.controller.MainController;
 import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.CostController;
@@ -95,5 +96,10 @@ public class ControllerConfiguration {
     @Bean
     public ExceptionHandlerController exceptionHandlerController(){
         return new ExceptionHandlerController();
+    }
+
+    @Bean
+    public DownloadController downloadController(){
+        return new DownloadController();
     }
 }

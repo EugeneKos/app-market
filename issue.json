@@ -74,7 +74,7 @@
   {
     "type":"TASK",
     "code":"MARKET-15",
-    "summary":"Реализовать exception handler controller. Доработать клиентский модуль с возможностью обработки ErrorDTO",
+    "summary":"Реализовать exception handler controller. Доработать клиентский модуль с возможностью обработки ErrorDTO. Реализовать чтение properties по заданному пути через vm options. Добавить логирование",
     "status":"OPEN"
   }
 ]

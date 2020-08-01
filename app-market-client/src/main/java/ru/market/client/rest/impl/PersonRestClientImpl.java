@@ -12,7 +12,7 @@ import ru.market.client.url.UrlProvider;
 
 import ru.market.dto.person.PersonDTO;
 
-public class PersonRestClientImpl extends AbstractRestClient implements PersonRestClient {
+public class PersonRestClientImpl extends CommonRestClient implements PersonRestClient {
     private HttpConnection httpConnection;
 
     public PersonRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

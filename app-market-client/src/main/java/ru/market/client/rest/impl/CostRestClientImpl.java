@@ -15,7 +15,7 @@ import ru.market.dto.cost.CostNoIdDTO;
 
 import java.util.Set;
 
-public class CostRestClientImpl extends AbstractRestClient implements CostRestClient {
+public class CostRestClientImpl extends CommonRestClient implements CostRestClient {
     private HttpConnection httpConnection;
 
     public CostRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

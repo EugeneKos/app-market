@@ -16,7 +16,7 @@ import ru.market.dto.limit.CostLimitNoIdDTO;
 
 import java.util.Set;
 
-public class CostLimitRestClientImpl extends AbstractRestClient implements CostLimitRestClient {
+public class CostLimitRestClientImpl extends CommonRestClient implements CostLimitRestClient {
     private HttpConnection httpConnection;
 
     public CostLimitRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

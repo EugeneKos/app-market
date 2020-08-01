@@ -15,7 +15,7 @@ import ru.market.dto.money.MoneyAccountNoIdDTO;
 
 import java.util.Set;
 
-public class MoneyAccountRestClientImpl extends AbstractRestClient implements MoneyAccountRestClient {
+public class MoneyAccountRestClientImpl extends CommonRestClient implements MoneyAccountRestClient {
     private HttpConnection httpConnection;
 
     public MoneyAccountRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

@@ -13,7 +13,7 @@ import ru.market.client.url.UrlProvider;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
 
-public class AuthenticateRestClientImpl extends AbstractRestClient implements AuthenticateRestClient {
+public class AuthenticateRestClientImpl extends CommonRestClient implements AuthenticateRestClient {
     private HttpConnection httpConnection;
 
     public AuthenticateRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

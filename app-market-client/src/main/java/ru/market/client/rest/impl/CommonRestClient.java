@@ -1,14 +1,15 @@
 package ru.market.client.rest.impl;
 
 import ru.market.client.exception.RestClientException;
+import ru.market.client.exception.UnauthorizedException;
 import ru.market.client.http.HttpResponse;
 import ru.market.client.url.UrlProvider;
 import ru.market.dto.error.ErrorDTO;
 
-abstract class AbstractRestClient {
+abstract class CommonRestClient {
     private UrlProvider urlProvider;
 
-    AbstractRestClient(UrlProvider urlProvider) {
+    CommonRestClient(UrlProvider urlProvider) {
         this.urlProvider = urlProvider;
     }
 
@@ -20,6 +21,10 @@ abstract class AbstractRestClient {
 
     <ResponseBody> void checkResponse(HttpResponse<ResponseBody> response) throws RestClientException {
         if(response.getCode() != 200){
+            if(response.getCode() == 401){
+                throw new UnauthorizedException("Unauthorized");
+            }
+
             ErrorDTO error = response.getError();
             if(error != null){
                 throw new RestClientException(String.format(

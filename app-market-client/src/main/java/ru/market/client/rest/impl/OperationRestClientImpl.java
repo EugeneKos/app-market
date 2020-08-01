@@ -17,7 +17,7 @@ import ru.market.dto.operation.OperationTransferDTO;
 
 import java.util.Set;
 
-public class OperationRestClientImpl extends AbstractRestClient implements OperationRestClient {
+public class OperationRestClientImpl extends CommonRestClient implements OperationRestClient {
     private HttpConnection httpConnection;
 
     public OperationRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

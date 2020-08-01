@@ -16,7 +16,7 @@ import ru.market.dto.user.UserDTO;
 import ru.market.dto.user.UserPasswordDTO;
 import ru.market.dto.user.UserUsernameDTO;
 
-public class UserRestClientImpl extends AbstractRestClient implements UserRestClient {
+public class UserRestClientImpl extends CommonRestClient implements UserRestClient {
     private HttpConnection httpConnection;
 
     public UserRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {

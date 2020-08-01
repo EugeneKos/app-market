@@ -148,6 +148,21 @@ public class Operation {
         return Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "id=" + id +
+                ", date=" + date +
+                ", time=" + time +
+                ", amount=" + amount +
+                ", operationType=" + operationType +
+                ", description='" + description + '\'' +
+                ", newBalance=" + newBalance +
+                ", oldBalance=" + oldBalance +
+                ", moneyAccount=" + (moneyAccount == null ? "[]" : moneyAccount.getId()) +
+                '}';
+    }
+
     public Operation customClone() {
         return new Operation(
                 LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()),

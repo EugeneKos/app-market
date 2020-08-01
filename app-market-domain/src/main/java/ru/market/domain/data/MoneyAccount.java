@@ -117,4 +117,16 @@ public class MoneyAccount {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+    @Override
+    public String toString() {
+        return "MoneyAccount{" +
+                "id=" + id +
+                ", balance=" + balance +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", person=" + (person == null ? "[]" : person.getId()) +
+                '}';
+    }
 }

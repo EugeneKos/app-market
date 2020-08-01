@@ -119,4 +119,16 @@ public class CostLimit {
     public int hashCode() {
         return Objects.hash(id, sum, beginDate, endDate);
     }
+
+    @Override
+    public String toString() {
+        return "CostLimit{" +
+                "id=" + id +
+                ", sum=" + sum +
+                ", description='" + description + '\'' +
+                ", beginDate=" + beginDate +
+                ", endDate=" + endDate +
+                ", personId=" + (person == null ? "[]" : person.getId()) +
+                '}';
+    }
 }

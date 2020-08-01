@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import lombok.ToString;
 import ru.market.dto.person.PersonDTO;
 
 @Getter
@@ -13,6 +14,7 @@ import ru.market.dto.person.PersonDTO;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "userBuilder")
+@ToString(callSuper = true)
 public class UserDTO extends UserUsernameDTO {
     private Long id;
 

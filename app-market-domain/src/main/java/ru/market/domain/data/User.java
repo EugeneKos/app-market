@@ -131,7 +131,7 @@ public class User {
                 ", status=" + status +
                 ", timestampStatus=" + timestampStatus +
                 ", passwordAttemptCount=" + passwordAttemptCount +
-                ", person=" + (person == null ? "[]" : person.getId()) +
+                ", personId=" + (person == null ? "[]" : person.getId()) +
                 '}';
     }
 }

@@ -126,7 +126,7 @@ public class MoneyAccount {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", dateCreated=" + dateCreated +
-                ", person=" + (person == null ? "[]" : person.getId()) +
+                ", personId=" + (person == null ? "[]" : person.getId()) +
                 '}';
     }
 }

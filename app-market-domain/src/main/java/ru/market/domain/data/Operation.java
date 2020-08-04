@@ -159,7 +159,7 @@ public class Operation {
                 ", description='" + description + '\'' +
                 ", newBalance=" + newBalance +
                 ", oldBalance=" + oldBalance +
-                ", moneyAccount=" + (moneyAccount == null ? "[]" : moneyAccount.getId()) +
+                ", moneyAccountId=" + (moneyAccount == null ? "[]" : moneyAccount.getId()) +
                 '}';
     }
 

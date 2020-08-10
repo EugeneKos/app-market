@@ -1,5 +1,8 @@
 package ru.market.domain.validator.operation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.domain.data.MoneyAccount;
 import ru.market.domain.data.Operation;
 import ru.market.domain.exception.ValidateException;
@@ -11,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class OperationValidator implements CommonValidator<Operation> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperationValidator.class);
+
     private MoneyAccount moneyAccount;
 
     public OperationValidator(MoneyAccount moneyAccount){
@@ -24,22 +29,29 @@ public class OperationValidator implements CommonValidator<Operation> {
     }
 
     private void validateAmount(Operation operation) throws ValidateException {
+        LOGGER.info("Валидация суммы операции");
         BigDecimal amount = operation.getAmount();
 
         if(amount == null){
-            throw new ValidateException("Сумма перевода должна быть заполнена.");
+            throw new ValidateException("Сумма операции должна быть заполнена.");
         }
+        LOGGER.debug("Operation [validate amount] amount = {}", amount);
 
         if(ValidatorUtils.isMatchMoney(amount.toString())){
+            LOGGER.info("Валидация суммы операции прошла успешно");
             return;
         }
 
-        throw new ValidateException("Сумма перевода заполнена некорректно");
+        throw new ValidateException("Сумма операции заполнена некорректно");
     }
 
     private void validateDate(Operation operation, LocalDate bankAccountDateCreated){
+        LOGGER.info("Валидация даты операции");
         LocalDate operationDate = operation.getDate();
         LocalTime operationTime = operation.getTime();
+        LOGGER.debug("Operation [validate date] bankAccountDateCreated = {}, operationDate = {}, operationTime = {}",
+                bankAccountDateCreated, operationDate, operationTime
+        );
 
         if(operationDate.isBefore(bankAccountDateCreated)){
             throw new ValidateException("Дата операции не может быть раньше чем был создан банковский счет");
@@ -50,5 +62,6 @@ public class OperationValidator implements CommonValidator<Operation> {
         if(LocalTime.now().isBefore(operationTime)){
             throw new ValidateException("Время операции не может быть позднее текущего времени");
         }
+        LOGGER.info("Валидация даты операции прошла успешно");
     }
 }

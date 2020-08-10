@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
@@ -20,6 +23,8 @@ import java.io.InputStream;
         excludeRequestMethods = {@ExcludeRequestMethod(url = "/person", methods = ExcludeRequestMethod.Method.GET)}
 )
 public class PersonRequestFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonRequestFilter.class);
+
     private SessionDataManager sessionDataManager;
 
     public PersonRequestFilter(SessionDataManager sessionDataManager) {
@@ -43,6 +48,7 @@ public class PersonRequestFilter implements AuthFilter {
         if(isWell){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Запрос: [{}] не прошел валидацию", request.getServletPath());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
     }
@@ -50,8 +56,10 @@ public class PersonRequestFilter implements AuthFilter {
     private boolean isEqualPersonId(InputStream inputStream, Long personId){
         PersonDTO person = JSONObjectUtil.getJsonObjectFromInputStream(inputStream, PersonDTO.class);
         if(person == null){
+            LOGGER.error("Пользовательские данные не заданы. PersonId = {}", personId);
             return false;
         }
+        LOGGER.debug("PersonDTO = {} . PersonId = {}", person, personId);
 
         boolean isEqual = personId.equals(person.getId());
         if(isEqual){

@@ -26,6 +26,7 @@ public class PropertySourceConfiguration {
     }
 
     private Resource getResource(){
+        LOGGER.info("Инициализация Resource PropertyPlaceholderConfigurer");
         String systemFileProperty = System.getProperty(SYSTEM_FILE_PROPERTY);
         if(StringUtils.isEmpty(systemFileProperty)){
             LOGGER.warn("Системная переменная file не задана, инициализация ClassPathResource - file name = {}", DEFAULT_FILE_NAME);

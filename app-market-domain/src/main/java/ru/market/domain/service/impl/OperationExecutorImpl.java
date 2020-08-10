@@ -1,5 +1,7 @@
 package ru.market.domain.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.OperationConverter;
@@ -26,6 +28,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class OperationExecutorImpl implements OperationExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperationExecutorImpl.class);
+
     private OperationRepository operationRepository;
     private OperationConverter operationConverter;
 
@@ -148,6 +152,7 @@ public class OperationExecutorImpl implements OperationExecutor {
     private void saveAndUpdate(MoneyAccount moneyAccount, Operation operation){
         moneyAccountService.update(moneyAccount);
         operation.setMoneyAccount(moneyAccount);
+        LOGGER.debug("Save and update operation. Operation = {}", operation);
         operationRepository.saveAndFlush(operation);
     }
 }

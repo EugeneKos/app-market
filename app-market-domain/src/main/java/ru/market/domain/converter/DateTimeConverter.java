@@ -1,10 +1,15 @@
 package ru.market.domain.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public final class DateTimeConverter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeConverter.class);
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -12,6 +17,7 @@ public final class DateTimeConverter {
 
     public static LocalDate convertToLocalDate(String dateStr){
         if(dateStr == null || "".equals(dateStr)){
+            LOGGER.info("Дата не задана. Получение текущей даты.");
             return LocalDate.now();
         }
 
@@ -24,6 +30,7 @@ public final class DateTimeConverter {
 
     public static LocalTime convertToLocalTime(String timeStr){
         if(timeStr == null || "".equals(timeStr)){
+            LOGGER.info("Время не задано. Получение текущего времени.");
             return LocalTime.now();
         }
 

@@ -1,5 +1,7 @@
 package ru.market.auth.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.market.auth.api.Authenticate;
@@ -23,6 +25,8 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public class AuthenticateServiceImpl implements AuthenticateService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateServiceImpl.class);
+
     private static final int INACTIVE_INTERVAL = 1200; // 20 min
     private static final int ALLOWED_PASSWORD_ATTEMPTS = 3;
     private static final Duration LOCK_TIME = Duration.ofMinutes(15); // 15 min
@@ -56,12 +60,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         UserStatus status = userAdditionalDTO.getStatus();
         if(status == UserStatus.TEMPORARY_LOCK){
+            LOGGER.info("На пользователе установлена временная блокировка. UserId = {}", userAdditionalDTO.getId());
             LocalDateTime timestampStatus = userAdditionalDTO.getTimestampStatus();
             Duration duration = Duration.between(timestampStatus, LocalDateTime.now());
 
             int compare = duration.compareTo(LOCK_TIME);
             if(compare < 0){
-                Long remainingLockTimeSeconds = LOCK_TIME.getSeconds() - duration.getSeconds();
+                long remainingLockTimeSeconds = LOCK_TIME.getSeconds() - duration.getSeconds();
                 LocalTime remainingLockTime = LocalTime.ofSecondOfDay(remainingLockTimeSeconds);
 
                 return failed(String.format(
@@ -74,6 +79,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             userService.updateUserStatusByUsername(
                     userAdditionalDTO.getUsername(), ru.market.domain.data.enumeration.UserStatus.ACTIVE
             );
+            LOGGER.info("С пользователя снята временная блокировка. UserId = {}", userAdditionalDTO.getId());
         }
 
         return passwordEncoder.matches(usernamePasswordDTO.getPassword(), userAdditionalDTO.getPassword())
@@ -130,21 +136,25 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     private Authenticate failed(String description){
+        LOGGER.error("Ошибка аутентификации. Сообщение: {}", description);
         return new Authenticate(null, new ResultDTO(ResultStatus.FAILED, description));
     }
 
     private String generateSecretKey(){
+        LOGGER.info("Генерация секретного ключа");
         String uuid = UUID.randomUUID().toString();
         return uuid.replaceAll("-", "");
     }
 
     @Override
     public boolean isAuthenticate() {
+        LOGGER.info("Проверка аутентификации пользователя");
         return sessionDataManager.getUserData() != null && sessionDataManager.getUserData().isAuthenticate();
     }
 
     @Override
     public void invalidate() {
+        LOGGER.info("Инвалидация клиентской сессии");
         sessionManagement.invalidateSession();
     }
 }

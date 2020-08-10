@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.data.session.api.SessionDataManager;
@@ -20,6 +23,8 @@ import java.util.Set;
 
 @UrlFilter(urlPatterns = "/operation*")
 public class OperationRequestFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperationRequestFilter.class);
+
     private SessionDataManager sessionDataManager;
     private IMoneyAccountService moneyAccountService;
 
@@ -35,6 +40,7 @@ public class OperationRequestFilter implements AuthFilter {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
+        LOGGER.debug("Id денежных счетов: {} полученные по personId = {}", allMoneyAccountId, personId);
 
         String servletPath = request.getServletPath();
         ServletInputStream servletInputStream = request.getInputStream();
@@ -49,9 +55,12 @@ public class OperationRequestFilter implements AuthFilter {
             );
 
             if(enrollDebitDTO == null){
+                LOGGER.error("Данные по операции не заданы. Запрос: [{}] не прошел валидацию", request.getServletPath());
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
                 return;
             }
+            LOGGER.debug("Servlet path: [{}] OperationEnrollDebitDTO = {} MoneyAccountIds = {} personId = {}",
+                    servletPath, enrollDebitDTO, allMoneyAccountId, personId);
 
             operationBasedDTO = enrollDebitDTO;
             isWell = allMoneyAccountId.contains(enrollDebitDTO.getMoneyAccountId());
@@ -62,14 +71,19 @@ public class OperationRequestFilter implements AuthFilter {
             );
 
             if(transferDTO == null){
+                LOGGER.error("Данные по операции не заданы. Запрос: [{}] не прошел валидацию", request.getServletPath());
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
                 return;
             }
+            LOGGER.debug("Servlet path: [{}] OperationTransferDTO = {} MoneyAccountIds = {} personId = {}",
+                    servletPath, transferDTO, allMoneyAccountId, personId);
 
             Long fromMoneyAccountId = transferDTO.getFromMoneyAccountId();
             Long toMoneyAccountId = transferDTO.getToMoneyAccountId();
 
             if(fromMoneyAccountId.equals(toMoneyAccountId)){
+                LOGGER.error("Некорректный запрос на операцию перевода. " +
+                        "Попытка произвести операцию с одним и тем же денежным счетом");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
                 return;
             }
@@ -79,6 +93,8 @@ public class OperationRequestFilter implements AuthFilter {
 
         } else if(servletPath.contains("money-account")){
             isWell = Utils.checkIdInServletPath(servletPath, "money-account/(\\S+)", allMoneyAccountId);
+            LOGGER.debug("Servlet path: [{}] MoneyAccountIds = {} personId = {}",
+                    servletPath, allMoneyAccountId, personId);
         }
 
         if(isWell){
@@ -87,6 +103,7 @@ public class OperationRequestFilter implements AuthFilter {
             }
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Запрос: [{}] не прошел валидацию", request.getServletPath());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
     }

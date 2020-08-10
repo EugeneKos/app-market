@@ -17,6 +17,7 @@ import ru.market.domain.service.IUserService;
 
 import ru.market.auth.api.AuthenticateService;
 
+import ru.market.web.controller.DownloadController;
 import ru.market.web.controller.MainController;
 import ru.market.web.controller.rest.AuthenticateController;
 import ru.market.web.controller.rest.CostController;
@@ -26,6 +27,7 @@ import ru.market.web.controller.rest.HealthCheckController;
 import ru.market.web.controller.rest.OperationController;
 import ru.market.web.controller.rest.PersonController;
 import ru.market.web.controller.rest.UserController;
+import ru.market.web.controller.rest.ExceptionHandlerController;
 
 @Configuration
 @EnableWebMvc
@@ -89,5 +91,15 @@ public class ControllerConfiguration {
     @Bean
     public CostController costController(ICostService costService, SessionDataManager sessionDataManager){
         return new CostController(costService, sessionDataManager);
+    }
+
+    @Bean
+    public ExceptionHandlerController exceptionHandlerController(){
+        return new ExceptionHandlerController();
+    }
+
+    @Bean
+    public DownloadController downloadController(){
+        return new DownloadController();
     }
 }

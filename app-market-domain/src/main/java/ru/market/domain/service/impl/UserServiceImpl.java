@@ -1,5 +1,7 @@
 package ru.market.domain.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -31,6 +33,8 @@ import ru.market.dto.user.UserUsernameDTO;
 import java.time.LocalDateTime;
 
 public class UserServiceImpl implements IUserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private UserRepository userRepository;
     private UserConverter userConverter;
 
@@ -59,8 +63,9 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public UserDTO registration(RegistrationDTO registrationDTO) {
+        LOGGER.info("Регистрация нового пользователя");
         if(registrationDTO == null){
-            return null;
+            throw new BadRequestException("Данные для регистрации пользователя не заданы");
         }
 
         UserAdditionalDTO userAdditionalDTO = userConverter.convertToUserAdditionalDTO(registrationDTO);
@@ -78,6 +83,7 @@ public class UserServiceImpl implements IUserService {
         user.setStatus(UserStatus.ACTIVE);
         user.setTimestampStatus(LocalDateTime.now());
         user.setPasswordAttemptCount(0);
+        LOGGER.debug("Установка числа попыток ввода пароля: 0 . Статус пользователя: ACTIVE");
 
         user = userRepository.saveAndFlush(user);
         return userConverter.convertToBasedDTO(user);
@@ -86,8 +92,9 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public UserDTO changeUsername(UserUsernameDTO usernameDTO, Long userId) {
+        LOGGER.info("Изменение имени пользователя. UserId = {}", userId);
         if(usernameDTO == null){
-            throw new BadRequestException("Форма замены имени пользователя пуста");
+            throw new BadRequestException("Данные для замены имени пользователя не заданы");
         }
 
         User user = getUserById(userId);
@@ -103,14 +110,16 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public ResultDTO changePassword(UserPasswordDTO passwordDTO, Long userId) {
+        LOGGER.info("Изменение пароля пользователя. UserId = {}", userId);
         if(passwordDTO == null || StringUtils.isEmpty(passwordDTO.getOldPassword())){
-            throw new BadRequestException("Форма замены пароля пуста");
+            throw new BadRequestException("Данные для замены пароля не заданы");
         }
 
         User user = getUserById(userId);
 
         boolean isPasswordMatches = passwordEncoder.matches(passwordDTO.getOldPassword(), user.getPassword());
         if(!isPasswordMatches){
+            LOGGER.error("Пароли не совпадают, запрос на изменение пароля отклонен! UserId = {}", userId);
             return new ResultDTO(ResultStatus.FAILED, "Пароли не совпадают, запрос на изменение пароля отклонен!");
         }
 
@@ -122,10 +131,12 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.saveAndFlush(user);
 
+        LOGGER.info("Пароль был изменен. UserId = {}", userId);
         return new ResultDTO(ResultStatus.SUCCESS, "Пароль был изменен");
     }
 
     private User getUserById(Long id){
+        LOGGER.info("Получение пользователя по id = {}", id);
         return userRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("User with id %d not found", id))
         );
@@ -139,6 +150,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserAdditionalDTO getByUsername(String username) {
+        LOGGER.info("Получение пользователя по username = {}", username);
         User user = userRepository.findByUsername(username);
         return userConverter.convertToDTO(user);
     }
@@ -146,18 +158,21 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public void updateUserStatusByUsername(String username, UserStatus status) {
+        LOGGER.info("Обновление статуса пользователя. Username = {} , status = {}", username, status);
         userRepository.updateUserStatusAndTimestampStatusByUsername(username, status, LocalDateTime.now());
     }
 
     @Transactional
     @Override
     public void updatePasswordAttemptCountByUsername(String username, Integer passwordAttemptCount) {
+        LOGGER.info("Обновление числа попыток ввода пароля. Username = {}, passwordAttemptCount = {}", username, passwordAttemptCount);
         userRepository.updatePasswordAttemptCountByUsername(username, passwordAttemptCount);
     }
 
     @Transactional
     @Override
     public void deleteById(Long id) {
+        LOGGER.info("Удаление пользователя по id = {}", id);
         userRepository.deleteById(id);
     }
 }

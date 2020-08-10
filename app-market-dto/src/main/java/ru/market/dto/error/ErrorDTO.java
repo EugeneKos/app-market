@@ -1,4 +1,4 @@
-package ru.market.dto.person;
+package ru.market.dto.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class PersonNoIdDTO {
-    private String firstName;
-    private String lastName;
-    private String middleName;
+public class ErrorDTO {
+    private String error;
 }

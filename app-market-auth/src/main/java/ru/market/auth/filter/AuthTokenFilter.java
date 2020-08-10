@@ -1,5 +1,7 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +22,8 @@ import java.io.IOException;
         "/cost-limit*", "/cost*"
 })
 public class AuthTokenFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
+
     private SessionDataManager sessionDataManager;
     private PasswordEncoder passwordEncoder;
 
@@ -35,6 +39,7 @@ public class AuthTokenFilter implements AuthFilter {
         String authToken = request.getHeader(AuthFields.AUTH_TOKEN_HEADER);
 
         if(StringUtils.isEmpty(authToken)){
+            LOGGER.error("Токен аутентификации не задан");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
             return;
         }
@@ -44,6 +49,7 @@ public class AuthTokenFilter implements AuthFilter {
         if(passwordEncoder.matches(secretKey, authToken)){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Невалидный токен аутентификации");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
     }

@@ -15,6 +15,7 @@
         <junit.version>4.12</junit.version>
         <spring-data-jpa.version>2.1.5.RELEASE</spring-data-jpa.version>
         <hibernate-entitymanager.version>5.4.1.Final</hibernate-entitymanager.version>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
     </properties>
 
     <modules>
@@ -59,6 +60,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

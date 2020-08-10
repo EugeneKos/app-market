@@ -14,4 +14,12 @@ import lombok.Setter;
 public class UserPasswordDTO {
     private String oldPassword;
     private String newPassword;
+
+    @Override
+    public String toString() {
+        return "UserPasswordDTO{" +
+                "oldPassword='" + ((oldPassword == null || oldPassword.isEmpty()) ? "[]" : "[********]") + '\'' +
+                ", newPassword='" + ((newPassword == null || newPassword.isEmpty()) ? "[]" : "[********]") + '\'' +
+                '}';
+    }
 }

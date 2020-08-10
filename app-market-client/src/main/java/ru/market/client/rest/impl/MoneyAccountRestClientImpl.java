@@ -15,7 +15,7 @@ import ru.market.dto.money.MoneyAccountNoIdDTO;
 
 import java.util.Set;
 
-public class MoneyAccountRestClientImpl extends AbstractRestClient implements MoneyAccountRestClient {
+public class MoneyAccountRestClientImpl extends CommonRestClient implements MoneyAccountRestClient {
     private HttpConnection httpConnection;
 
     public MoneyAccountRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
@@ -28,7 +28,7 @@ public class MoneyAccountRestClientImpl extends AbstractRestClient implements Mo
         TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
 
         HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/money-account"), typeReference, moneyAccountNoIdDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/money-account"), moneyAccountNoIdDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -41,7 +41,7 @@ public class MoneyAccountRestClientImpl extends AbstractRestClient implements Mo
         TypeReference<MoneyAccountDTO> typeReference = new TypeReference<MoneyAccountDTO>() {};
 
         HttpResponse<MoneyAccountDTO> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
+                new HttpRequestImpl(createUrl("/money-account/" + id)), typeReference
         );
 
         checkResponse(httpResponse);
@@ -54,7 +54,7 @@ public class MoneyAccountRestClientImpl extends AbstractRestClient implements Mo
         TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
         HttpResponse<Void> httpResponse = httpConnection.delete(
-                new HttpRequestImpl<>(createUrl("/money-account/" + id), typeReference)
+                new HttpRequestImpl(createUrl("/money-account/" + id)), typeReference
         );
 
         checkResponse(httpResponse);
@@ -65,7 +65,7 @@ public class MoneyAccountRestClientImpl extends AbstractRestClient implements Mo
         TypeReference<Set<MoneyAccountDTO>> typeReference = new TypeReference<Set<MoneyAccountDTO>>() {};
 
         HttpResponse<Set<MoneyAccountDTO>> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/money-account"), typeReference)
+                new HttpRequestImpl(createUrl("/money-account")), typeReference
         );
 
         checkResponse(httpResponse);

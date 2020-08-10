@@ -126,4 +126,18 @@ public class Cost {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "Cost{" +
+                "id=" + id +
+                ", sum=" + sum +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                ", operationId=" + (operation == null ? "[]" : operation.getId()) +
+                ", costLimitId=" + (costLimit == null ? "[]" : costLimit.getId()) +
+                '}';
+    }
 }

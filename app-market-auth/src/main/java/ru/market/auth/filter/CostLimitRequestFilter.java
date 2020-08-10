@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
@@ -19,6 +22,8 @@ import java.util.Set;
                 methods = {ExcludeRequestMethod.Method.PUT, ExcludeRequestMethod.Method.GET})}
 )
 public class CostLimitRequestFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CostLimitRequestFilter.class);
+
     private SessionDataManager sessionDataManager;
     private ICostLimitService costLimitService;
 
@@ -33,6 +38,7 @@ public class CostLimitRequestFilter implements AuthFilter {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allCostLimitId = costLimitService.getAllIdByPersonId(personId);
+        LOGGER.debug("Id лимитов на затраты: {} полученные по personId = {}", allCostLimitId, personId);
 
         boolean isWell;
 
@@ -41,12 +47,16 @@ public class CostLimitRequestFilter implements AuthFilter {
                 isWell = Utils.checkIdInServletPath(
                         request.getServletPath(), "cost-limit/info/(\\S+)/.+", allCostLimitId
                 );
+                LOGGER.debug("[GET request] Servlet path: [{}] CostLimitIds = {} personId = {}",
+                        request.getServletPath(), allCostLimitId, personId);
                 break;
             }
             case "DELETE":{
                 isWell = Utils.checkIdInServletPath(
                         request.getServletPath(), "cost-limit/(\\S+)", allCostLimitId
                 );
+                LOGGER.debug("[DELETE request] Servlet path: [{}] CostLimitIds = {} personId = {}",
+                        request.getServletPath(), allCostLimitId, personId);
                 break;
             }
             default:
@@ -56,6 +66,7 @@ public class CostLimitRequestFilter implements AuthFilter {
         if(isWell){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Запрос: [{}] не прошел валидацию", request.getServletPath());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
 

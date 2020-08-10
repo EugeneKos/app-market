@@ -6,7 +6,6 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -19,24 +18,23 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories(basePackages = {"ru.market.domain.repository"})
 @EnableTransactionManagement
-@PropertySource("classpath:database-config.properties")
 public class DataConfiguration {
-    @Value("${database.driver.class}")
+    @Value("${app.market@database.driver.class}")
     private String driverClassName;
-    @Value("${database.url}")
+    @Value("${app.market@database.url}")
     private String url;
-    @Value("${database.username}")
+    @Value("${app.market@database.username}")
     private String username;
-    @Value("${database.password}")
+    @Value("${app.market@database.password}")
     private String password;
 
     private final String[] packagesToScan = new String[]{"ru.market.domain.data"};
 
-    @Value("${database.hibernate.dialect}")
+    @Value("${app.market@database.hibernate.dialect}")
     private String dialect;
-    @Value("${database.hibernate.showSql}")
+    @Value("${app.market@database.hibernate.showSql}")
     private String showSql;
-    @Value("${database.hibernate.hbm2dllAuto}")
+    @Value("${app.market@database.hibernate.hbm2dllAuto}")
     private String hbm2ddlAuto;
 
     @Bean

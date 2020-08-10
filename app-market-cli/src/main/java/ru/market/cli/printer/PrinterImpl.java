@@ -2,7 +2,6 @@ package ru.market.cli.printer;
 
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -79,7 +78,6 @@ public class PrinterImpl implements Printer {
         for (Map.Entry<String, List<String>> entry : table.entrySet()){
             String columnName = entry.getKey();
             List<String> column = entry.getValue();
-            conversionInUTF8(column);
 
             List<String> columnWithColumnName = new ArrayList<>(column);
             columnWithColumnName.add(columnName);
@@ -127,11 +125,5 @@ public class PrinterImpl implements Printer {
 
     private void printTableRow(String format, Object... args){
         System.out.println(String.format(format, args));
-    }
-
-    private void conversionInUTF8(List<String> column){
-        for (int i = 0; i < column.size(); i++) {
-            column.set(i, new String(column.get(i).getBytes(), StandardCharsets.UTF_8));
-        }
     }
 }

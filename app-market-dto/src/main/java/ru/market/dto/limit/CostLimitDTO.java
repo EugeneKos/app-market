@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "costLimitBuilder")
+@ToString(callSuper = true)
 public class CostLimitDTO extends CostLimitNoIdDTO {
     private Long id;
 

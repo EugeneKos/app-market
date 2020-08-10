@@ -16,7 +16,7 @@ import ru.market.dto.limit.CostLimitNoIdDTO;
 
 import java.util.Set;
 
-public class CostLimitRestClientImpl extends AbstractRestClient implements CostLimitRestClient {
+public class CostLimitRestClientImpl extends CommonRestClient implements CostLimitRestClient {
     private HttpConnection httpConnection;
 
     public CostLimitRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
@@ -29,7 +29,7 @@ public class CostLimitRestClientImpl extends AbstractRestClient implements CostL
         TypeReference<CostLimitDTO> typeReference = new TypeReference<CostLimitDTO>() {};
 
         HttpResponse<CostLimitDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/cost-limit"), typeReference, costLimitNoIdDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/cost-limit"), costLimitNoIdDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -42,7 +42,7 @@ public class CostLimitRestClientImpl extends AbstractRestClient implements CostL
         TypeReference<Set<CostLimitDTO>> typeReference = new TypeReference<Set<CostLimitDTO>>() {};
 
         HttpResponse<Set<CostLimitDTO>> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/cost-limit"), typeReference)
+                new HttpRequestImpl(createUrl("/cost-limit")), typeReference
         );
 
         checkResponse(httpResponse);
@@ -57,7 +57,7 @@ public class CostLimitRestClientImpl extends AbstractRestClient implements CostL
         String path = String.format("/cost-limit/info/%d/%s", id, dateStr);
 
         HttpResponse<CostLimitInfoDTO> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl(path), typeReference)
+                new HttpRequestImpl(createUrl(path)), typeReference
         );
 
         checkResponse(httpResponse);
@@ -72,7 +72,7 @@ public class CostLimitRestClientImpl extends AbstractRestClient implements CostL
         String path = String.format("/cost-limit/%d?rollbackOperations=%s", id, String.valueOf(rollbackOperations));
 
         HttpResponse<Void> httpResponse = httpConnection.delete(
-                new HttpRequestImpl<>(createUrl(path), typeReference)
+                new HttpRequestImpl(createUrl(path)), typeReference
         );
 
         checkResponse(httpResponse);

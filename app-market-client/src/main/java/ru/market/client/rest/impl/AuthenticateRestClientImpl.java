@@ -13,7 +13,7 @@ import ru.market.client.url.UrlProvider;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
 
-public class AuthenticateRestClientImpl extends AbstractRestClient implements AuthenticateRestClient {
+public class AuthenticateRestClientImpl extends CommonRestClient implements AuthenticateRestClient {
     private HttpConnection httpConnection;
 
     public AuthenticateRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
@@ -26,7 +26,7 @@ public class AuthenticateRestClientImpl extends AbstractRestClient implements Au
         TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
         HttpResponse<ResultDTO> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(createUrl("/auth"), typeReference, usernamePasswordDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/auth"), usernamePasswordDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -39,7 +39,7 @@ public class AuthenticateRestClientImpl extends AbstractRestClient implements Au
         TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
         HttpResponse<Void> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/logout"), typeReference)
+                new HttpRequestImpl(createUrl("/logout")), typeReference
         );
 
         checkResponse(httpResponse);

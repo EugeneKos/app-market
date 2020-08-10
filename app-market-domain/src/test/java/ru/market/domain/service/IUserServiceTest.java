@@ -21,7 +21,7 @@ import ru.market.dto.user.UserUsernameDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DomainTestConfiguration.class)
-@TestPropertySource(locations = "classpath:database-test-config.properties")
+@TestPropertySource(locations = "classpath:app-market-test.properties")
 public class IUserServiceTest {
     @Autowired
     private IUserService userService;

@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.data.session.api.SessionDataManager;
@@ -21,6 +24,8 @@ import java.util.Set;
 
 @UrlFilter(urlPatterns = {"/cost", "/cost/*"})
 public class CostRequestFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CostRequestFilter.class);
+
     private SessionDataManager sessionDataManager;
     private ICostService costService;
     private ICostLimitService costLimitService;
@@ -43,8 +48,14 @@ public class CostRequestFilter implements AuthFilter {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allCostLimitId = costLimitService.getAllIdByPersonId(personId);
+        LOGGER.debug("Id лимитов на затраты: {} полученные по personId = {}", allCostLimitId, personId);
+
         Set<Long> allIdByCostLimitIds = costService.getAllIdByCostLimitIds(allCostLimitId);
+        LOGGER.debug("Id затрат: {} полученные по всем id лимитов = {} и personId = {}",
+                allIdByCostLimitIds, allCostLimitId, personId);
+
         Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
+        LOGGER.debug("Id денежных счетов: {} полученные по personId = {}", allMoneyAccountId, personId);
 
         String requestMethod = request.getMethod();
 
@@ -65,15 +76,21 @@ public class CostRequestFilter implements AuthFilter {
             }
             case "GET":{
                 isWell = Utils.checkIdInServletPath(request.getServletPath(), "cost/(\\S+)/.+", allCostLimitId);
+                LOGGER.debug("[GET request] Servlet path: [{}] CostLimitIds = {} personId = {}",
+                        request.getServletPath(), allCostLimitId, personId);
                 break;
             }
             case "DELETE":{
                 isWell = Utils.checkIdInServletPath(request.getServletPath(), "cost/(\\S+)", allIdByCostLimitIds);
+                LOGGER.debug("[DELETE request] Servlet path: [{}] CostIds = {} personId = {}",
+                        request.getServletPath(), allIdByCostLimitIds, personId);
                 break;
             }
         }
 
         if(costDTO == null && ("PUT".equals(requestMethod) || "POST".equals(requestMethod))){
+            LOGGER.error("Данные по затрате не заданы. Request method = {} . Запрос: [{}] не прошел валидацию",
+                    requestMethod, request.getServletPath());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
             return;
         } else if(costDTO != null){
@@ -83,6 +100,7 @@ public class CostRequestFilter implements AuthFilter {
         if(isWell){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Запрос: [{}] не прошел валидацию", request.getServletPath());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
     }
@@ -92,6 +110,7 @@ public class CostRequestFilter implements AuthFilter {
 
         Long costLimitId = costDTO.getCostLimitId();
         Long moneyAccountId = costDTO.getMoneyAccountId();
+        LOGGER.debug("CostDTO = {} . CostLimitIds = {} . MoneyAccountIds = {}", costDTO, allCostLimitId, allMoneyAccountId);
 
         if(!allCostLimitId.contains(costLimitId)){
             return false;

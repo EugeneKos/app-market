@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.ExcludeRequestMethod;
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
@@ -19,6 +22,8 @@ import java.util.Set;
                 methods = {ExcludeRequestMethod.Method.PUT, ExcludeRequestMethod.Method.GET})}
 )
 public class MoneyAccountRequestFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MoneyAccountRequestFilter.class);
+
     private SessionDataManager sessionDataManager;
     private IMoneyAccountService moneyAccountService;
 
@@ -33,29 +38,24 @@ public class MoneyAccountRequestFilter implements AuthFilter {
 
         Long personId = sessionDataManager.getUserData().getPersonId();
         Set<Long> allMoneyAccountId = moneyAccountService.getAllIdByPersonId(personId);
+        LOGGER.debug("Id денежных счетов: {} полученные по personId = {}", allMoneyAccountId, personId);
 
-        boolean isWell;
+        boolean isWell = false;
 
-        switch (request.getMethod()){
-            case "GET":{
-                isWell = Utils.checkIdInServletPath(
-                        request.getServletPath(), "money-account/(\\S+)", allMoneyAccountId
-                );
-                break;
-            }
-            case "DELETE":{
-                isWell = Utils.checkIdInServletPath(
-                        request.getServletPath(), "money-account/(\\S+)", allMoneyAccountId
-                );
-                break;
-            }
-            default:
-                isWell = false;
+        String requestMethod = request.getMethod();
+
+        if("GET".equals(requestMethod) || "DELETE".equals(requestMethod)){
+            isWell = Utils.checkIdInServletPath(
+                    request.getServletPath(), "money-account/(\\S+)", allMoneyAccountId
+            );
+            LOGGER.debug("[{} request] Servlet path: [{}] MoneyAccountIds = {} personId = {}",
+                    requestMethod, request.getServletPath(), allMoneyAccountId, personId);
         }
 
         if(isWell){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Запрос: [{}] не прошел валидацию", request.getServletPath());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
 

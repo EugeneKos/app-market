@@ -1,8 +1,13 @@
 package ru.market.data.session.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 
 final class SessionContext {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionContext.class);
+
     private SessionContext(){}
 
     static <T> void setSessionAttribute(SessionAttributeNames attribute, T object){
@@ -31,11 +36,15 @@ final class SessionContext {
 
     static void invalidateSession(){
         HttpSession currentSession = SessionContextHolder.getCurrentSession();
+        LOGGER.info("Инвалидация сессии. Session id = {}", currentSession.getId());
         currentSession.invalidate();
     }
 
     static void setMaxInactiveInterval(int interval){
         HttpSession currentSession = SessionContextHolder.getCurrentSession();
+        LOGGER.info("Установка временного интервала активности сессии. Session id = {}, interval = {}",
+                currentSession.getId(), interval
+        );
         currentSession.setMaxInactiveInterval(interval);
     }
 }

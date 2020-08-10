@@ -16,7 +16,7 @@ import ru.market.dto.user.UserDTO;
 import ru.market.dto.user.UserPasswordDTO;
 import ru.market.dto.user.UserUsernameDTO;
 
-public class UserRestClientImpl extends AbstractRestClient implements UserRestClient {
+public class UserRestClientImpl extends CommonRestClient implements UserRestClient {
     private HttpConnection httpConnection;
 
     public UserRestClientImpl(HttpConnection httpConnection, UrlProvider urlProvider) {
@@ -29,7 +29,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
         TypeReference<UserDTO> typeReference = new TypeReference<UserDTO>() {};
 
         HttpResponse<UserDTO> httpResponse = httpConnection.put(
-                new HttpRequestWithBodyImpl<>(createUrl("/registration"), typeReference, registrationDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/registration"), registrationDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -42,7 +42,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
         TypeReference<UserDTO> typeReference = new TypeReference<UserDTO>() {};
 
         HttpResponse<UserDTO> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(createUrl("/change/username"), typeReference, usernameDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/change/username"), usernameDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -55,7 +55,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
         TypeReference<ResultDTO> typeReference = new TypeReference<ResultDTO>() {};
 
         HttpResponse<ResultDTO> httpResponse = httpConnection.post(
-                new HttpRequestWithBodyImpl<>(createUrl("/change/password"), typeReference, userPasswordDTO)
+                new HttpRequestWithBodyImpl<>(createUrl("/change/password"), userPasswordDTO), typeReference
         );
 
         checkResponse(httpResponse);
@@ -68,7 +68,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
         TypeReference<UserDTO> typeReference = new TypeReference<UserDTO>() {};
 
         HttpResponse<UserDTO> httpResponse = httpConnection.get(
-                new HttpRequestImpl<>(createUrl("/user"), typeReference)
+                new HttpRequestImpl(createUrl("/user")), typeReference
         );
 
         checkResponse(httpResponse);
@@ -81,7 +81,7 @@ public class UserRestClientImpl extends AbstractRestClient implements UserRestCl
         TypeReference<Void> typeReference = new TypeReference<Void>() {};
 
         HttpResponse<Void> httpResponse = httpConnection.delete(
-                new HttpRequestImpl<>(createUrl("/user"), typeReference)
+                new HttpRequestImpl(createUrl("/user")), typeReference
         );
 
         checkResponse(httpResponse);

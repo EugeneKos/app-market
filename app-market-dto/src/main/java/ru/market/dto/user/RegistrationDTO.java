@@ -17,4 +17,15 @@ public class RegistrationDTO {
     private String middleName;
     private String username;
     private String password;
+
+    @Override
+    public String toString() {
+        return "RegistrationDTO{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + ((password == null || password.isEmpty()) ? "[]" : "[********]") + '\'' +
+                '}';
+    }
 }

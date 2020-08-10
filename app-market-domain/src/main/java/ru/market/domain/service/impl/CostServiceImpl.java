@@ -1,5 +1,7 @@
 package ru.market.domain.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.market.domain.converter.CostConverter;
@@ -7,6 +9,7 @@ import ru.market.domain.converter.DateTimeConverter;
 import ru.market.domain.data.Cost;
 import ru.market.domain.data.CostLimit;
 import ru.market.domain.data.Operation;
+import ru.market.domain.exception.BadRequestException;
 import ru.market.domain.exception.NotFoundException;
 import ru.market.domain.repository.CostRepository;
 import ru.market.domain.service.ICostLimitService;
@@ -24,6 +27,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CostServiceImpl implements ICostService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CostServiceImpl.class);
+
     private CostRepository costRepository;
     private CostConverter costConverter;
 
@@ -44,8 +49,9 @@ public class CostServiceImpl implements ICostService {
     @Transactional
     @Override
     public CostDTO create(CostNoIdDTO costNoIdDTO) {
+        LOGGER.info("Создание затраты");
         if(costNoIdDTO == null){
-            return null;
+            throw new BadRequestException("Данные для создания затраты не заданы");
         }
 
         Cost cost = costConverter.convertToEntity(costNoIdDTO);
@@ -65,6 +71,7 @@ public class CostServiceImpl implements ICostService {
     private Operation createOperation(CostNoIdDTO costNoIdDTO){
         OperationEnrollDebitDTO enrollDebitDTO = costConverter.convertToOperationEnrollDebitDTO(costNoIdDTO);
 
+        LOGGER.debug("Создание DTO операции. OperationEnrollDebitDTO = {}", enrollDebitDTO);
         OperationDTO operationDTO = operationService.debit(enrollDebitDTO);
 
         return operationService.getOperationById(operationDTO.getId());
@@ -73,8 +80,9 @@ public class CostServiceImpl implements ICostService {
     @Transactional
     @Override
     public CostDTO update(CostDTO costDTO) {
+        LOGGER.info("Изменение затраты");
         if(costDTO == null){
-            return null;
+            throw new BadRequestException("Данные для изменения затраты не заданы");
         }
 
         Cost gettingById = getCostById(costDTO.getId());
@@ -84,6 +92,7 @@ public class CostServiceImpl implements ICostService {
         validator.validate(cost);
 
         if(isRequiredRollback(costDTO, gettingById)){
+            LOGGER.debug("Требуется откат операции для изменения затраты. CostId = {}", costDTO.getId());
             operationService.rollback(gettingById.getOperation());
             return create(costDTO);
         }
@@ -117,6 +126,7 @@ public class CostServiceImpl implements ICostService {
     }
 
     private Cost getCostById(Long id){
+        LOGGER.info("Получение затраты по id = {}", id);
         return costRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Cost with id %d not found", id))
         );
@@ -124,6 +134,7 @@ public class CostServiceImpl implements ICostService {
 
     @Override
     public Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, String dateStr) {
+        LOGGER.info("Получение всех затрат по id лимита = {} и по дате = {}", costLimitId, dateStr);
         return costRepository.findAllByCostLimitIdAndDate(costLimitId, DateTimeConverter.convertToLocalDate(dateStr))
                 .stream()
                 .map(costConverter::convertToDTO)
@@ -132,12 +143,14 @@ public class CostServiceImpl implements ICostService {
 
     @Override
     public Set<Long> getAllIdByCostLimitIds(Set<Long> costLimitIds) {
+        LOGGER.info("Получение всех id затрат по всем id лимитов. CostLimitIds = {}", costLimitIds);
         return costRepository.findAllIdByCostLimitIds(costLimitIds);
     }
 
     @Transactional
     @Override
     public void deleteById(Long id) {
+        LOGGER.info("Удаление затраты по id = {}", id);
         Cost cost = getCostById(id);
         costRepository.deleteById(id);
         operationService.rollback(cost.getOperation());

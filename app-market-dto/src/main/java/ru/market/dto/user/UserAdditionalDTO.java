@@ -18,4 +18,14 @@ public class UserAdditionalDTO extends UserDTO {
     private UserStatus status;
     private LocalDateTime timestampStatus;
     private Integer passwordAttemptCount;
+
+    @Override
+    public String toString() {
+        return "UserAdditionalDTO{" +
+                "password='" + ((password == null || password.isEmpty()) ? "[]" : "[********]") + '\'' +
+                ", status=" + status +
+                ", timestampStatus=" + timestampStatus +
+                ", passwordAttemptCount=" + passwordAttemptCount +
+                '}';
+    }
 }

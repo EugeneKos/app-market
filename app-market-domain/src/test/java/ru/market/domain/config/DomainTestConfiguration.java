@@ -17,7 +17,10 @@ import ru.market.dto.user.UserDTO;
 import javax.annotation.PostConstruct;
 
 @Configuration
-@Import(value = DomainConfiguration.class)
+@Import({
+        DataConfiguration.class, ServiceConfiguration.class, ConverterConfiguration.class,
+        ValidatorConfiguration.class
+})
 public class DomainTestConfiguration {
     @Autowired
     private IUserService userService;
@@ -30,11 +33,11 @@ public class DomainTestConfiguration {
     @PostConstruct
     public void initialize(){
         RegistrationDTO registrationDTO = RegistrationDTO.builder()
-                .firstName("PetrovTest")
-                .lastName("PetrTest")
-                .middleName("PetrovichTest")
-                .username("petrov123Test")
-                .password("petrovP123Test")
+                .firstName("FirstNameTest")
+                .lastName("LastNameTest")
+                .middleName("MiddleNameTest")
+                .username("usernameTest")
+                .password("password123Test")
                 .build();
 
         UserDTO userDTO = userService.registration(registrationDTO);

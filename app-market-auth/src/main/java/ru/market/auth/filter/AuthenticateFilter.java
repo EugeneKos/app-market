@@ -1,5 +1,8 @@
 package ru.market.auth.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.auth.annotation.UrlFilter;
 import ru.market.auth.api.AuthFilterChain;
 import ru.market.auth.api.AuthenticateService;
@@ -16,6 +19,8 @@ import java.io.IOException;
         "/cost-limit*", "/cost*"
 })
 public class AuthenticateFilter implements AuthFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateFilter.class);
+
     private AuthenticateService authenticateService;
 
     public AuthenticateFilter(AuthenticateService authenticateService) {
@@ -29,6 +34,7 @@ public class AuthenticateFilter implements AuthFilter {
         if(authenticateService.isAuthenticate()){
             authChain.doFilter(request, response, filterChain);
         } else {
+            LOGGER.error("Ошибка аутентификации пользователя");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
     }

@@ -19,6 +19,18 @@ import ru.market.cli.interactive.command.money.InteractiveCreateMoneyAccountComm
 import ru.market.cli.interactive.command.money.InteractiveDeleteMoneyAccountCommand;
 import ru.market.cli.interactive.command.money.InteractiveGetAllMoneyAccountCommand;
 import ru.market.cli.interactive.command.money.InteractiveGetMoneyAccountCommand;
+import ru.market.cli.interactive.command.operation.InteractiveDebitOperationCommand;
+import ru.market.cli.interactive.command.operation.InteractiveEnrollOperationCommand;
+import ru.market.cli.interactive.command.operation.InteractiveGetAllOperationByFilterCommand;
+import ru.market.cli.interactive.command.operation.InteractiveGetAllOperationCommand;
+import ru.market.cli.interactive.command.operation.InteractiveTransferOperationCommand;
+import ru.market.cli.interactive.command.person.InteractiveCurrentPersonCommand;
+import ru.market.cli.interactive.command.person.InteractiveUpdatePersonCommand;
+import ru.market.cli.interactive.command.user.InteractiveChangePasswordUserCommand;
+import ru.market.cli.interactive.command.user.InteractiveChangeUsernameUserCommand;
+import ru.market.cli.interactive.command.user.InteractiveDeleteUserCommand;
+import ru.market.cli.interactive.command.user.InteractiveGetUserCommand;
+import ru.market.cli.interactive.command.user.InteractiveRegistrationUserCommand;
 import ru.market.cli.interactive.element.Menu;
 import ru.market.cli.interactive.element.impl.MenuImpl;
 import ru.market.cli.interactive.helper.command.CommandHelper;
@@ -88,14 +100,59 @@ public class InteractiveCLIConfiguration {
     }
 
     @Bean
+    public Menu personMenu(InteractiveCurrentPersonCommand interactiveCurrentPersonCommand,
+                           InteractiveUpdatePersonCommand interactiveUpdatePersonCommand){
+
+        MenuImpl personMenu = new MenuImpl("Персональная группа");
+        personMenu.setElements(new ArrayList<>(Arrays.asList(
+                interactiveCurrentPersonCommand, interactiveUpdatePersonCommand
+        )));
+        return personMenu;
+    }
+
+    @Bean
+    public Menu userMenu(InteractiveChangePasswordUserCommand interactiveChangePasswordUserCommand,
+                         InteractiveChangeUsernameUserCommand interactiveChangeUsernameUserCommand,
+                         InteractiveDeleteUserCommand interactiveDeleteUserCommand,
+                         InteractiveGetUserCommand interactiveGetUserCommand,
+                         InteractiveRegistrationUserCommand interactiveRegistrationUserCommand){
+
+        MenuImpl userMenu = new MenuImpl("Пользовательская группа");
+        userMenu.setElements(new ArrayList<>(Arrays.asList(
+                interactiveChangePasswordUserCommand, interactiveChangeUsernameUserCommand,
+                interactiveDeleteUserCommand, interactiveGetUserCommand, interactiveRegistrationUserCommand
+        )));
+        return userMenu;
+    }
+
+    @Bean
+    public Menu operationMenu(InteractiveDebitOperationCommand interactiveDebitOperationCommand,
+                              InteractiveEnrollOperationCommand interactiveEnrollOperationCommand,
+                              InteractiveGetAllOperationByFilterCommand interactiveGetAllOperationByFilterCommand,
+                              InteractiveGetAllOperationCommand interactiveGetAllOperationCommand,
+                              InteractiveTransferOperationCommand interactiveTransferOperationCommand){
+
+        MenuImpl operationMenu = new MenuImpl("Операции по денежным счетам");
+        operationMenu.setElements(new ArrayList<>(Arrays.asList(
+                interactiveDebitOperationCommand, interactiveEnrollOperationCommand,
+                interactiveGetAllOperationByFilterCommand, interactiveGetAllOperationCommand,
+                interactiveTransferOperationCommand
+        )));
+        return operationMenu;
+    }
+
+    @Bean
     public Menu mainMenu(@Qualifier("authenticateMenu") Menu authenticateMenu,
+                         @Qualifier("userMenu") Menu userMenu,
+                         @Qualifier("personMenu") Menu personMenu,
                          @Qualifier("moneyAccountMenu") Menu moneyAccountMenu,
+                         @Qualifier("operationMenu") Menu operationMenu,
                          @Qualifier("costLimitMenu") Menu costLimitMenu,
                          @Qualifier("costMenu") Menu costMenu){
 
         MenuImpl mainMenu = new MenuImpl("Main");
         mainMenu.setElements(new ArrayList<>(Arrays.asList(
-                authenticateMenu, moneyAccountMenu, costLimitMenu, costMenu
+                authenticateMenu, userMenu, personMenu, moneyAccountMenu, operationMenu, costLimitMenu, costMenu
         )));
         mainMenu.setBackName("Выход");
         return mainMenu;

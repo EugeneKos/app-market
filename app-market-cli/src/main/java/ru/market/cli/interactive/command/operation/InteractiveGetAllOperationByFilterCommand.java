@@ -3,6 +3,7 @@ package ru.market.cli.interactive.command.operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.command.InteractiveCommandUtils;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
@@ -16,7 +17,6 @@ import ru.market.dto.operation.OperationFilterDTO;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 
 @Service
@@ -41,15 +41,7 @@ public class InteractiveGetAllOperationByFilterCommand extends InteractiveCommon
     public void perform(BufferedReader reader) {
         TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 
-        boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
-                reader,
-                Collections.singletonList(
-                        new CommandDetail<>("Введите id денежного счета", true,
-                                (object, param) -> object.setTypeValue(Long.parseLong(param))
-                        )
-                ),
-                typeWrapper
-        );
+        boolean isInterrupted = InteractiveCommandUtils.fillMoneyAccountIdArgument(reader, commandHelper, typeWrapper);
 
         if(isInterrupted){
             return;

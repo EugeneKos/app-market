@@ -3,9 +3,8 @@ package ru.market.cli.interactive.command.limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.command.InteractiveCommandUtils;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.TypeWrapper;
-import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
 import ru.market.cli.printer.PrinterUtils;
@@ -35,40 +34,15 @@ public class InteractiveGetCostLimitInfoCommand extends InteractiveCommonCommand
 
     @Override
     public void perform(BufferedReader reader) {
-        TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
-
-        boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
+        InteractiveCommandUtils.performCommandWithCostLimitIdAndDateArguments(
                 reader,
-                Collections.singletonList(
-                        new CommandDetail<>("Введите id лимита", true,
-                                (object, param) -> object.setTypeValue(Long.parseLong(param))
-                        )
-                ),
-                typeWrapperIdCostLimit
+                commandHelper,
+                (typeWrapperCostLimitId, typeWrapperDate) -> {
+                    CostLimitInfoDTO costLimitInfo = costLimitRestClient.getCostLimitInfoById(
+                            typeWrapperCostLimitId.getTypeValue(), typeWrapperDate.getTypeValue()
+                    );
+                    printer.printTable(PrinterUtils.createCostLimitInfosTableToPrint(Collections.singletonList(costLimitInfo)));
+                }
         );
-
-        if(isInterrupted){
-            return;
-        }
-
-        TypeWrapper<String> typeWrapperDate = new TypeWrapper<>();
-
-        isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
-                reader,
-                Collections.singletonList(
-                        new CommandDetail<>("Введите дату", true, TypeWrapper::setTypeValue)
-                ),
-                typeWrapperDate
-        );
-
-        if(isInterrupted){
-            return;
-        }
-
-        CostLimitInfoDTO costLimitInfo = costLimitRestClient.getCostLimitInfoById(
-                typeWrapperIdCostLimit.getTypeValue(), typeWrapperDate.getTypeValue()
-        );
-
-        printer.printTable(PrinterUtils.createCostLimitInfosTableToPrint(Collections.singletonList(costLimitInfo)));
     }
 }

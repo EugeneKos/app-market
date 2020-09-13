@@ -3,6 +3,7 @@ package ru.market.cli.interactive.command.limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.command.InteractiveCommandUtils;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
@@ -32,15 +33,7 @@ public class InteractiveDeleteCostLimitCommand extends InteractiveCommonCommand 
     public void perform(BufferedReader reader) {
         TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
 
-        boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
-                reader,
-                Collections.singletonList(
-                        new CommandDetail<>("Введите id лимита", true,
-                                (object, param) -> object.setTypeValue(Long.parseLong(param))
-                        )
-                ),
-                typeWrapperIdCostLimit
-        );
+        boolean isInterrupted = InteractiveCommandUtils.fillCostLimitIdArgument(reader, commandHelper, typeWrapperIdCostLimit);
 
         if(isInterrupted){
             return;

@@ -3,14 +3,13 @@ package ru.market.cli.interactive.command.money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.command.InteractiveCommandUtils;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.TypeWrapper;
-import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.client.rest.MoneyAccountRestClient;
 
 import java.io.BufferedReader;
-import java.util.Collections;
 
 @Service
 public class InteractiveDeleteMoneyAccountCommand extends InteractiveCommonCommand {
@@ -32,15 +31,7 @@ public class InteractiveDeleteMoneyAccountCommand extends InteractiveCommonComma
     public void perform(BufferedReader reader) {
         TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 
-        boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
-                reader,
-                Collections.singletonList(
-                        new CommandDetail<>("Введите id денежного счета", true,
-                                (object, param) -> object.setTypeValue(Long.parseLong(param))
-                        )
-                ),
-                typeWrapper
-        );
+        boolean isInterrupted = InteractiveCommandUtils.fillMoneyAccountIdArgument(reader, commandHelper, typeWrapper);
 
         if(isInterrupted){
             return;

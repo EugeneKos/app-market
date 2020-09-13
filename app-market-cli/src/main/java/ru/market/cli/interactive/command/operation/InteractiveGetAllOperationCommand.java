@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
@@ -18,7 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 @Service
-public class InteractiveGetAllOperationCommand implements Command {
+public class InteractiveGetAllOperationCommand extends InteractiveCommonCommand {
     private OperationRestClient operationRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -36,7 +35,7 @@ public class InteractiveGetAllOperationCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -50,7 +49,6 @@ public class InteractiveGetAllOperationCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
@@ -59,6 +57,5 @@ public class InteractiveGetAllOperationCommand implements Command {
         );
 
         printer.printTable(PrinterUtils.createOperationsTableToPrint(operations));
-        menu.back(reader);
     }
 }

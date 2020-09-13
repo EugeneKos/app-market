@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.cost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
@@ -14,7 +13,7 @@ import java.io.BufferedReader;
 import java.util.Collections;
 
 @Service
-public class InteractiveDeleteCostCommand implements Command {
+public class InteractiveDeleteCostCommand extends InteractiveCommonCommand {
     private CostRestClient costRestClient;
     private CommandHelper commandHelper;
 
@@ -30,7 +29,7 @@ public class InteractiveDeleteCostCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -45,11 +44,9 @@ public class InteractiveDeleteCostCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         costRestClient.deleteById(Long.parseLong(commandArgumentWrapper.getCommandArgument("idCost")));
-        menu.back(reader);
     }
 }

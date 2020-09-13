@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveGetCostLimitInfoCommand implements Command {
+public class InteractiveGetCostLimitInfoCommand extends InteractiveCommonCommand {
     private CostLimitRestClient costLimitRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -37,7 +36,7 @@ public class InteractiveGetCostLimitInfoCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -54,7 +53,6 @@ public class InteractiveGetCostLimitInfoCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
@@ -64,6 +62,5 @@ public class InteractiveGetCostLimitInfoCommand implements Command {
         );
 
         printer.printTable(PrinterUtils.createCostLimitInfosTableToPrint(Collections.singletonList(costLimitInfo)));
-        menu.back(reader);
     }
 }

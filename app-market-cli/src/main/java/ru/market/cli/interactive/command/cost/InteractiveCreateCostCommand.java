@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.cost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveCreateCostCommand implements Command {
+public class InteractiveCreateCostCommand extends InteractiveCommonCommand {
     private CostRestClient costRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -37,7 +36,7 @@ public class InteractiveCreateCostCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         CostNoIdDTO costNoIdDTO = CostNoIdDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -70,13 +69,10 @@ public class InteractiveCreateCostCommand implements Command {
                 costNoIdDTO);
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         CostDTO costDTO = costRestClient.create(costNoIdDTO);
         printer.printTable(PrinterUtils.createCostsTableToPrint(Collections.singletonList(costDTO)));
-
-        menu.back(reader);
     }
 }

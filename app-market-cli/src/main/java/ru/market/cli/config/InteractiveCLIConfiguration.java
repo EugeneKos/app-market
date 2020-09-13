@@ -103,7 +103,7 @@ public class InteractiveCLIConfiguration {
     public Menu personMenu(InteractiveCurrentPersonCommand interactiveCurrentPersonCommand,
                            InteractiveUpdatePersonCommand interactiveUpdatePersonCommand){
 
-        MenuImpl personMenu = new MenuImpl("Персональная группа");
+        MenuImpl personMenu = new MenuImpl("Профиль");
         personMenu.setElements(new ArrayList<>(Arrays.asList(
                 interactiveCurrentPersonCommand, interactiveUpdatePersonCommand
         )));
@@ -117,7 +117,7 @@ public class InteractiveCLIConfiguration {
                          InteractiveGetUserCommand interactiveGetUserCommand,
                          InteractiveRegistrationUserCommand interactiveRegistrationUserCommand){
 
-        MenuImpl userMenu = new MenuImpl("Пользовательская группа");
+        MenuImpl userMenu = new MenuImpl("Пользователь");
         userMenu.setElements(new ArrayList<>(Arrays.asList(
                 interactiveChangePasswordUserCommand, interactiveChangeUsernameUserCommand,
                 interactiveDeleteUserCommand, interactiveGetUserCommand, interactiveRegistrationUserCommand

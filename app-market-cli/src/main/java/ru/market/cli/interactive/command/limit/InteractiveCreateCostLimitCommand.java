@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveCreateCostLimitCommand implements Command {
+public class InteractiveCreateCostLimitCommand extends InteractiveCommonCommand {
     private CostLimitRestClient costLimitRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -37,7 +36,7 @@ public class InteractiveCreateCostLimitCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         CostLimitNoIdDTO costLimitNoIdDTO = CostLimitNoIdDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -52,13 +51,10 @@ public class InteractiveCreateCostLimitCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         CostLimitDTO costLimitDTO = costLimitRestClient.create(costLimitNoIdDTO);
         printer.printTable(PrinterUtils.createCostLimitsTableToPrint(Collections.singletonList(costLimitDTO)));
-
-        menu.back(reader);
     }
 }

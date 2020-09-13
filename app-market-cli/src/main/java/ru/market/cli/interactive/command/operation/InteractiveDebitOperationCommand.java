@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveDebitOperationCommand implements Command {
+public class InteractiveDebitOperationCommand extends InteractiveCommonCommand {
     private OperationRestClient operationRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -37,7 +36,7 @@ public class InteractiveDebitOperationCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         OperationEnrollDebitDTO enrollDebitDTO = OperationEnrollDebitDTO.operationEnrollBuilder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -63,12 +62,10 @@ public class InteractiveDebitOperationCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         OperationDTO operation = operationRestClient.debit(enrollDebitDTO);
         printer.printTable(PrinterUtils.createOperationsTableToPrint(Collections.singletonList(operation)));
-        menu.back(reader);
     }
 }

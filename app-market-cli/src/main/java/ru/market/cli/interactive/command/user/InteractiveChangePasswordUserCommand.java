@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveChangePasswordUserCommand implements Command {
+public class InteractiveChangePasswordUserCommand extends InteractiveCommonCommand {
     private UserRestClient userRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -37,7 +36,7 @@ public class InteractiveChangePasswordUserCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         UserPasswordDTO userPasswordDTO = UserPasswordDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -50,13 +49,10 @@ public class InteractiveChangePasswordUserCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         ResultDTO result = userRestClient.changePassword(userPasswordDTO);
         printer.printTable(PrinterUtils.createResultsTableToPrint(Collections.singletonList(result)));
-
-        menu.back(reader);
     }
 }

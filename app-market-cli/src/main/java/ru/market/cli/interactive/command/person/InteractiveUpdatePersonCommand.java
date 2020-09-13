@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Service
-public class InteractiveUpdatePersonCommand implements Command {
+public class InteractiveUpdatePersonCommand extends InteractiveCommonCommand {
     private PersonRestClient personRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
@@ -32,11 +31,11 @@ public class InteractiveUpdatePersonCommand implements Command {
 
     @Override
     public String name() {
-        return "Обновить информацию о пользователе";
+        return "Обновить информацию профиля";
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         PersonDTO personDTO = PersonDTO.personBuilder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -53,12 +52,10 @@ public class InteractiveUpdatePersonCommand implements Command {
         );
 
         if(isInterrupted){
-            menu.back(reader);
             return;
         }
 
         PersonDTO updated = personRestClient.update(personDTO);
         printer.printTable(PrinterUtils.createPersonsTableToPrint(Collections.singletonList(updated)));
-        menu.back(reader);
     }
 }

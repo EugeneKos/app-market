@@ -3,8 +3,7 @@ package ru.market.cli.interactive.command.limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.printer.Printer;
 import ru.market.cli.printer.PrinterUtils;
 import ru.market.client.rest.CostLimitRestClient;
@@ -14,7 +13,7 @@ import java.io.BufferedReader;
 import java.util.Set;
 
 @Service
-public class InteractiveGetAllCostLimitCommand implements Command {
+public class InteractiveGetAllCostLimitCommand extends InteractiveCommonCommand {
     private CostLimitRestClient costLimitRestClient;
     private Printer printer;
 
@@ -30,9 +29,8 @@ public class InteractiveGetAllCostLimitCommand implements Command {
     }
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public void perform(BufferedReader reader) {
         Set<CostLimitDTO> costLimits = costLimitRestClient.getAll();
         printer.printTable(PrinterUtils.createCostLimitsTableToPrint(costLimits));
-        menu.back(reader);
     }
 }

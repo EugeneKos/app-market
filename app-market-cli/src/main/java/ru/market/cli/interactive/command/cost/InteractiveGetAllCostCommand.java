@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.printer.Printer;
 import ru.market.cli.printer.PrinterUtils;
 import ru.market.client.rest.CostRestClient;
 import ru.market.dto.cost.CostDTO;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 @Service
@@ -37,29 +36,37 @@ public class InteractiveGetAllCostCommand extends InteractiveCommonCommand {
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
-                new ArrayList<>(Arrays.asList(
+                Collections.singletonList(
                         new CommandDetail<>("Введите id лимита", true,
-                                (object, param) -> object.addCommandArgument("idCostLimit", param)
-                        ),
-                        new CommandDetail<>("Введите дату", true,
-                                (object, param) -> object.addCommandArgument("dateCosts", param)
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
-                )),
-                commandArgumentWrapper
+                ),
+                typeWrapperIdCostLimit
         );
 
         if(isInterrupted){
             return;
         }
 
-        Set<CostDTO> costs = costRestClient.getAllByCostLimitIdAndDate(
-                Long.parseLong(commandArgumentWrapper.getCommandArgument("idCostLimit")),
-                commandArgumentWrapper.getCommandArgument("dateCosts")
+        TypeWrapper<String> typeWrapperDate = new TypeWrapper<>();
+
+        isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
+                reader,
+                Collections.singletonList(
+                        new CommandDetail<>("Введите дату", true, TypeWrapper::setTypeValue)
+                ),
+                typeWrapperDate
         );
+
+        if(isInterrupted){
+            return;
+        }
+
+        Set<CostDTO> costs = costRestClient.getAllByCostLimitIdAndDate(typeWrapperIdCostLimit.getTypeValue(), typeWrapperDate.getTypeValue());
         printer.printTable(PrinterUtils.createCostsTableToPrint(costs));
     }
 }

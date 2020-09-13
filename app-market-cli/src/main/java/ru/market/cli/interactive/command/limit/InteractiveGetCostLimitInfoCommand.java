@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -13,8 +13,6 @@ import ru.market.client.rest.CostLimitRestClient;
 import ru.market.dto.limit.CostLimitInfoDTO;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 @Service
@@ -37,19 +35,30 @@ public class InteractiveGetCostLimitInfoCommand extends InteractiveCommonCommand
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
-                new ArrayList<>(Arrays.asList(
+                Collections.singletonList(
                         new CommandDetail<>("Введите id лимита", true,
-                                (object, param) -> object.addCommandArgument("idCostLimit", param)
-                        ),
-                        new CommandDetail<>("Введите дату", true,
-                                (object, param) -> object.addCommandArgument("date", param)
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
-                )),
-                commandArgumentWrapper
+                ),
+                typeWrapperIdCostLimit
+        );
+
+        if(isInterrupted){
+            return;
+        }
+
+        TypeWrapper<String> typeWrapperDate = new TypeWrapper<>();
+
+        isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
+                reader,
+                Collections.singletonList(
+                        new CommandDetail<>("Введите дату", true, TypeWrapper::setTypeValue)
+                ),
+                typeWrapperDate
         );
 
         if(isInterrupted){
@@ -57,8 +66,7 @@ public class InteractiveGetCostLimitInfoCommand extends InteractiveCommonCommand
         }
 
         CostLimitInfoDTO costLimitInfo = costLimitRestClient.getCostLimitInfoById(
-                Long.parseLong(commandArgumentWrapper.getCommandArgument("idCostLimit")),
-                commandArgumentWrapper.getCommandArgument("date")
+                typeWrapperIdCostLimit.getTypeValue(), typeWrapperDate.getTypeValue()
         );
 
         printer.printTable(PrinterUtils.createCostLimitInfosTableToPrint(Collections.singletonList(costLimitInfo)));

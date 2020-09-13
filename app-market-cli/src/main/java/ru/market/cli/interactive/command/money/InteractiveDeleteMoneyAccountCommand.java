@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.client.rest.MoneyAccountRestClient;
@@ -30,24 +30,22 @@ public class InteractiveDeleteMoneyAccountCommand extends InteractiveCommonComma
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
                 Collections.singletonList(
                         new CommandDetail<>("Введите id денежного счета", true,
-                                (object, param) -> object.addCommandArgument("idMoneyForDelete", param)
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
                 ),
-                commandArgumentWrapper
+                typeWrapper
         );
 
         if(isInterrupted){
             return;
         }
 
-        moneyAccountRestClient.deleteById(
-                Long.parseLong(commandArgumentWrapper.getCommandArgument("idMoneyForDelete"))
-        );
+        moneyAccountRestClient.deleteById(typeWrapper.getTypeValue());
     }
 }

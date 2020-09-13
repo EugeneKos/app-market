@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -39,16 +39,16 @@ public class InteractiveGetAllOperationByFilterCommand extends InteractiveCommon
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
                 Collections.singletonList(
                         new CommandDetail<>("Введите id денежного счета", true,
-                                (object, param) -> object.addCommandArgument("moneyAccountId", param)
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
                 ),
-                commandArgumentWrapper
+                typeWrapper
         );
 
         if(isInterrupted){
@@ -80,10 +80,7 @@ public class InteractiveGetAllOperationByFilterCommand extends InteractiveCommon
             return;
         }
 
-        Set<OperationDTO> operations = operationRestClient.getAllByMoneyAccountIdAndFilter(
-                Long.parseLong(commandArgumentWrapper.getCommandArgument("moneyAccountId")), filterDTO
-        );
-
+        Set<OperationDTO> operations = operationRestClient.getAllByMoneyAccountIdAndFilter(typeWrapper.getTypeValue(), filterDTO);
         printer.printTable(PrinterUtils.createOperationsTableToPrint(operations));
     }
 }

@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.client.rest.CostLimitRestClient;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 @Service
 public class InteractiveDeleteCostLimitCommand extends InteractiveCommonCommand {
@@ -31,29 +30,38 @@ public class InteractiveDeleteCostLimitCommand extends InteractiveCommonCommand 
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
-                new ArrayList<>(Arrays.asList(
+                Collections.singletonList(
                         new CommandDetail<>("Введите id лимита", true,
-                                (object, param) -> object.addCommandArgument("idCostLimit", param)
-                        ),
-                        new CommandDetail<>("Введите признак отката операций (true/false)", true,
-                                (object, param) -> object.addCommandArgument("rollbackOperations", param)
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
-                )),
-                commandArgumentWrapper
+                ),
+                typeWrapperIdCostLimit
         );
-
 
         if(isInterrupted){
             return;
         }
 
-        costLimitRestClient.deleteById(
-                Long.parseLong(commandArgumentWrapper.getCommandArgument("idCostLimit")),
-                Boolean.parseBoolean(commandArgumentWrapper.getCommandArgument("rollbackOperations"))
+        TypeWrapper<Boolean> typeWrapperRollbackOperation = new TypeWrapper<>();
+
+        isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
+                reader,
+                Collections.singletonList(
+                        new CommandDetail<>("Введите признак отката операций (true/false)", true,
+                                (object, param) -> object.setTypeValue(Boolean.parseBoolean(param))
+                        )
+                ),
+                typeWrapperRollbackOperation
         );
+
+        if(isInterrupted){
+            return;
+        }
+
+        costLimitRestClient.deleteById(typeWrapperIdCostLimit.getTypeValue(), typeWrapperRollbackOperation.getTypeValue());
     }
 }

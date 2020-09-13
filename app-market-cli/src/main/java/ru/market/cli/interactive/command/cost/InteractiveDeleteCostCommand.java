@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
-import ru.market.cli.interactive.helper.command.CommandArgumentWrapper;
+import ru.market.cli.interactive.helper.command.TypeWrapper;
 import ru.market.client.rest.CostRestClient;
 
 import java.io.BufferedReader;
@@ -30,23 +30,23 @@ public class InteractiveDeleteCostCommand extends InteractiveCommonCommand {
 
     @Override
     public void perform(BufferedReader reader) {
-        CommandArgumentWrapper commandArgumentWrapper = new CommandArgumentWrapper();
+        TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
                 Collections.singletonList(
                         new CommandDetail<>(
-                                "Введите id затраты",
-                                true,
-                                (object, param) -> object.addCommandArgument("idCost", param))
+                                "Введите id затраты", true,
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
+                        )
                 ),
-                commandArgumentWrapper
+                typeWrapper
         );
 
         if(isInterrupted){
             return;
         }
 
-        costRestClient.deleteById(Long.parseLong(commandArgumentWrapper.getCommandArgument("idCost")));
+        costRestClient.deleteById(typeWrapper.getTypeValue());
     }
 }

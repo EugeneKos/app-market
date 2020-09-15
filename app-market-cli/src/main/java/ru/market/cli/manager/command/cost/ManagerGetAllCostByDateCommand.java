@@ -18,24 +18,24 @@ import static ru.market.cli.manager.ManagerCommandArguments.COST_LIMIT_ID_ARG;
 import static ru.market.cli.manager.ManagerCommandArguments.MANDATORY_DATE_ARG;
 
 @Service
-public class ManagerGetAllCostCommand implements Command {
+public class ManagerGetAllCostByDateCommand implements Command {
     private CostRestClient costRestClient;
     private Printer printer;
 
     @Autowired
-    public ManagerGetAllCostCommand(CostRestClient costRestClient, Printer printer) {
+    public ManagerGetAllCostByDateCommand(CostRestClient costRestClient, Printer printer) {
         this.costRestClient = costRestClient;
         this.printer = printer;
     }
 
     @Override
     public String getName() {
-        return "cost-get-all";
+        return "cost-get-all-by-date";
     }
 
     @Override
     public String getDescription() {
-        return "Команда на получение всех затрат";
+        return "Команда на получение всех затрат по дате";
     }
 
     @Override

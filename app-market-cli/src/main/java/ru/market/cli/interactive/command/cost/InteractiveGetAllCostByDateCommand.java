@@ -15,13 +15,13 @@ import java.io.BufferedReader;
 import java.util.Set;
 
 @Service
-public class InteractiveGetAllCostCommand extends InteractiveCommonCommand {
+public class InteractiveGetAllCostByDateCommand extends InteractiveCommonCommand {
     private CostRestClient costRestClient;
     private CommandHelper commandHelper;
     private Printer printer;
 
     @Autowired
-    public InteractiveGetAllCostCommand(CostRestClient costRestClient, CommandHelper commandHelper, Printer printer) {
+    public InteractiveGetAllCostByDateCommand(CostRestClient costRestClient, CommandHelper commandHelper, Printer printer) {
         this.costRestClient = costRestClient;
         this.commandHelper = commandHelper;
         this.printer = printer;
@@ -29,7 +29,7 @@ public class InteractiveGetAllCostCommand extends InteractiveCommonCommand {
 
     @Override
     public String name() {
-        return "Получить все затраты";
+        return "Получить все затраты по дате";
     }
 
     @Override

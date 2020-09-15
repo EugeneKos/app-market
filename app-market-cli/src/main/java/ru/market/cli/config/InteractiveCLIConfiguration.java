@@ -9,7 +9,7 @@ import ru.market.cli.interactive.command.auth.InteractiveAuthenticateCommand;
 import ru.market.cli.interactive.command.auth.InteractiveLogoutCommand;
 import ru.market.cli.interactive.command.cost.InteractiveCreateCostCommand;
 import ru.market.cli.interactive.command.cost.InteractiveDeleteCostCommand;
-import ru.market.cli.interactive.command.cost.InteractiveGetAllCostCommand;
+import ru.market.cli.interactive.command.cost.InteractiveGetAllCostByDateCommand;
 import ru.market.cli.interactive.command.cost.InteractiveUpdateCostCommand;
 import ru.market.cli.interactive.command.limit.InteractiveCreateCostLimitCommand;
 import ru.market.cli.interactive.command.limit.InteractiveDeleteCostLimitCommand;
@@ -60,13 +60,13 @@ public class InteractiveCLIConfiguration {
     @Bean
     public Menu costMenu(InteractiveCreateCostCommand interactiveCreateCostCommand,
                          InteractiveDeleteCostCommand interactiveDeleteCostCommand,
-                         InteractiveGetAllCostCommand interactiveGetAllCostCommand,
+                         InteractiveGetAllCostByDateCommand interactiveGetAllCostByDateCommand,
                          InteractiveUpdateCostCommand interactiveUpdateCostCommand){
 
         MenuImpl costMenu = new MenuImpl("Затраты");
         costMenu.setElements(new ArrayList<>(Arrays.asList(
                 interactiveCreateCostCommand, interactiveDeleteCostCommand,
-                interactiveGetAllCostCommand, interactiveUpdateCostCommand
+                interactiveGetAllCostByDateCommand, interactiveUpdateCostCommand
         )));
         return costMenu;
     }

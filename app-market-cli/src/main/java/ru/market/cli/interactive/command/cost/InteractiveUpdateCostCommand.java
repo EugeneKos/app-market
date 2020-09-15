@@ -54,10 +54,10 @@ public class InteractiveUpdateCostCommand extends InteractiveCommonCommand {
                                 true, CostDTO::setCategory
                         ),
                         new CommandDetail<>("Введите дату затраты",
-                                true, CostDTO::setDateStr
+                                false, CostDTO::setDateStr
                         ),
                         new CommandDetail<>("Введите вермя затраты",
-                                true, CostDTO::setTimeStr
+                                false, CostDTO::setTimeStr
                         ),
                         new CommandDetail<>("Введите id лимита",
                                 true, (object, param) -> object.setCostLimitId(Long.parseLong(param))

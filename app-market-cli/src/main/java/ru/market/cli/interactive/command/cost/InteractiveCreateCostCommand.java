@@ -52,10 +52,10 @@ public class InteractiveCreateCostCommand extends InteractiveCommonCommand {
                                 "Введите категорию затраты", true, CostNoIdDTO::setCategory
                         ),
                         new CommandDetail<>(
-                                "Введите дату затраты", true, CostNoIdDTO::setDateStr
+                                "Введите дату затраты", false, CostNoIdDTO::setDateStr
                         ),
                         new CommandDetail<>(
-                                "Введите вермя затраты", true, CostNoIdDTO::setTimeStr
+                                "Введите вермя затраты", false, CostNoIdDTO::setTimeStr
                         ),
                         new CommandDetail<>(
                                 "Введите id лимита",

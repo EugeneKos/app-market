@@ -23,6 +23,7 @@ import ru.market.dto.cost.CostNoIdDTO;
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -130,6 +131,15 @@ public class CostServiceImpl implements ICostService {
         return costRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Cost with id %d not found", id))
         );
+    }
+
+    @Override
+    public Set<CostDTO> getAllByCostLimitId(Long costLimitId) {
+        LOGGER.info("Получение всех затрат по id лимита = {}", costLimitId);
+        return costRepository.findAllByCostLimitIdAndDateDesc(costLimitId)
+                .stream()
+                .map(costConverter::convertToDTO)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override

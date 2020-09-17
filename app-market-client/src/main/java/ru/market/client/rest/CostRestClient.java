@@ -10,6 +10,7 @@ import java.util.Set;
 public interface CostRestClient {
     CostDTO create(CostNoIdDTO costNoIdDTO) throws RestClientException;
     CostDTO update(CostDTO costDTO) throws RestClientException;
+    Set<CostDTO> getAllByCostLimitId(Long costLimitId) throws RestClientException;
     Set<CostDTO> getAllByCostLimitIdAndDate(Long costLimitId, String dateStr) throws RestClientException;
     void deleteById(Long id) throws RestClientException;
 }

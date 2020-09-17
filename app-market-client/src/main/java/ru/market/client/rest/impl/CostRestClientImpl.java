@@ -13,6 +13,7 @@ import ru.market.client.url.UrlProvider;
 import ru.market.dto.cost.CostDTO;
 import ru.market.dto.cost.CostNoIdDTO;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class CostRestClientImpl extends CommonRestClient implements CostRestClient {
@@ -43,6 +44,19 @@ public class CostRestClientImpl extends CommonRestClient implements CostRestClie
         HttpResponse<CostDTO> httpResponse = httpConnection.post(
                 new HttpRequestWithBodyImpl<>(createUrl("/cost"), costDTO), typeReference
         );
+
+        checkResponse(httpResponse);
+
+        return httpResponse.getResponseBody();
+    }
+
+    @Override
+    public Set<CostDTO> getAllByCostLimitId(Long costLimitId) throws RestClientException {
+        TypeReference<LinkedHashSet<CostDTO>> typeReference = new TypeReference<LinkedHashSet<CostDTO>>() {};
+
+        String path = String.format("/cost/%d", costLimitId);
+
+        HttpResponse<LinkedHashSet<CostDTO>> httpResponse = httpConnection.get(new HttpRequestImpl(createUrl(path)), typeReference);
 
         checkResponse(httpResponse);
 

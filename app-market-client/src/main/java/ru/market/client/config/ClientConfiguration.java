@@ -3,6 +3,7 @@ package ru.market.client.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import ru.market.client.http.ConnectionParamsProvider;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpHeadersService;
 import ru.market.client.http.impl.HttpConnectionImpl;
@@ -31,8 +32,10 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public HttpConnection httpConnection(HttpHeadersService httpHeadersService){
-        return new HttpConnectionImpl(httpHeadersService);
+    public HttpConnection httpConnection(HttpHeadersService httpHeadersService,
+                                         ConnectionParamsProvider connectionParamsProvider){
+
+        return new HttpConnectionImpl(httpHeadersService, connectionParamsProvider);
     }
 
     @Bean

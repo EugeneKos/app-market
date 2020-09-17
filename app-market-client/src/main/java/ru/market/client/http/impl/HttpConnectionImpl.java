@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.JsonMapperException;
+import ru.market.client.http.ConnectionParamsProvider;
 import ru.market.client.http.HttpConnection;
 import ru.market.client.http.HttpHeadersService;
 import ru.market.client.http.HttpRequest;
@@ -24,11 +25,13 @@ import java.util.List;
 
 public class HttpConnectionImpl implements HttpConnection {
     private HttpHeadersService httpHeadersService;
+    private ConnectionParamsProvider connectionParamsProvider;
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public HttpConnectionImpl(HttpHeadersService httpHeadersService) {
+    public HttpConnectionImpl(HttpHeadersService httpHeadersService, ConnectionParamsProvider connectionParamsProvider) {
         this.httpHeadersService = httpHeadersService;
+        this.connectionParamsProvider = connectionParamsProvider;
     }
 
     @Override
@@ -75,6 +78,7 @@ public class HttpConnectionImpl implements HttpConnection {
             URL url = new URL(urlStr);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(connectionParamsProvider.timeout());
             setRequestProperty(urlConnection, RequestProperty.ACCEPT_CHARSET_UTF_8);
 
             httpHeadersService.setHeaders(urlConnection);

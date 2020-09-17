@@ -33,6 +33,11 @@ public class CostController {
         return costService.update(sessionDataManager.getCurrentRequestBody());
     }
 
+    @RequestMapping(path = "/cost/{costLimitId}", method = RequestMethod.GET, produces = "application/json")
+    public Set<CostDTO> getAllByCostLimitId(@PathVariable(name = "costLimitId") Long costLimitId){
+        return costService.getAllByCostLimitId(costLimitId);
+    }
+
     @RequestMapping(path = "/cost/{costLimitId}/{dateStr}", method = RequestMethod.GET, produces = "application/json")
     public Set<CostDTO> getAllByCostLimitIdAndDate(@PathVariable(name = "costLimitId") Long costLimitId,
                                                    @PathVariable(name = "dateStr") String dateStr){

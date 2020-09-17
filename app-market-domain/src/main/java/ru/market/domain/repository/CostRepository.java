@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 public interface CostRepository extends JpaRepository<Cost, Long> {
-    @Query("select c from Cost c where c.costLimit.id = :costLimitId order by c.date desc")
+    @Query("select c from Cost c where c.costLimit.id = :costLimitId order by c.date desc, c.time desc")
     Set<Cost> findAllByCostLimitIdAndDateDesc(@Param("costLimitId") Long costLimitId);
 
     @Query("select c from Cost c where c.costLimit.id = :costLimitId and c.date = :date")

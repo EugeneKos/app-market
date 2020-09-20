@@ -75,9 +75,18 @@ public class CostRequestFilter implements AuthFilter {
                 break;
             }
             case "GET":{
-                isWell = Utils.checkIdInServletPath(request.getServletPath(), "cost/(\\S+)/.+", allCostLimitId);
+                String servletPath = request.getServletPath();
                 LOGGER.debug("[GET request] Servlet path: [{}] CostLimitIds = {} personId = {}",
-                        request.getServletPath(), allCostLimitId, personId);
+                        servletPath, allCostLimitId, personId);
+
+                if(servletPath.matches("/cost/(\\S+)/.+")){
+                    isWell = Utils.checkIdInServletPath(servletPath, "cost/(\\S+)/.+", allCostLimitId);
+                } else if(servletPath.matches("/cost/(\\S+)")){
+                    isWell = Utils.checkIdInServletPath(servletPath, "cost/(\\S+)", allCostLimitId);
+                } else {
+                    isWell = false;
+                }
+
                 break;
             }
             case "DELETE":{

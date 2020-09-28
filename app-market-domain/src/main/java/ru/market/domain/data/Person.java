@@ -27,7 +27,7 @@ public class Person {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", nullable = false)
     private String middleName;
 
     @OneToMany(targetEntity = MoneyAccount.class, cascade = {CascadeType.REMOVE}, mappedBy = "person")

@@ -34,7 +34,7 @@ public class MoneyAccountValidatorTest {
     @Test
     public void validateTest(){
         Person person = createMoneyAccountAndGetPerson("First", "Last", "Middle",
-                "Money 1", "5000");
+                "Money 1", "Money description 1",  "5000");
 
         MoneyAccount moneyAccount = new MoneyAccount();
         moneyAccount.setBalance(new BigDecimal("4000"));
@@ -47,7 +47,7 @@ public class MoneyAccountValidatorTest {
     @Test(expected = ValidateException.class)
     public void notUniqueNameTest(){
         Person person = createMoneyAccountAndGetPerson("First1", "Last1", "Middle1",
-                "Money 2", "7000");
+                "Money 2", "Money description 2", "7000");
 
         MoneyAccount moneyAccount = new MoneyAccount();
         moneyAccount.setBalance(new BigDecimal("4000"));
@@ -66,7 +66,7 @@ public class MoneyAccountValidatorTest {
     }
 
     private Person createMoneyAccountAndGetPerson(String firstName, String lastName, String middleName,
-                                                  String moneyName, String moneyBalance){
+                                                  String moneyName, String moneyDescription, String moneyBalance){
 
         Person person = new Person();
         person.setFirstName(firstName);
@@ -78,6 +78,7 @@ public class MoneyAccountValidatorTest {
         MoneyAccount created = new MoneyAccount();
         created.setBalance(new BigDecimal(moneyBalance));
         created.setName(moneyName);
+        created.setDescription(moneyDescription);
         created.setDateCreated(LocalDate.now());
         created.setPerson(person);
 

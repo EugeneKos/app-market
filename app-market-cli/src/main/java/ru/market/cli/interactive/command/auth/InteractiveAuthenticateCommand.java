@@ -13,8 +13,7 @@ import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.Console;
 import java.util.Collections;
 
 @Service
@@ -41,10 +40,9 @@ public class InteractiveAuthenticateCommand extends InteractiveCommonCommand {
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
-                new ArrayList<>(Arrays.asList(
-                        new CommandDetail<>("Введите имя пользователя", true, UsernamePasswordDTO::setUsername),
-                        new CommandDetail<>("Введите пароль", true, UsernamePasswordDTO::setPassword)
-                )),
+                Collections.singletonList(
+                        new CommandDetail<>("Введите имя пользователя", true, UsernamePasswordDTO::setUsername)
+                ),
                 usernamePasswordDTO
         );
 
@@ -52,7 +50,21 @@ public class InteractiveAuthenticateCommand extends InteractiveCommonCommand {
             return;
         }
 
+        usernamePasswordDTO.setPassword(readPassword());
+
         ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
         printer.printTable(PrinterUtils.createResultsTableToPrint(Collections.singletonList(result)));
+    }
+
+    private String readPassword(){
+        char [] password;
+
+        do {
+            System.out.print("Введите пароль: ");
+            Console console = System.console();
+            password = console.readPassword();
+        } while (password == null || password.length == 0);
+
+        return new String(password);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.market.cli.config.CLIConfiguration;
 import ru.market.cli.interactive.element.Menu;
 import ru.market.cli.interactive.element.impl.ExitCommand;
+import ru.market.cli.printer.Printer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class InteractiveCLIStarter {
             System.out.println("Интерактивная командная утилита v1.0");
             mainMenu.perform(reader, new ExitCommand());
         } catch (IOException e) {
-            e.printStackTrace();
+            Printer.error("Ошибка загрузки основного меню приложения", InteractiveCLIStarter.class, e);
         }
     }
 }

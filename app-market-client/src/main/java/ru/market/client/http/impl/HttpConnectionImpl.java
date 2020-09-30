@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.market.client.exception.HttpConnectionException;
 import ru.market.client.exception.JsonMapperException;
 import ru.market.client.http.ConnectionParamsProvider;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HttpConnectionImpl implements HttpConnection {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnectionImpl.class);
+
     private HttpHeadersService httpHeadersService;
     private ConnectionParamsProvider connectionParamsProvider;
 
@@ -121,6 +126,7 @@ public class HttpConnectionImpl implements HttpConnection {
         }
 
         String responseBodyStr = new String(builder.toString().getBytes(), StandardCharsets.UTF_8);
+        LOGGER.info("Response body = {}", responseBodyStr);
 
         if(isHtmlPage(responseBodyStr)){
             return null;

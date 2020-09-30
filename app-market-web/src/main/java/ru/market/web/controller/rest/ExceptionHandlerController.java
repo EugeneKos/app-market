@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import ru.market.domain.exception.OperationExecuteException;
 import ru.market.domain.exception.ValidateException;
 
 import ru.market.dto.error.ErrorDTO;
@@ -20,6 +21,13 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleValidateException(ValidateException e){
         LOGGER.error("Ошибка валидации запроса", e);
+        return ErrorDTO.builder().error(e.getMessage()).build();
+    }
+
+    @ExceptionHandler(OperationExecuteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleOperationExecuteException(OperationExecuteException e){
+        LOGGER.error("Ошибка выполнения операции над денежным счетом", e);
         return ErrorDTO.builder().error(e.getMessage()).build();
     }
 

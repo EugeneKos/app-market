@@ -2,6 +2,7 @@ package ru.market.cli.interactive.element.impl;
 
 import ru.market.cli.interactive.element.Element;
 import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.printer.Printer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class MenuImpl implements Menu {
 
             elements.get(--position).perform(reader, this);
         } catch (IOException e) {
-            e.printStackTrace();
+            Printer.error(String.format("Ошибка во время выполнения команды. Подробнее: %s", e.getMessage()), MenuImpl.class, e);
         }
     }
 

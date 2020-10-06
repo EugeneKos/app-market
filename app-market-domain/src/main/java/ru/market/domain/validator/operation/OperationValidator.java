@@ -11,6 +11,7 @@ import ru.market.domain.validator.CommonValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class OperationValidator implements CommonValidator<Operation> {
@@ -56,11 +57,8 @@ public class OperationValidator implements CommonValidator<Operation> {
         if(operationDate.isBefore(bankAccountDateCreated)){
             throw new ValidateException("Дата операции не может быть раньше чем был создан банковский счет");
         }
-        if(LocalDate.now().isBefore(operationDate)){
-            throw new ValidateException("Дата операции не может быть позднее сегодняшнего дня");
-        }
-        if(LocalTime.now().isBefore(operationTime)){
-            throw new ValidateException("Время операции не может быть позднее текущего времени");
+        if(LocalDateTime.now().isBefore(LocalDateTime.of(operationDate, operationTime))){
+            throw new ValidateException("Дата и время операции не может быть позднее текущей даты и времени");
         }
         LOGGER.info("Валидация даты операции прошла успешно");
     }

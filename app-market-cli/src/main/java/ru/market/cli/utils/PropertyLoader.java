@@ -2,6 +2,8 @@ package ru.market.cli.utils;
 
 import org.springframework.util.StringUtils;
 
+import ru.market.cli.printer.Printer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +21,7 @@ public final class PropertyLoader {
             String path = System.getProperty("user.dir") + File.separator + PROPERTIES_FILE_NAME;
             properties.load(new FileInputStream(new File(path)));
         } catch (IOException e){
-            e.printStackTrace();
+            Printer.error("Ошибка загрузки конфигурации приложения", PropertyLoader.class, e);
         }
     }
 

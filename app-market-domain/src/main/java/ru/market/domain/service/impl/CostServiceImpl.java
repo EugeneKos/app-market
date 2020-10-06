@@ -1,5 +1,6 @@
 package ru.market.domain.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import ru.market.dto.cost.CostNoIdDTO;
 import ru.market.dto.operation.OperationDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -154,6 +156,9 @@ public class CostServiceImpl implements ICostService {
     @Override
     public Set<Long> getAllIdByCostLimitIds(Set<Long> costLimitIds) {
         LOGGER.info("Получение всех id затрат по всем id лимитов. CostLimitIds = {}", costLimitIds);
+        if(CollectionUtils.isEmpty(costLimitIds)){
+            return Collections.emptySet();
+        }
         return costRepository.findAllIdByCostLimitIds(costLimitIds);
     }
 

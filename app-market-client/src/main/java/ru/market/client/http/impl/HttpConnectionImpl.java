@@ -17,14 +17,14 @@ import ru.market.client.http.HttpRequestWithBody;
 import ru.market.client.http.HttpResponse;
 import ru.market.dto.error.ErrorDTO;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HttpConnectionImpl implements HttpConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnectionImpl.class);
@@ -114,21 +114,19 @@ public class HttpConnectionImpl implements HttpConnection {
     private <ResponseBody> ResponseBody getResponseBody(
             InputStream inputStream, TypeReference<ResponseBody> typeReference) throws IOException {
 
-        if(inputStream.available() == 0){
-            return null;
-        }
-
-        byte[] buffer = new byte[128];
         StringBuilder builder = new StringBuilder();
 
-        while (inputStream.read(buffer) != -1) {
-            builder.append(new String(createNewBuffer(buffer)));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null){
+                builder.append(line);
+            }
         }
 
-        String responseBodyStr = new String(builder.toString().getBytes(), StandardCharsets.UTF_8);
+        String responseBodyStr = builder.toString();
         LOGGER.info("Response body = {}", responseBodyStr);
 
-        if(isHtmlPage(responseBodyStr)){
+        if(responseBodyStr.isEmpty() || isHtmlPage(responseBodyStr)){
             return null;
         }
 
@@ -137,23 +135,6 @@ public class HttpConnectionImpl implements HttpConnection {
         } catch (JsonProcessingException e) {
             throw new JsonMapperException("Ошибка преобразования Json", e);
         }
-    }
-
-    private byte[] createNewBuffer(byte[] buffer){
-        byte[] newBuffer;
-
-        List<Byte> byteList = new ArrayList<>();
-        for (byte b : buffer){
-            if(b != 0){
-                byteList.add(b);
-            }
-        }
-        newBuffer = new byte[byteList.size()];
-        for (int i=0; i<byteList.size(); i++){
-            newBuffer[i] = byteList.get(i);
-        }
-
-        return newBuffer;
     }
 
     private boolean isHtmlPage(String body){

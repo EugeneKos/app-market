@@ -3,10 +3,10 @@ package ru.market.cli.interactive.command.money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.market.cli.interactive.command.InteractiveCommandUtils;
+import ru.market.cli.interactive.helper.command.CommandContext;
+import ru.market.cli.interactive.helper.command.CommandContext.CommandArgument;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
-import ru.market.cli.interactive.helper.command.TypeWrapper;
-import ru.market.cli.interactive.helper.command.CommandHelper;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.client.rest.MoneyAccountRestClient;
 
 import java.io.BufferedReader;
@@ -14,29 +14,34 @@ import java.io.BufferedReader;
 @Service
 public class InteractiveDeleteMoneyAccountCommand extends InteractiveCommonCommand {
     private MoneyAccountRestClient moneyAccountRestClient;
-    private CommandHelper commandHelper;
+    private CommandContext commandContext;
 
     @Autowired
-    public InteractiveDeleteMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient, CommandHelper commandHelper) {
+    public InteractiveDeleteMoneyAccountCommand(MoneyAccountRestClient moneyAccountRestClient,
+                                                CommandContext commandContext) {
+
         this.moneyAccountRestClient = moneyAccountRestClient;
-        this.commandHelper = commandHelper;
+        this.commandContext = commandContext;
     }
 
     @Override
-    public String name() {
-        return "Удалить денежный счет";
+    public String id() {
+        return IDElement.DELETE_MONEY_ACCOUNT_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
-        TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
+    public String performCommand(BufferedReader reader) {
+        moneyAccountRestClient.deleteById(commandContext.getCommandArgument(CommandArgument.MONEY_ACCOUNT_ID));
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+    }
 
-        boolean isInterrupted = InteractiveCommandUtils.fillMoneyAccountIdArgument(reader, commandHelper, typeWrapper);
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+    }
 
-        if(isInterrupted){
-            return;
-        }
-
-        moneyAccountRestClient.deleteById(typeWrapper.getTypeValue());
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
     }
 }

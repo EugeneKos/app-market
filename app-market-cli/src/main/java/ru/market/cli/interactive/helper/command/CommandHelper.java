@@ -1,5 +1,7 @@
 package ru.market.cli.interactive.helper.command;
 
+import ru.market.cli.printer.Printer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +32,7 @@ public class CommandHelper {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Printer.error("Ошибка во время заполнения бизнес объекта", CommandHelper.class, e);
         }
 
         return false;

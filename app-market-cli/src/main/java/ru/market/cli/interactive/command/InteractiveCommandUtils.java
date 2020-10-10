@@ -3,13 +3,13 @@ package ru.market.cli.interactive.command;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.interactive.helper.command.TypeWrapper;
+import ru.market.dto.cost.CostNoIdDTO;
 import ru.market.dto.operation.OperationEnrollDebitDTO;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.function.BiConsumer;
 
 public final class InteractiveCommandUtils {
     private InteractiveCommandUtils(){
@@ -20,6 +20,18 @@ public final class InteractiveCommandUtils {
                 reader,
                 Collections.singletonList(
                         new CommandDetail<>("Введите id лимита", true,
+                                (object, param) -> object.setTypeValue(Long.parseLong(param))
+                        )
+                ),
+                typeWrapper
+        );
+    }
+
+    public static boolean fillCostIdArgument(BufferedReader reader, CommandHelper commandHelper, TypeWrapper<Long> typeWrapper){
+        return commandHelper.fillBusinessObjectByCommandDetail(
+                reader,
+                Collections.singletonList(
+                        new CommandDetail<>("Введите id затраты", true,
                                 (object, param) -> object.setTypeValue(Long.parseLong(param))
                         )
                 ),
@@ -59,9 +71,6 @@ public final class InteractiveCommandUtils {
                         new CommandDetail<>("Введите описание операции", true,
                                 OperationEnrollDebitDTO::setDescription
                         ),
-                        new CommandDetail<>("Введите id денежного счета", true,
-                                (object, param) -> object.setMoneyAccountId(Long.parseLong(param))
-                        ),
                         new CommandDetail<>("Введите дату операции", false,
                                 OperationEnrollDebitDTO::setDateStr
                         ),
@@ -73,25 +82,31 @@ public final class InteractiveCommandUtils {
         );
     }
 
-    public static void performCommandWithCostLimitIdAndDateArguments(BufferedReader reader, CommandHelper commandHelper,
-                                                                     BiConsumer<TypeWrapper<Long>, TypeWrapper<String>> performer){
-
-        TypeWrapper<Long> typeWrapperIdCostLimit = new TypeWrapper<>();
-
-        boolean isInterrupted = fillCostLimitIdArgument(reader, commandHelper, typeWrapperIdCostLimit);
-
-        if(isInterrupted){
-            return;
-        }
-
-        TypeWrapper<String> typeWrapperDate = new TypeWrapper<>();
-
-        isInterrupted = fillDateArgument(reader, commandHelper, typeWrapperDate);
-
-        if(isInterrupted){
-            return;
-        }
-
-        performer.accept(typeWrapperIdCostLimit, typeWrapperDate);
+    public static boolean fillCreateUpdateCostArgument(BufferedReader reader, CommandHelper commandHelper, CostNoIdDTO costNoIdDTO){
+        return commandHelper.fillBusinessObjectByCommandDetail(
+                reader,
+                new ArrayList<>(Arrays.asList(
+                        new CommandDetail<>(
+                                "Введите сумму затраты", true, CostNoIdDTO::setSum
+                        ),
+                        new CommandDetail<>(
+                                "Введите описание затраты", true, CostNoIdDTO::setDescription
+                        ),
+                        new CommandDetail<>(
+                                "Введите категорию затраты", true, CostNoIdDTO::setCategory
+                        ),
+                        new CommandDetail<>(
+                                "Введите дату затраты", false, CostNoIdDTO::setDateStr
+                        ),
+                        new CommandDetail<>(
+                                "Введите вермя затраты", false, CostNoIdDTO::setTimeStr
+                        ),
+                        new CommandDetail<>(
+                                "Введите id денежного счета",
+                                true, (object, param) -> object.setMoneyAccountId(Long.parseLong(param))
+                        )
+                )),
+                costNoIdDTO
+        );
     }
 }

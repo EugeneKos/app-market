@@ -1,9 +1,12 @@
-package ru.market.cli.interactive.command.person;
+package ru.market.cli.interactive.command.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.helper.command.CommandContext;
+import ru.market.cli.interactive.helper.command.CommandContext.CommandArgument;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -20,30 +23,36 @@ import java.util.Collections;
 public class InteractiveUpdatePersonCommand extends InteractiveCommonCommand {
     private PersonRestClient personRestClient;
     private CommandHelper commandHelper;
+    private CommandContext commandContext;
     private Printer printer;
 
     @Autowired
-    public InteractiveUpdatePersonCommand(PersonRestClient personRestClient, CommandHelper commandHelper, Printer printer) {
+    public InteractiveUpdatePersonCommand(PersonRestClient personRestClient,
+                                          CommandHelper commandHelper,
+                                          CommandContext commandContext,
+                                          Printer printer) {
+
         this.personRestClient = personRestClient;
         this.commandHelper = commandHelper;
+        this.commandContext = commandContext;
         this.printer = printer;
     }
 
     @Override
-    public String name() {
-        return "Обновить информацию профиля";
+    public String id() {
+        return IDElement.UPDATE_USER_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         PersonDTO personDTO = PersonDTO.personBuilder().build();
+
+        Long userId = commandContext.getCommandArgument(CommandArgument.USER_ID);
+        personDTO.setId(userId);
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
                 new ArrayList<>(Arrays.asList(
-                        new CommandDetail<>("Введите id пользователя", true,
-                                (object, param) -> object.setId(Long.parseLong(param))
-                        ),
                         new CommandDetail<>("Введите фамилию", true, PersonDTO::setFirstName),
                         new CommandDetail<>("Введите имя", true, PersonDTO::setLastName),
                         new CommandDetail<>("Введите отчество", true, PersonDTO::setMiddleName)
@@ -52,10 +61,22 @@ public class InteractiveUpdatePersonCommand extends InteractiveCommonCommand {
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.USER_CONTROL_MENU;
         }
 
         PersonDTO updated = personRestClient.update(personDTO);
         printer.printTable(PrinterUtils.createPersonsTableToPrint(Collections.singletonList(updated)));
+
+        return IDElement.APPLICATION_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.APPLICATION_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.APPLICATION_MENU;
     }
 }

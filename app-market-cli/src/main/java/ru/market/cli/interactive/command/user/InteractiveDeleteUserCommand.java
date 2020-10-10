@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.client.rest.UserRestClient;
 
 import java.io.BufferedReader;
@@ -18,12 +19,23 @@ public class InteractiveDeleteUserCommand extends InteractiveCommonCommand {
     }
 
     @Override
-    public String name() {
+    public String id() {
         return "Удалить текущего пользователя";
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         userRestClient.deleteCurrent();
+        return IDElement.MAIN_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MAIN_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MAIN_MENU;
     }
 }

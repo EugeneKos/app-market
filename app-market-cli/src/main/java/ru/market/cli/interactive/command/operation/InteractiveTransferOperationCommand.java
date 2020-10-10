@@ -3,7 +3,10 @@ package ru.market.cli.interactive.command.operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.market.cli.interactive.helper.command.CommandContext;
+import ru.market.cli.interactive.helper.command.CommandContext.CommandArgument;
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -21,30 +24,36 @@ import java.util.Collections;
 public class InteractiveTransferOperationCommand extends InteractiveCommonCommand {
     private OperationRestClient operationRestClient;
     private CommandHelper commandHelper;
+    private CommandContext commandContext;
     private Printer printer;
 
     @Autowired
-    public InteractiveTransferOperationCommand(OperationRestClient operationRestClient, CommandHelper commandHelper, Printer printer) {
+    public InteractiveTransferOperationCommand(OperationRestClient operationRestClient,
+                                               CommandHelper commandHelper,
+                                               CommandContext commandContext,
+                                               Printer printer) {
+
         this.operationRestClient = operationRestClient;
         this.commandHelper = commandHelper;
+        this.commandContext = commandContext;
         this.printer = printer;
     }
 
     @Override
-    public String name() {
-        return "Выполнить операцию перевода";
+    public String id() {
+        return IDElement.TRANSFER_OPERATION_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         OperationTransferDTO transferDTO = OperationTransferDTO.operationTransferBuilder().build();
+
+        Long moneyAccountId = commandContext.getCommandArgument(CommandArgument.MONEY_ACCOUNT_ID);
+        transferDTO.setFromMoneyAccountId(moneyAccountId);
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
                 reader,
                 new ArrayList<>(Arrays.asList(
-                        new CommandDetail<>("Введите id счета с которого произойдет перевод", true,
-                                (object, param) -> object.setFromMoneyAccountId(Long.parseLong(param))
-                        ),
                         new CommandDetail<>("Введите id счета на который поступят деньги", true,
                                 (object, param) -> object.setToMoneyAccountId(Long.parseLong(param))
                         ),
@@ -62,10 +71,22 @@ public class InteractiveTransferOperationCommand extends InteractiveCommonComman
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.MONEY_ACCOUNT_OPERATION_MENU;
         }
 
         OperationDTO operation = operationRestClient.transfer(transferDTO);
         printer.printTable(PrinterUtils.createOperationsTableToPrint(Collections.singletonList(operation)));
+
+        return IDElement.MONEY_ACCOUNT_OPERATION_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
     }
 }

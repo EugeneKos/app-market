@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -31,12 +32,12 @@ public class InteractiveCreateMoneyAccountCommand extends InteractiveCommonComma
     }
 
     @Override
-    public String name() {
-        return "Создать денежный счет";
+    public String id() {
+        return IDElement.CREATE_MONEY_ACCOUNT_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         MoneyAccountNoIdDTO moneyAccountNoIdDTO = MoneyAccountNoIdDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -50,10 +51,22 @@ public class InteractiveCreateMoneyAccountCommand extends InteractiveCommonComma
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
         }
 
         MoneyAccountDTO moneyAccount = moneyAccountRestClient.create(moneyAccountNoIdDTO);
         printer.printTable(PrinterUtils.createMoneyAccountsTableToPrint(Collections.singletonList(moneyAccount)));
+
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -29,12 +30,12 @@ public class InteractiveChangeUsernameUserCommand extends InteractiveCommonComma
     }
 
     @Override
-    public String name() {
+    public String id() {
         return "Изменить имя пользователя";
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         UserUsernameDTO userUsernameDTO = UserUsernameDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -48,10 +49,22 @@ public class InteractiveChangeUsernameUserCommand extends InteractiveCommonComma
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.USER_CONTROL_MENU;
         }
 
         UserDTO user = userRestClient.changeUsername(userUsernameDTO);
         printer.printTable(PrinterUtils.createUsersTableToPrint(Collections.singletonList(user)));
+
+        return IDElement.MAIN_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MAIN_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MAIN_MENU;
     }
 }

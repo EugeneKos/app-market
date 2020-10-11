@@ -10,6 +10,9 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public final class InteractiveCommandUtils {
     private InteractiveCommandUtils(){
@@ -108,5 +111,10 @@ public final class InteractiveCommandUtils {
                 )),
                 costNoIdDTO
         );
+    }
+
+    public static <T> boolean isNotBelong(Long id, Set<T> entities, Function<T, Long> function){
+        Set<Long> entityIds = entities.stream().map(function).collect(Collectors.toSet());
+        return !entityIds.contains(id);
     }
 }

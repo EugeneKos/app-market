@@ -62,11 +62,11 @@ public class InteractiveCreateCostCommand extends InteractiveCommonCommand {
 
     @Override
     public String getElementIdByException() {
-        return IDElement.COST_LIMIT_CONTROL_MENU;
+        return IDElement.COST_LIMIT_COST_MENU;
     }
 
     @Override
     public String getElementIdByRestClientException() {
-        return IDElement.COST_LIMIT_CONTROL_MENU;
+        return IDElement.COST_LIMIT_COST_MENU;
     }
 }

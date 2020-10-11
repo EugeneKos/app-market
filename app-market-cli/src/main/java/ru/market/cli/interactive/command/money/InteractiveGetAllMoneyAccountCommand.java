@@ -54,7 +54,13 @@ public class InteractiveGetAllMoneyAccountCommand extends InteractiveCommonComma
             return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
         }
 
-        commandContext.putCommandArgument(CommandArgument.MONEY_ACCOUNT_ID, typeWrapper.getTypeValue());
+        Long moneyAccountId = typeWrapper.getTypeValue();
+        if(InteractiveCommandUtils.isNotBelong(moneyAccountId, moneyAccounts, MoneyAccountDTO::getId)){
+            Printer.error("Неправильный идентификатор денежного счета!", InteractiveGetAllMoneyAccountCommand.class);
+            return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+        }
+
+        commandContext.putCommandArgument(CommandArgument.MONEY_ACCOUNT_ID, moneyAccountId);
 
         return IDElement.MONEY_ACCOUNT_OPERATION_MENU;
     }

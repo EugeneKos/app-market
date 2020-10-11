@@ -63,11 +63,11 @@ public class InteractiveEnrollOperationCommand extends InteractiveCommonCommand 
 
     @Override
     public String getElementIdByException() {
-        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+        return IDElement.MONEY_ACCOUNT_OPERATION_MENU;
     }
 
     @Override
     public String getElementIdByRestClientException() {
-        return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+        return IDElement.MONEY_ACCOUNT_OPERATION_MENU;
     }
 }

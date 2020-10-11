@@ -54,7 +54,13 @@ public class InteractiveGetAllCostLimitCommand extends InteractiveCommonCommand 
             return IDElement.COST_LIMIT_CONTROL_MENU;
         }
 
-        commandContext.putCommandArgument(CommandArgument.COST_LIMIT_ID, typeWrapper.getTypeValue());
+        Long costLimitId = typeWrapper.getTypeValue();
+        if(InteractiveCommandUtils.isNotBelong(costLimitId, costLimits, CostLimitDTO::getId)){
+            Printer.error("Неправильный идентификатор лимита на затраты!", InteractiveGetAllCostLimitCommand.class);
+            return IDElement.COST_LIMIT_CONTROL_MENU;
+        }
+
+        commandContext.putCommandArgument(CommandArgument.COST_LIMIT_ID, costLimitId);
 
         return IDElement.COST_LIMIT_COST_MENU;
     }

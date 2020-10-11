@@ -20,7 +20,7 @@ public class InteractiveDeleteUserCommand extends InteractiveCommonCommand {
 
     @Override
     public String id() {
-        return "Удалить текущего пользователя";
+        return IDElement.DELETE_USER_CMD;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class InteractiveChangeUsernameUserCommand extends InteractiveCommonComma
 
     @Override
     public String id() {
-        return "Изменить имя пользователя";
+        return IDElement.CHANGE_USERNAME_CMD;
     }
 
     @Override

@@ -2,6 +2,7 @@ package ru.market.cli.interactive.command.limit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import ru.market.cli.interactive.helper.command.CommandContext;
 import ru.market.cli.interactive.helper.command.CommandContext.CommandArgument;
@@ -46,6 +47,9 @@ public class InteractiveGetAllCostLimitCommand extends InteractiveCommonCommand 
     public String performCommand(BufferedReader reader) {
         Set<CostLimitDTO> costLimits = costLimitRestClient.getAll();
         printer.printTable(PrinterUtils.createCostLimitsTableToPrint(costLimits));
+        if(CollectionUtils.isEmpty(costLimits)){
+            return IDElement.COST_LIMIT_CONTROL_MENU;
+        }
 
         TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 

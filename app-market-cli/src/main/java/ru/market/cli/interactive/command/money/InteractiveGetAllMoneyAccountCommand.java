@@ -2,6 +2,7 @@ package ru.market.cli.interactive.command.money;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import ru.market.cli.interactive.helper.command.CommandContext;
 import ru.market.cli.interactive.helper.command.CommandContext.CommandArgument;
@@ -46,6 +47,9 @@ public class InteractiveGetAllMoneyAccountCommand extends InteractiveCommonComma
     public String performCommand(BufferedReader reader) {
         Set<MoneyAccountDTO> moneyAccounts = moneyAccountRestClient.getAll();
         printer.printTable(PrinterUtils.createMoneyAccountsTableToPrint(moneyAccounts));
+        if(CollectionUtils.isEmpty(moneyAccounts)){
+            return IDElement.MONEY_ACCOUNT_CONTROL_MENU;
+        }
 
         TypeWrapper<Long> typeWrapper = new TypeWrapper<>();
 

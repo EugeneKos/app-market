@@ -22,6 +22,7 @@ import ru.market.dto.operation.OperationTransferDTO;
 
 import ru.market.utils.MoneyAccountLockHolder;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -108,7 +109,7 @@ public class OperationServiceImpl implements IOperationService {
         return operationRepository.findAllByMoneyAccountId(moneyAccountId)
                 .stream()
                 .map(operationConverter::convertToDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -119,6 +120,6 @@ public class OperationServiceImpl implements IOperationService {
         return operationRepository.findAll(specification)
                 .stream()
                 .map(operationConverter::convertToDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

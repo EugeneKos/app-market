@@ -15,6 +15,7 @@ import ru.market.dto.operation.OperationEnrollDebitDTO;
 import ru.market.dto.operation.OperationFilterDTO;
 import ru.market.dto.operation.OperationTransferDTO;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class OperationRestClientImpl extends CommonRestClient implements OperationRestClient {
@@ -66,9 +67,9 @@ public class OperationRestClientImpl extends CommonRestClient implements Operati
 
     @Override
     public Set<OperationDTO> getAllByMoneyAccountId(Long moneyAccountId) throws RestClientException {
-        TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
+        TypeReference<LinkedHashSet<OperationDTO>> typeReference = new TypeReference<LinkedHashSet<OperationDTO>>() {};
 
-        HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.get(
+        HttpResponse<LinkedHashSet<OperationDTO>> httpResponse = httpConnection.get(
                 new HttpRequestImpl(createUrl("/operation/money-account/" + moneyAccountId)), typeReference
         );
 
@@ -81,9 +82,9 @@ public class OperationRestClientImpl extends CommonRestClient implements Operati
     public Set<OperationDTO> getAllByMoneyAccountIdAndFilter(Long moneyAccountId, OperationFilterDTO filterDTO)
             throws RestClientException {
 
-        TypeReference<Set<OperationDTO>> typeReference = new TypeReference<Set<OperationDTO>>() {};
+        TypeReference<LinkedHashSet<OperationDTO>> typeReference = new TypeReference<LinkedHashSet<OperationDTO>>() {};
 
-        HttpResponse<Set<OperationDTO>> httpResponse = httpConnection.post(
+        HttpResponse<LinkedHashSet<OperationDTO>> httpResponse = httpConnection.post(
                 new HttpRequestWithBodyImpl<>(createUrl("/operation/money-account/" + moneyAccountId), filterDTO),
                 typeReference
         );

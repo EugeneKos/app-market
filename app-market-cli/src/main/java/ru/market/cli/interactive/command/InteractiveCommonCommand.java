@@ -1,36 +1,37 @@
 package ru.market.cli.interactive.command;
 
-import ru.market.cli.interactive.element.Command;
-import ru.market.cli.interactive.element.Menu;
+import ru.market.cli.interactive.element.Element;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.printer.Printer;
+import ru.market.client.exception.RestClientException;
+import ru.market.client.exception.UnauthorizedException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 
-public abstract class InteractiveCommonCommand implements Command {
-    public abstract void perform(BufferedReader reader);
+public abstract class InteractiveCommonCommand implements Element {
+    public abstract String performCommand(BufferedReader reader);
+    public abstract String getElementIdByException();
+    public abstract String getElementIdByRestClientException();
 
     @Override
-    public void perform(BufferedReader reader, Menu menu) {
+    public String perform(BufferedReader reader) {
         try {
-            perform(reader);
+            return performCommand(reader);
+        } catch (UnauthorizedException e) {
+            Printer.error(String.format("Ошибка авторизации пользователя. Подробнее: %s",
+                    e.getMessage()), InteractiveCommonCommand.class, e);
+
+            return IDElement.MAIN_MENU;
+        } catch (RestClientException e){
+            Printer.error(String.format("Ошибка во время выполнения команды. Подробнее: %s",
+                    e.getMessage()), InteractiveCommonCommand.class, e);
+
+            return getElementIdByRestClientException();
         } catch (Exception e){
-            Printer.error(
-                    String.format("Ошибка во время выполнения команды. Подробнее: %s", e.getMessage()),
-                    InteractiveCommonCommand.class, e
-            );
-        }
+            Printer.error(String.format("Ошибка во время выполнения команды. Подробнее: %s",
+                    e.getMessage()), InteractiveCommonCommand.class, e);
 
-        try {
-            System.out.print("Для продолжения введите что-нибудь или просто нажмите Enter: ");
-            reader.readLine();
-        } catch (IOException e) {
-            Printer.error(
-                    String.format("Ошибка во время выполнения команды. Подробнее: %s", e.getMessage()),
-                    InteractiveCommonCommand.class, e
-            );
+            return getElementIdByException();
         }
-
-        menu.back(reader);
     }
 }

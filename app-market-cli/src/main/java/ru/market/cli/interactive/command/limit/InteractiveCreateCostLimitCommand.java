@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -31,12 +32,12 @@ public class InteractiveCreateCostLimitCommand extends InteractiveCommonCommand 
     }
 
     @Override
-    public String name() {
-        return "Создать лимит на затраты";
+    public String id() {
+        return IDElement.CREATE_COST_LIMIT_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         CostLimitNoIdDTO costLimitNoIdDTO = CostLimitNoIdDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -51,10 +52,22 @@ public class InteractiveCreateCostLimitCommand extends InteractiveCommonCommand 
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.COST_LIMIT_CONTROL_MENU;
         }
 
         CostLimitDTO costLimitDTO = costLimitRestClient.create(costLimitNoIdDTO);
         printer.printTable(PrinterUtils.createCostLimitsTableToPrint(Collections.singletonList(costLimitDTO)));
+
+        return IDElement.COST_LIMIT_CONTROL_MENU;
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.COST_LIMIT_CONTROL_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.COST_LIMIT_CONTROL_MENU;
     }
 }

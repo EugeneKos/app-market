@@ -39,8 +39,13 @@ public final class OperationSpecification {
     }
 
     private static Specification<Operation> specificationByMoneyAccountId(Long moneyAccountId){
-        return (Specification<Operation>) (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(SpecificationFields.MONEY_ACCOUNT).get(SpecificationFields.ID), moneyAccountId);
+        return (Specification<Operation>) (root, query, criteriaBuilder) -> {
+            query.orderBy(criteriaBuilder.desc(root.get(SpecificationFields.DATE)),
+                    criteriaBuilder.desc(root.get(SpecificationFields.TIME))
+            );
+
+            return criteriaBuilder.equal(root.get(SpecificationFields.MONEY_ACCOUNT).get(SpecificationFields.ID), moneyAccountId);
+        };
     }
 
     private static Specification<Operation> specificationByDate(String dateStr){

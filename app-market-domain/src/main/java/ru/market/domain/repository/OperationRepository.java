@@ -10,6 +10,6 @@ import ru.market.domain.data.Operation;
 import java.util.Set;
 
 public interface OperationRepository extends JpaRepository<Operation, Long>, JpaSpecificationExecutor<Operation> {
-    @Query("select o from Operation o where o.moneyAccount.id = :moneyAccountId")
+    @Query("select o from Operation o where o.moneyAccount.id = :moneyAccountId order by o.date desc, o.time desc")
     Set<Operation> findAllByMoneyAccountId(@Param("moneyAccountId") Long moneyAccountId);
 }

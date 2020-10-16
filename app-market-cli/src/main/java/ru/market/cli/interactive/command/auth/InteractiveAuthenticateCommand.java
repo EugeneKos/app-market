@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.market.cli.interactive.command.InteractiveCommonCommand;
+import ru.market.cli.interactive.element.IDElement;
 import ru.market.cli.interactive.helper.command.CommandDetail;
 import ru.market.cli.interactive.helper.command.CommandHelper;
 import ru.market.cli.printer.Printer;
@@ -11,6 +12,7 @@ import ru.market.cli.printer.PrinterUtils;
 import ru.market.client.rest.AuthenticateRestClient;
 import ru.market.dto.auth.UsernamePasswordDTO;
 import ru.market.dto.result.ResultDTO;
+import ru.market.dto.result.ResultStatus;
 
 import java.io.BufferedReader;
 import java.io.Console;
@@ -30,12 +32,12 @@ public class InteractiveAuthenticateCommand extends InteractiveCommonCommand {
     }
 
     @Override
-    public String name() {
-        return "Аутентификация";
+    public String id() {
+        return IDElement.AUTHENTICATE_CMD;
     }
 
     @Override
-    public void perform(BufferedReader reader) {
+    public String performCommand(BufferedReader reader) {
         UsernamePasswordDTO usernamePasswordDTO = UsernamePasswordDTO.builder().build();
 
         boolean isInterrupted = commandHelper.fillBusinessObjectByCommandDetail(
@@ -47,13 +49,19 @@ public class InteractiveAuthenticateCommand extends InteractiveCommonCommand {
         );
 
         if(isInterrupted){
-            return;
+            return IDElement.MAIN_MENU;
         }
 
         usernamePasswordDTO.setPassword(readPassword());
 
         ResultDTO result = authenticateRestClient.authenticate(usernamePasswordDTO);
         printer.printTable(PrinterUtils.createResultsTableToPrint(Collections.singletonList(result)));
+
+        if(result.getStatus() == ResultStatus.FAILED){
+            return IDElement.MAIN_MENU;
+        }
+
+        return IDElement.APPLICATION_MENU;
     }
 
     private String readPassword(){
@@ -66,5 +74,15 @@ public class InteractiveAuthenticateCommand extends InteractiveCommonCommand {
         } while (password == null || password.length == 0);
 
         return new String(password);
+    }
+
+    @Override
+    public String getElementIdByException() {
+        return IDElement.MAIN_MENU;
+    }
+
+    @Override
+    public String getElementIdByRestClientException() {
+        return IDElement.MAIN_MENU;
     }
 }
